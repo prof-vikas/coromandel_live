@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/drawable/ic_company_logo.xml" value="0.1" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/activity_bothra_supervisor.xml" value="0.1796875" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/activity_spash.xml" value="0.1" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/activity_splash.xml" value="0.1796875" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/bothra_supervisor_item_row_data.xml" value="0.1" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/footer.xml" value="0.165625" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/header.xml" value="0.165625" />
+        <entry key="..\:/Android/coromandel-android-repo/app/src/main/res/layout/supervisor_item_row_data.xml" value="0.1796875" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="jbr-11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

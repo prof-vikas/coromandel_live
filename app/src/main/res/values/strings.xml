@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">RFId Tag Scanner</string>
+
+    <!--    title bar-->
+    <string name="title_bothra">Bothra WH Supervisor</string>
+    <string name="title_coromandel">Coromandel WH Supervisor</string>
+    <string name="title_loading_advise">Loading Advise</string>
+    <string name="title_bothra_loading_advise">Bothra Loading Advise</string>
+    <!--    <string name="title1">Bothra WH Supervisor</string>-->
+
+
+    <string name="driverName">Driver Name</string>
+    <string name="TruckNumber">Truck Number</string>
+    <string name="commodity">Commodity</string>
+    <string name="grossWeight">Gross Weight (kg)</string>
+    <string name="print">Print</string>
+    <string name="submit">Submit</string>
+    <string name="tilldate">Till Date</string>
+    <string name="total">Total</string>
+    <string name="title2">Coromandel WH Supervisor</string>
+    <string name="rmg_no">RMG No</string>
+    <string name="remark">Remark</string>
+    <string name="Settings">Settings</string>
+
+    <!--    Loading Advise -->
+    <string name="title3">Loading Advise</string>
+    <string name="sap_gr_no">SAP GR No</string>
+    <string name="vessel_name">Vessel Name</string>
+    <string name="rfid_lep_no">RFID/LEP No</string>
+    <string name="truck_capacity">Truck Capacity</string>
+    <string name="system_date">Loading Time</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="OpenDrawer">Open Navigation Drawer</string>
+    <string name="ClosedDrawer">Close Navigation Drawer</string>
+    <string name="launcher_name">" RFID Scanner"</string>
+    <string name="footer_text">© 2023 Develop By Suraj Informatics Pvt. Ltd.</string>
+    <string name="table_date">Date</string>
+    <string name="table_trips">Trips</string>
+    <string name="title1">Bothra WH Supervisor</string>
+    <string name="invalid_username_or_password">Enter username or password is invalid</string>
+    <string name="login_text">Login</string>
+    <string name="update_password_header">Change Password</string>
+    <string name="login_logo_sipl_content_description">Company Logo (Suraj Informatics)</string>
+    <string name="login_logo_coromandel_content_description">Company Logo (Suraj Informatics)</string>
+
+    <string name="placeholder_current_password">Enter current password</string>
+    <string name="placeholder_new_password">Enter new password</string>
+    <string name="placeholder_confirm_password">Confirm password</string>
+    <string name="placeholder_username">Username</string>
+    <string name="placeholder_password">Password</string>
+    <string name="login_app_version">Version 1.0.0</string>
+    <string name="login_btn_login">Login</string>
+    <string name="login_btn_update_password">Update password</string>
+
+    <string name="ware_house_supervisor">WareHouse Supervisor</string>
+    <string name="menu_profile">Profile Setting</string>
+    <string name="menu_logout">Logout</string>
+    <string name="lep_no">LEP Number</string>
+    <string name="driver_mobile_no">Driver Mobile No</string>
+    <string name="driver_license_no">Driver License No</string>
+    <string name="loading_supervisor">Loading "\n"Supervisor</string>
+    <string name="pinnacle_supervisor">Pinnacle Supervisor</string>
+    <string name="bothra_supervisor">Bothra Supervisor</string>
+    <string name="cancel">Reset</string>
+    <string name="title_coromandel2">Coromandel WH Supervisor</string>
+    <string name="Previous_rmg_no">Previous RMG No</string>
+    <string name="source_location">Source "\n"Location</string>
+    <string name="destination_location">Destination Location</string>
+    <string name="update_rmg_no">Update RMG No</string>
+    <string name="unloading_time">Unloading Time</string>
+    <string name="previous_wh_no">Previous W.H. No</string>
+    <string name="update_wh_no">Warehouse No</string>
+
+
+</resources>

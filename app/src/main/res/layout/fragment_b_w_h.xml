@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bothra_bg"
+    tools:context=".fragments.BWHFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:isScrollContainer="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/form_title1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:background="@color/fragment_title_text_bg"
+                android:padding="5dp"
+                android:text="@string/title_bothra"
+                android:textAlignment="center"
+                android:textColor="@color/fragment_title_text_color"
+                android:textSize="@dimen/la_title_text"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/cardView" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <LinearLayout
+                    android:id="@+id/bl_lep_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:id="@+id/bwh_tv_lep_number"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/lep_no"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/bwh_auto_complete_lep_number"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_write_able_field"
+                        android:inputType="textCapCharacters"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_driver_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/driverName"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/bwh_edt_driver_name"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_truck_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/TruckNumber"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/bwh_edt_truck_no"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:inputType="textCapCharacters"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textAllCaps="true"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_commodity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/commodity"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+
+                    <EditText
+                        android:id="@+id/bwh_edt_commodity"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_gross_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/grossWeight"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+
+                    <EditText
+                        android:id="@+id/bwh_edt_gross_weight"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_previous_rmg_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/previous_wh_no"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+
+                    <EditText
+                        android:id="@+id/bwh_edt_previous_ware_house_no"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_rmg_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/update_wh_no"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <Spinner
+                        android:id="@+id/bwh_spinner_warehouse_no"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/reactangle_spinner_select_able_field"
+                        android:padding="5dp"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cwh_remark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/remark"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <Spinner
+                        android:id="@+id/bwh_spinner_remark"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/reactangle_spinner_select_able_field"
+                        android:padding="5dp"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_remark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/unloading_time"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <TextClock
+                        android:id="@+id/bwh_tv_clock"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:format12Hour="dd-MM-yy hh:mm:ss a"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                    <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
+                </LinearLayout>
+
+                <!--Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="6"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5" />
+
+                    <Button
+                        android:id="@+id/bwh_btn_submit"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="2"
+                        android:backgroundTint="@color/orange800"
+                        android:text="@string/submit"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/bwh_btn_reset"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="2"
+                        android:backgroundTint="@color/light_black"
+                        android:text="@string/cancel"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <include layout="@layout/common_layout_recyclerview_data_items_rows" />
+
+        </LinearLayout>
+
+    </ScrollView>
+    <ProgressBar
+        android:id="@+id/bwh_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:indeterminateDrawable="@drawable/progress_icon"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
+
+    <RelativeLayout
+        android:id="@+id/rl_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <include layout="@layout/footer" />
+    </RelativeLayout>
+
+</RelativeLayout>

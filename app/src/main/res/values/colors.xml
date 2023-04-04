@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#F76E11</color>
+    <color name="primary_variant">#FF9F45</color>
+    <color name="secondary">#FFBC80</color>
+    <color name="secondary_variant">#FC4F4F</color>
+    <color name="green300">#5FD068</color>
+    <color name="orange800">#f6931a</color>
+    <color name="green800">#2B7A0B</color>
+    <color name="light_black">#575757</color>
+    <color name="red800">#DA4302</color>
+    <color name="yellow200">#FFF80A</color>
+    <color name="yellow800">#FAC213</color>
+    <color name="transparent">#80000000</color>
+    <color name="transparent_white">#D9FFFFFF</color>
+    <color name="gray">#808080</color>
+    <color name="textFieldColor">#5676</color>
+    <color name="blue">#4BB6E8</color>
+
+<!--    fragment background Color-->
+    <color name="wareHouseBgColor">#A9D7EC</color>
+    <color name="loading_advise_fragment_bg">#FFF8BA</color>
+    <color name="ware_house_fragment_bg">#BAE4F6</color>
+    <color name="ware_house_fragment_text">#3F51B5</color>
+
+
+
+<!--    Theme one-->
+    <color name="gray400">#e3e3e1</color>
+    <color name="gray200">#ececea</color>
+    <color name="gray00">#fdfdfd</color>
+    <color name="gray800">#505050</color>
+    <color name="gray600">#8E8E94</color>
+
+<!--    Theme two-->
+    <color name="purple00">#f9fafe</color>
+    <color name="purple200">#92b2fd</color>
+    <color name="purple400">#ad7ffb</color>
+    <color name="purple600">#f594b7</color>
+    <color name="purple800">#ccd0f6</color>
+
+<!--    Title tool bar-->
+    <color name="titletoolbar">#BCD0FD</color>
+    <color name="titleBg">#FFFFFF</color>
+
+<!--    Login Screen-->
+    <color name="stroke_login_btn">#f6931a</color>
+    <color name="login_btn">#f6931a</color>
+    <color name="stroke_login_edt">#1Af6931a</color>
+    <color name="login_edt_bg">#ffffff</color>
+
+<!--    Drawer / header / navigation -->
+    <color name="header_color_username">#000</color>
+    <color name="header_color_welcome">#f6931a</color>
+    <color name="headerBg">#dedede</color>
+    <color name="drawer_icons">#575757</color>
+    <color name="drawer_text">#575757</color>
+    <color name="drawer_bg">#ffffff</color>
+
+<!--    FrameLayoutBG-->
+    <color name="frameLayoutBg">#FFFFFF</color>
+
+<!--    table style-->
+    <color name="table_header_bg">#575757</color>
+    <color name="table_header_text">#FFFFFF</color>
+    <color name="table_data_bg_recyclerview">#f8f8f8</color>
+    <color name="table_data_text_recyclerview">#575757</color>
+
+
+<!--    footer-->
+    <color name="footer_bg">#f6931a</color>
+    <color name="footer_text_color">#fff</color>
+
+<!--    Bothra-->
+    <color name="bothra_textFieldColor">#FFFFFF</color>
+
+<!--    LoginScreen color-->
+    <color name="login_app_version_text">#CCAFAFAF</color>
+    <color name="login_app_version_shadow">#CCECDBDB</color>
+    <color name="error_invalid_login_text">#FF0000</color>
+
+<!--common in fragments-->
+    <color name="fragment_tv_text">#000</color>
+    <color name="fragment_edt_text">#575757</color>
+    <color name="rectangle_edt_stroke">#40f6931a</color>
+
+    <color name="common_dropdown_items_txt_color">#575757</color>
+    <color name="common_dropdown_items_bg_color">#E3E3E3</color>
+    <color name="fragment_spinner_text_start">#ffffff</color>
+    <color name="fragment_edt_text_end">#ffffff</color>
+    <color name="fragment_edt_text_center">#ffffff</color>
+
+    <color name="fragment_title_text_color">#FFFFFF</color>
+    <color name="fragment_title_text_bg">#f6931a</color>
+
+    <color name="loading_advise_bg">#f8f8f8</color>
+    <color name="coromandel_bg">#f8f8f8</color>
+    <color name="bothra_bg">#f8f8f8</color>
+    <color name="recycler_view_data_bg">#f8f8f8</color>
+    <color name="recycler_view_data_txt">#575757</color>
+
+<!--    toast bg-->
+    <color name="toast_bg">#f6931a</color>
+    <color name="error_toast_bg">#FF5722</color>
+
+<!--    checkbox-->
+    <color name="checkbox_bg">#f6931a</color>
+
+
+</resources>

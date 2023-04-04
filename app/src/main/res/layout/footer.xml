@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/footer"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:background="@color/footer_bg"
+    android:gravity="bottom" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_horizontal"
+        android:padding="0dp"
+        android:text="@string/footer_text"
+        android:textColor="@color/footer_text_color"
+        android:textSize="14sp" />
+
+</RelativeLayout>

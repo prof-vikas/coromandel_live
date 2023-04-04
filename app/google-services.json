@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "304507407200",
+    "project_id": "api-proxy-754e6",
+    "storage_bucket": "api-proxy-754e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304507407200:android:930a01b37753fa8cd0ec05",
+        "android_client_info": {
+          "package_name": "com.sipl.rfidtagscanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "304507407200-h64cqina03r0uv5v1137oiqcom45ugqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyoeQqvHZ66-btwFkz1gAs2pYjKpP37ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "304507407200-h64cqina03r0uv5v1137oiqcom45ugqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

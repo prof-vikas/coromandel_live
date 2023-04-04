@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/bg_login_screen"
+    android:padding="@dimen/layout_login_padding"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:isScrollContainer="false">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="60dp"
+            app:cardBackgroundColor="@color/transparent_white"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="2dp"
+            app:cardMaxElevation="12dp"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/logo_coromandel_login_width"
+                    android:layout_height="@dimen/logo_coromandel_login_height"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:layout_marginStart="20dp"
+                    android:contentDescription="@string/login_logo_coromandel_content_description"
+                    android:src="@drawable/logo_coromandel_on_login_screen" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/login_text"
+                    android:textColor="#47443B"
+                    android:textSize="@dimen/login_txt_login"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp">
+
+                    <EditText
+                        android:id="@+id/edt_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:autofillHints="username"
+                        android:background="@drawable/rectangle"
+                        android:hint="@string/placeholder_username"
+                        android:inputType="text"
+                        android:maxLength="25"
+                        android:paddingLeft="@dimen/login_edt_rectangle_pd_left"
+                        android:textSize="@dimen/login_edt_username_txt" />
+
+                    <EditText
+                        android:id="@+id/edt_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:autofillHints="password"
+                        android:background="@drawable/rectangle"
+                        android:hint="@string/placeholder_password"
+                        android:inputType="textPassword"
+                        android:maxLength="16"
+                        android:paddingLeft="@dimen/login_edt_rectangle_pd_left"
+                        android:textSize="@dimen/login_edt_password_txt" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="1dp"
+                        android:weightSum="5"
+                        android:layout_marginBottom="10dp">
+
+                        <com.google.android.material.checkbox.MaterialCheckBox
+                            android:id="@+id/checkbox_login_remember_me"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:padding="0dp"
+                            android:checked="false"
+                            android:theme="@style/checkBoxStyle"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="4"
+                            android:layout_height="match_parent"
+                            android:text="Remember me"
+                            android:paddingLeft="0dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:paddingRight="10dp"
+                            android:textColor="@color/gray600"
+                            android:textSize="@dimen/login_edt_password_txt"/>
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_primary_rectangle"
+                        android:padding="10sp"
+                        android:text="@string/login_btn_login"
+                        android:textAllCaps="true"
+                        android:textColor="#fff"
+                        android:textSize="@dimen/login_btn_txt" />
+
+
+                    <TextView
+                        android:id="@+id/txt_error_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="15sp"
+                        android:text="@string/invalid_username_or_password"
+                        android:textColor="@color/error_invalid_login_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:paddingTop="15dp"
+                        android:contentDescription="@string/login_logo_sipl_content_description"
+                        android:src="@drawable/logo_sipl" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingTop="5dp"
+                        android:shadowColor="@color/login_app_version_shadow"
+                        android:shadowDy="2"
+                        android:shadowDx="1"
+                        android:shadowRadius="1"
+                        android:textStyle="italic"
+                        android:text="@string/login_app_version"
+                        android:textColor="@color/login_app_version_text"
+                        android:textSize="@dimen/login_version_txt" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/login_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/progress_icon" />
+
+
+
+</RelativeLayout>

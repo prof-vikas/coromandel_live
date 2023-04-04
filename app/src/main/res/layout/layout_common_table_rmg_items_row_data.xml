@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/recyclerview_bg"
+    android:weightSum="3"
+    >
+
+    <TableRow
+        android:padding="0dp"
+        >
+        <TextView
+            android:id="@+id/common_rng_no_row"
+            android:layout_column="0"
+            android:layout_weight="1"
+            android:width="0dp"
+            android:gravity="center"
+            android:text="@string/rmg_no"
+            android:textColor="@color/recycler_view_data_txt"
+            android:textStyle="bold"
+            android:textSize="@dimen/recyclerview_data_txt"
+            android:paddingTop="@dimen/recyclerview_data_pd_top"
+            android:paddingBottom="@dimen/recyclerview_data_pd_bottom"
+            />
+        <TextView
+            android:id="@+id/common_till_date_row"
+            android:layout_column="1"
+            android:layout_weight="1"
+            android:width="0dp"
+            android:gravity="center"
+            android:text="@string/tilldate"
+            android:textColor="@color/recycler_view_data_txt"
+            android:textStyle="bold"
+            android:textSize="@dimen/recyclerview_data_txt"
+            android:paddingTop="@dimen/recyclerview_data_pd_top"
+            android:paddingBottom="@dimen/recyclerview_data_pd_bottom"
+            />
+        <TextView
+            android:id="@+id/common_total_row"
+            android:layout_column="2"
+            android:layout_weight="1"
+            android:width="0dp"
+            android:gravity="center"
+            android:text="@string/total"
+            android:textColor="@color/recycler_view_data_txt"
+            android:textStyle="bold"
+            android:textSize="@dimen/recyclerview_data_txt"
+            android:paddingTop="@dimen/recyclerview_data_pd_top"
+            android:paddingBottom="@dimen/recyclerview_data_pd_bottom"
+            />
+    </TableRow>
+
+</TableLayout>

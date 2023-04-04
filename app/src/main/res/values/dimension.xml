@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="footer_size" >150dp</dimen>
+
+
+<!--    Login Screen-->
+    <dimen name="logo_coromandel_login_width">200dp</dimen>
+    <dimen name="logo_coromandel_login_height">100dp</dimen>
+    <dimen name="layout_login_padding">20dp</dimen>
+    <dimen name="login_txt_login">20sp</dimen>
+    <dimen name="login_edt_username_txt">16sp</dimen>
+    <dimen name="login_edt_password_txt">16sp</dimen>
+    <dimen name="login_btn_txt">16sp</dimen>
+    <dimen name="login_version_txt">10sp</dimen>
+    <dimen name="login_edt_rectangle_pd_left">20dp</dimen>
+
+
+<!--    common one for all screen-->
+    <dimen name="common_ly_margin_bottom">10dp</dimen>
+    <dimen name="common_tv_text">16sp</dimen>
+    <dimen name="common_edt_text">15sp</dimen>
+    <dimen name="common_edt_rectangle_pd_left">10dp</dimen>
+    <dimen name="common_spinner_rectangle_pd_left">3dp</dimen>
+    <dimen name="common_dropdown_items_txt_size">13dp</dimen>
+
+
+<!--    Loading Advise -->
+    <dimen name="la_ly_margin_bottom">15dp</dimen>
+    <dimen name="la_ly_pd_bottom">5dp</dimen>
+    <dimen name="la_edt_rectangle_height">25dp</dimen>
+    <dimen name="la_title_text">16sp</dimen>
+
+<!--    bothra-->
+    <dimen name="bwh_ly_pd_bottom">5dp</dimen>
+    <dimen name="bwh_edt_rectangle_height">25dp</dimen>
+
+<!--    coromandel-->
+    <dimen name="cwh_ly_pd_bottom">5dp</dimen>
+    <dimen name="cwh_edt_rectangle_height">25dp</dimen>
+
+<!--    Table header constants-->
+    <dimen name="table_topLeftRadius">5sp</dimen>
+    <dimen name="table_topRightRadius">5sp</dimen>
+    <dimen name="table_header_size">12sp</dimen>
+
+<!--Recyclerview data items-->
+    <dimen name="recyclerview_data_txt">10sp</dimen>
+    <dimen name="recyclerview_data_pd_top">10sp</dimen>
+    <dimen name="recyclerview_data_pd_bottom">10sp</dimen>
+</resources>
