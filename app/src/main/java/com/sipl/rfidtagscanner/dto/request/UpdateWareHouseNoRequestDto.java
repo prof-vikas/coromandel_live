@@ -1,7 +1,7 @@
 package com.sipl.rfidtagscanner.dto.request;
 
-import com.sipl.rfidtagscanner.dto.RfidLepIssueDto;
-import com.sipl.rfidtagscanner.dto.StorageLocationDto;
+import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
+import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 
 public class UpdateWareHouseNoRequestDto {

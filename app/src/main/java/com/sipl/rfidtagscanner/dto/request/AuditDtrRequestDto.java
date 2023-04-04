@@ -1,7 +1,7 @@
 package com.sipl.rfidtagscanner.dto.request;
 
-import com.sipl.rfidtagscanner.dto.SourceMasterDto;
-import com.sipl.rfidtagscanner.dto.UserMasterDto;
+import com.sipl.rfidtagscanner.dto.dtos.SourceMasterDto;
+import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 
 public class AuditDtrRequestDto {
 

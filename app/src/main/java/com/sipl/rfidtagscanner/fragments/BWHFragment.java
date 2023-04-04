@@ -5,7 +5,6 @@ import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_LEP_NUMBER_LIST
 import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_REMARKS;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_WAREHOUSE_NUMBER;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.FAILED_CONNECTION;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.RESPONSE_200;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.RESPONSE_NOT_200;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.isRMGTableRequired;
 
@@ -40,10 +39,10 @@ import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
 import com.sipl.rfidtagscanner.adapter.RmgDataAdapter;
 import com.sipl.rfidtagscanner.adapter.TripsDataAdapter;
-import com.sipl.rfidtagscanner.dto.RemarksDto;
-import com.sipl.rfidtagscanner.dto.RfidLepIssueDto;
-import com.sipl.rfidtagscanner.dto.StorageLocationDto;
-import com.sipl.rfidtagscanner.dto.TransactionsDto;
+import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
+import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
+import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
+import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;

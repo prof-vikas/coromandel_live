@@ -1,21 +1,21 @@
-package com.sipl.rfidtagscanner.dto;
+package com.sipl.rfidtagscanner.dto.dtos;
 
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 
-public class RoleMasterDto {
+public class WeighmentTypeDto {
 
     private AuditEntity auditEntity;
     private Integer id;
-    private boolean isActive;
-    private String name;
+    private Boolean isActive;
     private Integer rstat;
+    private String weighmentType;
 
-    public RoleMasterDto(AuditEntity auditEntity, Integer id, boolean isActive, String name, Integer rstat) {
+    public WeighmentTypeDto(AuditEntity auditEntity, Integer id, Boolean isActive, Integer rstat, String weighmentType) {
         this.auditEntity = auditEntity;
         this.id = id;
         this.isActive = isActive;
-        this.name = name;
         this.rstat = rstat;
+        this.weighmentType = weighmentType;
     }
 
     public AuditEntity getAuditEntity() {
@@ -34,20 +34,12 @@ public class RoleMasterDto {
         this.id = id;
     }
 
-    public boolean isActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Integer getRstat() {
@@ -56,5 +48,13 @@ public class RoleMasterDto {
 
     public void setRstat(Integer rstat) {
         this.rstat = rstat;
+    }
+
+    public String getWeighmentType() {
+        return weighmentType;
+    }
+
+    public void setWeighmentType(String weighmentType) {
+        this.weighmentType = weighmentType;
     }
 }

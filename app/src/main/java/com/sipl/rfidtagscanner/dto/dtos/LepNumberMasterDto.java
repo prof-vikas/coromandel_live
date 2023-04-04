@@ -1,20 +1,20 @@
-package com.sipl.rfidtagscanner.dto;
+package com.sipl.rfidtagscanner.dto.dtos;
 
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 
-public class CompanyMasterDto {
+public class LepNumberMasterDto {
 
     private AuditEntity auditEntity;
-    private String companyName;
     private Integer id;
     private boolean isActive;
+    private String lepNumber;
     private Integer rstat;
 
-    public CompanyMasterDto(AuditEntity auditEntity, String companyName, Integer id, boolean isActive, Integer rstat) {
+    public LepNumberMasterDto(AuditEntity auditEntity, Integer id, boolean isActive, String lepNumber, Integer rstat) {
         this.auditEntity = auditEntity;
-        this.companyName = companyName;
         this.id = id;
         this.isActive = isActive;
+        this.lepNumber = lepNumber;
         this.rstat = rstat;
     }
 
@@ -24,14 +24,6 @@ public class CompanyMasterDto {
 
     public void setAuditEntity(AuditEntity auditEntity) {
         this.auditEntity = auditEntity;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
 
     public Integer getId() {
@@ -48,6 +40,14 @@ public class CompanyMasterDto {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getLepNumber() {
+        return lepNumber;
+    }
+
+    public void setLepNumber(String lepNumber) {
+        this.lepNumber = lepNumber;
     }
 
     public Integer getRstat() {

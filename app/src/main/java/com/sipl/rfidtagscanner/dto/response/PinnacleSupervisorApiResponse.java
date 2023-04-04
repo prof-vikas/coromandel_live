@@ -1,7 +1,6 @@
 package com.sipl.rfidtagscanner.dto.response;
 
-import com.sipl.rfidtagscanner.dto.PinnacleLoadingSupervisorDto;
-import com.sipl.rfidtagscanner.dto.UserMasterDto;
+import com.sipl.rfidtagscanner.dto.dtos.PinnacleLoadingSupervisorDto;
 
 import java.util.List;
 

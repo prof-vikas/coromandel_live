@@ -1,20 +1,20 @@
-package com.sipl.rfidtagscanner.dto;
+package com.sipl.rfidtagscanner.dto.dtos;
 
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 
-public class LepNumberMasterDto {
+public class RoleMasterDto {
 
     private AuditEntity auditEntity;
     private Integer id;
     private boolean isActive;
-    private String lepNumber;
+    private String name;
     private Integer rstat;
 
-    public LepNumberMasterDto(AuditEntity auditEntity, Integer id, boolean isActive, String lepNumber, Integer rstat) {
+    public RoleMasterDto(AuditEntity auditEntity, Integer id, boolean isActive, String name, Integer rstat) {
         this.auditEntity = auditEntity;
         this.id = id;
         this.isActive = isActive;
-        this.lepNumber = lepNumber;
+        this.name = name;
         this.rstat = rstat;
     }
 
@@ -42,12 +42,12 @@ public class LepNumberMasterDto {
         isActive = active;
     }
 
-    public String getLepNumber() {
-        return lepNumber;
+    public String getName() {
+        return name;
     }
 
-    public void setLepNumber(String lepNumber) {
-        this.lepNumber = lepNumber;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getRstat() {

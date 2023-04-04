@@ -1,21 +1,21 @@
-package com.sipl.rfidtagscanner.dto;
+package com.sipl.rfidtagscanner.dto.dtos;
 
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 
-public class WeighmentTypeDto {
+public class CompanyMasterDto {
 
     private AuditEntity auditEntity;
+    private String companyName;
     private Integer id;
-    private Boolean isActive;
+    private boolean isActive;
     private Integer rstat;
-    private String weighmentType;
 
-    public WeighmentTypeDto(AuditEntity auditEntity, Integer id, Boolean isActive, Integer rstat, String weighmentType) {
+    public CompanyMasterDto(AuditEntity auditEntity, String companyName, Integer id, boolean isActive, Integer rstat) {
         this.auditEntity = auditEntity;
+        this.companyName = companyName;
         this.id = id;
         this.isActive = isActive;
         this.rstat = rstat;
-        this.weighmentType = weighmentType;
     }
 
     public AuditEntity getAuditEntity() {
@@ -26,6 +26,14 @@ public class WeighmentTypeDto {
         this.auditEntity = auditEntity;
     }
 
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -34,11 +42,11 @@ public class WeighmentTypeDto {
         this.id = id;
     }
 
-    public Boolean getActive() {
+    public boolean isActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         isActive = active;
     }
 
@@ -48,13 +56,5 @@ public class WeighmentTypeDto {
 
     public void setRstat(Integer rstat) {
         this.rstat = rstat;
-    }
-
-    public String getWeighmentType() {
-        return weighmentType;
-    }
-
-    public void setWeighmentType(String weighmentType) {
-        this.weighmentType = weighmentType;
     }
 }

@@ -1,7 +1,6 @@
 package com.sipl.rfidtagscanner.dto.response;
 
-import com.sipl.rfidtagscanner.dto.StorageLocationDto;
-import com.sipl.rfidtagscanner.dto.UserMasterDto;
+import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 
 public class JwtAuthResponse {
     private String token;
