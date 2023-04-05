@@ -52,11 +52,13 @@ import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
+import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
 import com.sipl.rfidtagscanner.dto.response.BothraSupervisorApiResponse;
 import com.sipl.rfidtagscanner.dto.response.DestinationLocationResponseApi;
 import com.sipl.rfidtagscanner.dto.response.LoadingAdvisePostApiResponse;
 import com.sipl.rfidtagscanner.dto.response.PinnacleSupervisorApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
+import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 import com.sipl.rfidtagscanner.utils.Helper;
@@ -165,7 +167,8 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (validateLoadingAdviseForm()) {
-                    sendLoadingAdviseDetails(setData());
+//                    sendLoadingAdviseDetails(setData());
+                    chooseMethodToCall();
                     return;
                 }
             }
@@ -195,7 +198,6 @@ public class LoadingAdviseFragment extends Fragment {
             getAllPinnacleSupervisor();
             return false;
         }
-
         Log.i(TAG, "callOnCreateApi: test simultaneously : call 3");
         if (!getAllBothraSupervisor()) {
             getAllBothraSupervisor();
@@ -487,7 +489,7 @@ public class LoadingAdviseFragment extends Fragment {
                                 strLepNumber = rfidLepIssueDtoList.get(i).getLepNumber();
                                 int id = rfidLepIssueDtoList.get(i).getId();
                                 String strDN = rfidLepIssueDtoList.get(i).getDriverMaster().getDriverMobileNo().toString();
-                                  strDriverName = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverName());
+                                strDriverName = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverName());
                                 strDriverMobileNo = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverMobileNo());
                                 strDriverLicenseNo = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverLicenseNo());
                                 strSapGrNo = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getSapGrNumber());
@@ -818,10 +820,40 @@ public class LoadingAdviseFragment extends Fragment {
         });
     }
 
+    private void UpdateBothraLoadingAdviseDetails(UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto) {
+        progressBar.setVisibility(View.VISIBLE);
+        Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- "+new Gson().toJson(updateBothraLoadingAdviseDto).toString());
+        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + getToken(), updateBothraLoadingAdviseDto);
+        call.enqueue(new Callback<TransactionsApiResponse>() {
+            @Override
+            public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+                progressBar.setVisibility(View.GONE);
+                Log.i(TAG, "onResponse code : " + response.code());
+                if (response.code() == 200) {
+                    alertBuilder(response.body().getMessage());
+                    progressBar.setVisibility(View.GONE);
+                    resetTextField();
+                }
+                if (response.code() != 200) {
+                    Log.i(TAG, "onResponse: " + response.code());
+                    alertBuilder(String.valueOf(response.errorBody()));
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Log.i(TAG, "onFailure: " + t.getMessage());
+                t.printStackTrace();
+            }
+        });
+    }
+
     private LoadingAdviseRequestDto setData() {
         final Integer RSTAT = 1;
         final Integer FLAG = 1;
-        final Integer BOTHRA_FLAG = 12;
+//        final Integer BOTHRA_FLAG = 12;
         int userid = Integer.parseInt(((MainActivity) getActivity()).getSharedPrefsValues(USER_ID));
         AuditEntity auditEntity = new AuditEntity(((MainActivity) getActivity()).getSharedPrefsValues(USERNAME), LocalDateTime.now().toString());
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
@@ -829,14 +861,26 @@ public class LoadingAdviseFragment extends Fragment {
         UserMasterDto loadingAdviseDto = new UserMasterDto(userid);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
         LoadingAdviseRequestDto loadingAdviseRequestDto;
-        if (!((MainActivity) getActivity()).getSharedPrefsValues(USER_PLANT_LOCATION).equalsIgnoreCase(PLANT_BOTHRA)) {
-            BothraLoadingSupervisorDto bothraLoadingDto = new BothraLoadingSupervisorDto(selectedBothraSupervisorId);
-            PinnacleLoadingSupervisorDto pinnacleLoadingDto = new PinnacleLoadingSupervisorDto(selectedPinnacleSupervisorId);
-            loadingAdviseRequestDto = new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
-        } else {
-            loadingAdviseRequestDto = new LoadingAdviseRequestDto(auditEntity, loadingAdviseDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, BOTHRA_FLAG, true, RSTAT);
-        }
+//        if (!((MainActivity) getActivity()).getSharedPrefsValues(USER_PLANT_LOCATION).equalsIgnoreCase(PLANT_BOTHRA)) {
+        BothraLoadingSupervisorDto bothraLoadingDto = new BothraLoadingSupervisorDto(selectedBothraSupervisorId);
+        PinnacleLoadingSupervisorDto pinnacleLoadingDto = new PinnacleLoadingSupervisorDto(selectedPinnacleSupervisorId);
+        loadingAdviseRequestDto = new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
+//        } else {
+//            loadingAdviseRequestDto = new LoadingAdviseRequestDto(auditEntity, loadingAdviseDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, BOTHRA_FLAG, true, RSTAT);
+//        }
         return loadingAdviseRequestDto;
+    }
+
+    private UpdateBothraLoadingAdviseDto updateData() {
+        final Integer BOTHRA_FLAG = 12;
+        int userid = Integer.parseInt(((MainActivity) getActivity()).getSharedPrefsValues(USER_ID));
+        StorageLocationDto sourceMasterDto = new StorageLocationDto(getUserSourceLocation());
+        UserMasterDto loadingAdviseDto = new UserMasterDto(userid);
+        RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
+        StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
+        AuditEntity auditEntity = new AuditEntity(null, null, ((MainActivity) getActivity()).getSharedPrefsValues(USERNAME), LocalDateTime.now().toString());
+        UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto = new UpdateBothraLoadingAdviseDto(auditEntity,loadingAdviseDto,functionalLocationMasterDto,sourceMasterDto,rfidLepIssueModel,true,LocalDateTime.now().toString(),BOTHRA_FLAG);
+        return updateBothraLoadingAdviseDto;
     }
 
   /*  private String getUserPlantCode() {
@@ -853,6 +897,15 @@ public class LoadingAdviseFragment extends Fragment {
         } else {
             layoutBothraSupervisor.setVisibility(View.VISIBLE);
             layoutPinnacleSupervisor.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void chooseMethodToCall() {
+        String plantCode = ((MainActivity) getActivity()).getSharedPrefsValues(USER_PLANT_LOCATION);
+        if ((plantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
+            UpdateBothraLoadingAdviseDetails(updateData());
+        } else {
+            sendLoadingAdviseDetails(setData());
         }
     }
 

@@ -13,11 +13,13 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER_BOTHRA;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER_COROMANDEL;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_SOURCE_LOCATION_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_BOTHRA_LOADING_ADVISE;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_RMG_NO;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_WAREHOUSE_NUMBER;
 
 import com.sipl.rfidtagscanner.dto.request.JwtRequest;
 import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
+import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
 import com.sipl.rfidtagscanner.dto.response.BothraSupervisorApiResponse;
@@ -91,6 +93,11 @@ public interface LoadingAdviseApi {
 
     @PUT(UPDATE_WAREHOUSE_NUMBER)
     Call<TransactionsApiResponse> updateWareHouse(@Header("Authorization") String authToken, @Body UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto);
+
+
+//    BothraLoadingAdvise
+    @PUT(UPDATE_BOTHRA_LOADING_ADVISE)
+    Call<TransactionsApiResponse> updateBothraLoadingAdvise(@Header("Authorization") String authToken, @Body UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto);
 }
 
 

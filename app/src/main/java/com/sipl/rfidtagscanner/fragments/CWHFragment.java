@@ -3,7 +3,6 @@ package com.sipl.rfidtagscanner.fragments;
 import static android.content.Context.MODE_PRIVATE;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_REMARKS;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_RMG_NUMBER;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.FAILED_CONNECTION;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.RESPONSE_NOT_200;
 import static com.sipl.rfidtagscanner.utils.ToastConstants.isRMGTableRequired;
 
@@ -217,8 +216,8 @@ public class CWHFragment extends Fragment {
             arrayAdapterForLepNumber.clear();
         }
 
-        if (!getALlLepNumberWithFlag()) {
-            getALlLepNumberWithFlag();
+        if (!getAllLepNo()) {
+            getAllLepNo();
         }
 
         removeErrorMessage();
@@ -247,7 +246,7 @@ public class CWHFragment extends Fragment {
         return userToken;
     }
 
-    private boolean getALlLepNumberWithFlag() {
+    private boolean getAllLepNo() {
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberWithFlag("Bearer " + getToken());
             call.enqueue(new Callback<TransactionsApiResponse>() {
@@ -260,7 +259,7 @@ public class CWHFragment extends Fragment {
                     }
                     Log.i(TAG, "onResponse: getAllLepNumber : responseCode : " + response.code());
                     if (response.code() != 200) {
-                        getALlLepNumberWithFlag();
+                        getAllLepNo();
                         Log.i(TAG, "onResponse: code " + response.code() + " " + response.raw());
                         return;
                     }
@@ -342,12 +341,12 @@ public class CWHFragment extends Fragment {
                     if (getAllLepNumberCounterFail != 0) {
                         Log.i(TAG, "onFailure: " + t.getMessage());
 //                        customToast.toastMessage(getActivity(), FAILED_CONNECTION + t.getMessage(), 0);
-                        getALlLepNumberWithFlag();
+                        getAllLepNo();
                     }
                 }
             });
         } catch (Exception e) {
-            getALlLepNumberWithFlag();
+            getAllLepNo();
             Log.i(TAG, "getALlLepNumberWithFlag: " + e.getMessage());
 
             e.printStackTrace();
@@ -759,8 +758,8 @@ public class CWHFragment extends Fragment {
     }
 
     private boolean callOnCreateApi() {
-        if (!getALlLepNumberWithFlag()) {
-            getALlLepNumberWithFlag();
+        if (!getAllLepNo()) {
+            getAllLepNo();
             return false;
         }
 

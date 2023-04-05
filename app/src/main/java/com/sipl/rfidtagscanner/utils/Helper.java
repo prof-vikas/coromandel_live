@@ -1,10 +1,14 @@
 package com.sipl.rfidtagscanner.utils;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class Helper {
 
@@ -20,5 +24,18 @@ public class Helper {
         builder.append(str2);
 
         textview.setText(builder, TextView.BufferType.SPANNABLE);
+    }
+
+    public void alertBuilder(Context context, String alertMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(alertMessage)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
