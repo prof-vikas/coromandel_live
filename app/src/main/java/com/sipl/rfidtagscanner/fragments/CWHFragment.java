@@ -537,7 +537,8 @@ public class CWHFragment extends Fragment {
                                 selectedRmgNoId = hashMapUpdateRmgNo.get(selectedRmgNo);
 
 
-                                Log.i(TAG, "onItemSelected: selectedBothraSupervisorId " + selectedRmgNoId);
+                                Log.i(TAG, "onItemSelected:  ----------- selectedRmgNoId ---------" + selectedRmgNoId);
+                                Log.i(TAG, "onItemSelected:  ----------- selectedRmgNo -----------" + selectedRmgNo);
 
                             }
                             if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
@@ -719,31 +720,27 @@ public class CWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                updateDataFailCounters++;
-                updateRmgNo(setData());
-                customToast.toastMessage(getActivity(), FAILED_CONNECTION + updateDataFailCounters, 0);
-                if (updateDataFailCounters == 4) {
-                    customToast.toastMessage(getActivity(), "Connection failed", 0);
-                    t.printStackTrace();
-                    return;
-                }
+                    alertBuilder(t.getMessage());
             }
         });
     }
 
 
     private UpdateRmgRequestDto setData() {
+        StorageLocationDto selectedWareHouseNo = null;
+        RemarksDto remarksDto = null;
         AuditEntity auditEntity = new AuditEntity(null, null, loginUsername(), LocalDateTime.now().toString());
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousRmgNoId);
-        StorageLocationDto selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
-        RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
-        RemarksDto remarksDto = new RemarksDto(selectedRemarksId);
+        if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
+            selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
+        }
 
-        auditEntity.setModifiedBy(loginUsername());
-        auditEntity.setModifiedTime(LocalDateTime.now().toString());
-        rfidLepIssueDto.setId(selectedLepNumberId);
+        if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
+            remarksDto = new RemarksDto(selectedRemarksId);
+        }
+        RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
+
         UpdateRmgRequestDto updateRmgRequestDto = new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
-        updateRmgRequestDto.setTransactionFlag(FLAG);
 
         Log.i(TAG, "setData: in end line");
 

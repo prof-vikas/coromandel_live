@@ -35,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
 import com.sipl.rfidtagscanner.adapter.RmgDataAdapter;
@@ -51,7 +52,6 @@ import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 import com.sipl.rfidtagscanner.utils.Helper;
 import com.sipl.rfidtagscanner.utils.RecyclerviewHardcodedData;
-import com.google.gson.Gson;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -66,7 +66,8 @@ import retrofit2.Response;
 public class BWHFragment extends Fragment {
 
     private final String TAG = "TracingError";
-
+    private final Helper helper = new Helper();
+    private final CustomToast customToast = new CustomToast();
     private TextClock tvClock;
     private ProgressBar progressBar;
     private TextView tvLepNumber;
@@ -74,9 +75,7 @@ public class BWHFragment extends Fragment {
     private Spinner spinnerWarehouseNo, spinnerRemark;
     private EditText edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
     private RecyclerView recyclerViewRmgNo, recyclerViewTrip;
-
     private LinearLayout mainRecyclerViewLayout;
-
     private Button btnSubmit, btnReset;
     private String selectedLepNumber;
     private Integer selectedLepNumberId;
@@ -87,16 +86,12 @@ public class BWHFragment extends Fragment {
     private ArrayAdapter<String> remarkAdapter;
     private ArrayAdapter<String> updateWareHouseNoAdapter;
     private ArrayAdapter<String> arrayAdapterForLepNumber;
-
     private int updateWHFailCounters = 0;
     private int updateWareHouseFailCounter = 3;
     private int getAllLepNumberCounterFail = 6;
     private int getAllWareHouseCounterFail = 6;
     private int getAllRemarksCounterFail = 6;
     private String previousWarehouseId;
-
-    private final Helper helper = new Helper();
-    private final CustomToast customToast = new CustomToast();
 
     public BWHFragment() {
     }
@@ -365,9 +360,9 @@ public class BWHFragment extends Fragment {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 selectedLepNumber = arrayAdapterForLepNumber.getItem(i);
-                               /* if (hashMapLepNumber.containsKey(selectedLepNumber)) {
+                                if (hashMapLepNumber.containsKey(selectedLepNumber)) {
                                     selectedLepNumberId = hashMapLepNumber.get(selectedLepNumber);
-                                }*/
+                                }
                                 previousWarehouseId = finalStrPreviousWareHouse;
 
                               /*  if (hashMapRmgNo.containsKey(finalStrPreviousWareHouse)) {
@@ -477,10 +472,10 @@ public class BWHFragment extends Fragment {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             selectedWareHouseNumber = adapterView.getSelectedItem().toString();
-                            if (hashMapUpdateRmgNo.containsKey(selectedWareHouseNumber)) {
+                            /*if (hashMapUpdateRmgNo.containsKey(selectedWareHouseNumber)) {
                                 selectedWareHouseNumberId = hashMapUpdateRmgNo.get(selectedWareHouseNumber);
                                 Log.i(TAG, "onItemSelected: selectedBothraSupervisorId " + selectedWareHouseNumberId);
-                            }
+                            }*/
                             if (!selectedWareHouseNumber.equalsIgnoreCase("Select Warehouse No")) {
                                 spinnerRemark.setEnabled(true);
                                 spinnerRemark.setClickable(true);
@@ -616,25 +611,23 @@ public class BWHFragment extends Fragment {
     }
 
     private UpdateWareHouseNoRequestDto setData() {
+        Log.i(TAG, "setData: in setData <<><>Start<><>>");
+        StorageLocationDto selectedWareHouseNo = null;
+        RemarksDto remarksDto = null;
         Integer FLAG = 8;
-        AuditEntity auditEntity = new AuditEntity(null, null, getLoginSupervisor(), LocalDateTime.now().toString());
-//        FunctionalLocationMasterDto previousWareHouseNo = new FunctionalLocationMasterDto(previousWarehouseId);
-//        FunctionalLocationMasterDto selectedWareHouseNo = new FunctionalLocationMasterDto(selectedWareHouseNumberId);
+        AuditEntity auditEntity = new AuditEntity(null, null, loginUsername(), LocalDateTime.now().toString());
 
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousWarehouseId);
-        StorageLocationDto selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber);
+        if (!selectedWareHouseNumber.equals("Select Warehouse No")) {
+            selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber);
+        }
+        if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
+            remarksDto = new RemarksDto(selectedRemarksId);
+        }
 
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
-        UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, selectedRemarksId, FLAG, LocalDateTime.now().toString());
-
-        auditEntity.setModifiedBy(getLoginSupervisor());
-        auditEntity.setModifiedTime(LocalDateTime.now().toString());
-    /*    previousWareHouseNo.setId(previousWarehouseId);
-        selectedWareHouseNo.setId(selectedWareHouseNumberId);*/
-        rfidLepIssueDto.setId(selectedLepNumberId);
-        updateWareHouseNoRequestDto.setWhSupervisorRemark(selectedRemarksId);
-        updateWareHouseNoRequestDto.setTransactionFlag(FLAG);
-        updateWareHouseNoRequestDto.setUnloadingTime(LocalDateTime.now().toString());
+        UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, LocalDateTime.now().toString());
+        Log.i(TAG, "setData: in setData <<><>END<><>>");
 
         return updateWareHouseNoRequestDto;
     }
@@ -717,6 +710,12 @@ public class BWHFragment extends Fragment {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private String loginUsername() {
+        SharedPreferences sp = getActivity().getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String username = sp.getString("usernameSPK", null);
+        return username;
     }
 
 

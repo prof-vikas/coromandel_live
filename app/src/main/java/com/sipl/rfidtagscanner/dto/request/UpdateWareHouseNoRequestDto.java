@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner.dto.request;
 
+import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
@@ -10,13 +11,13 @@ public class UpdateWareHouseNoRequestDto {
     private StorageLocationDto priviousWarehouse;
     private StorageLocationDto warehouse;
     private RfidLepIssueDto rfidLepIssueModel;
-    private Integer whSupervisorRemark;
+    private RemarksDto whSupervisorRemark;
     private Integer transactionFlag;
     private String unloadingTime;
 
 
 
-    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, Integer whSupervisorRemark, Integer transactionFlag, String unloadingTime) {
+    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto whSupervisorRemark, Integer transactionFlag, String unloadingTime) {
         this.auditEntity = auditEntity;
         this.priviousWarehouse = priviousWarehouse;
         this.warehouse = warehouse;
@@ -58,11 +59,11 @@ public class UpdateWareHouseNoRequestDto {
         this.rfidLepIssueModel = rfidLepIssueModel;
     }
 
-    public Integer getWhSupervisorRemark() {
+    public RemarksDto getWhSupervisorRemark() {
         return whSupervisorRemark;
     }
 
-    public void setWhSupervisorRemark(Integer whSupervisorRemark) {
+    public void setWhSupervisorRemark(RemarksDto whSupervisorRemark) {
         this.whSupervisorRemark = whSupervisorRemark;
     }
 

@@ -6,6 +6,8 @@ public class RemarksDto {
     private Boolean isActive;
     private String remarks;
 
+
+
     public RemarksDto(Integer id, Boolean isActive, String remarks) {
         this.id = id;
         this.isActive = isActive;
