@@ -731,7 +731,7 @@ public class LoadingAdviseFragment extends Fragment {
     private LoadingAdviseRequestDto setData() {
         final Integer RSTAT = 1;
         final Integer FLAG = 1;
-        AuditEntity auditEntity = new AuditEntity(loginUserName, LocalDateTime.now().toString());
+        AuditEntity auditEntity = new AuditEntity(loginUserName, null);
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
         StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
         UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
@@ -749,7 +749,7 @@ public class LoadingAdviseFragment extends Fragment {
         UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
-        AuditEntity auditEntity = new AuditEntity(loginUserName, LocalDateTime.now().toString());
+        AuditEntity auditEntity = new AuditEntity(null,null,loginUserName, null);
         UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto = new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, LocalDateTime.now().toString(), BOTHRA_FLAG);
         return updateBothraLoadingAdviseDto;
     }

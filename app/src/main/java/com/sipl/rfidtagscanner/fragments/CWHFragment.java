@@ -512,7 +512,7 @@ public class CWHFragment extends Fragment {
         StorageLocationDto selectedWareHouseNo = null;
         RemarksDto remarksDto = null;
         final Integer FLAG = 4;
-        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, LocalDateTime.now().toString());
+        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousRmgNoId);
         if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
             selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);

@@ -503,7 +503,7 @@ public class BWHFragment extends Fragment {
         StorageLocationDto selectedWareHouseNo = null;
         RemarksDto remarksDto = null;
         Integer FLAG = 8;
-        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, LocalDateTime.now().toString());
+        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousWarehouseCode);
         if (!selectedWareHouseNumber.equals("Select Warehouse No")) {
             selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber);
