@@ -26,16 +26,4 @@ public class Helper {
         textview.setText(builder, TextView.BufferType.SPANNABLE);
     }
 
-    public void alertBuilder(Context context, String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(alertMessage)
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
 }
