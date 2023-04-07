@@ -32,5 +32,8 @@ public class ApiConstants {
     public static final String GET_ALL_REMARK = BASE_URL + "CoWhSupervisor/getAllRemarks/";
     public static final String UPDATE_WAREHOUSE_NUMBER = BASE_URL + "CoWhSupervisor/";
 
+//    Bothra loading advise
+    public static final String UPDATE_BOTHRA_LOADING_ADVISE = BASE_URL + "transactions/updateLoadingTransactions/";
+
 
 }

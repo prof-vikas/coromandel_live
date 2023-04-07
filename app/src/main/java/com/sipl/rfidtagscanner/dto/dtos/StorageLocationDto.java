@@ -1,4 +1,4 @@
-package com.sipl.rfidtagscanner.dto;
+package com.sipl.rfidtagscanner.dto.dtos;
 
 public class StorageLocationDto {
 

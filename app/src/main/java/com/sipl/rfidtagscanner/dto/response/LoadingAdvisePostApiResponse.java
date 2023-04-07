@@ -1,6 +1,6 @@
 package com.sipl.rfidtagscanner.dto.response;
 
-import com.sipl.rfidtagscanner.dto.RfidLepIssueDto;
+import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 
 import java.util.List;
 

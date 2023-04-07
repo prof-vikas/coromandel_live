@@ -1,4 +1,4 @@
-package com.sipl.rfidtagscanner.dto;
+package com.sipl.rfidtagscanner.dto.dtos;
 
 import com.sipl.rfidtagscanner.dto.request.AuditDtrRequestDto;
 import com.sipl.rfidtagscanner.entites.AuditEntity;

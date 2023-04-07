@@ -73,6 +73,7 @@
                         android:background="@drawable/rectangle_edt_write_able_field"
                         android:inputType="textCapCharacters"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:hint="Search Lep Number"
                         android:textColor="@color/fragment_edt_text"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
@@ -440,8 +441,9 @@
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
+                        android:hint="Search Supervisor"
                         android:background="@drawable/rectangle_edt_write_able_field"
-                        android:paddingLeft="@dimen/common_spinner_rectangle_pd_left"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
@@ -471,8 +473,9 @@
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
+                        android:hint="Search Supervisor"
                         android:background="@drawable/rectangle_edt_write_able_field"
-                        android:paddingLeft="@dimen/common_spinner_rectangle_pd_left"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>

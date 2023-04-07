@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         //loading user screen based on their roles
-        String userRoles = getSharedPrefsValues(USER_ROLE);
+        String userRoles = getLoginUserRole();
         Log.i(TAG, "onCreate: userRoles : " + userRoles);
         if (userRoles != null) {
             loadMenuBasedOnRoles(userRoles);
@@ -80,9 +80,11 @@ public class MainActivity extends AppCompatActivity {
             alertBuilder("User Role not undefined \n Error code : " + ERROR_CODE_E20052);
         }
 
+//        show plant details to header bar
         if (isPlantDetailsRequiredInSideNav == false) {
             plant_linearLayout.setVisibility(View.VISIBLE);
-            setPlantCodeData();
+            txtPlantCode.setText(getLoginUserPlantCode());
+            txtStorageLocation.setText(getLoginUserStorageCode());
         }
     }
 
@@ -121,50 +123,23 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "title" + title, Toast.LENGTH_SHORT).show();
     }
 
-    private void setPlantCodeData() {
-        String plantCode = getSharedPrefsValues(USER_PLANT_LOCATION);
-        String storageLocation = getSharedPrefsValues(USER_SOURCE_LOCATION);
-        txtPlantCode.setText(plantCode);
-        txtStorageLocation.setText(storageLocation);
-    }
-/*    private String getUserRole(){
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String userRole = sp.getString("roleSPK",null);
-        return userRole;
-    }*/
-
-/*    private String getUserStorageLocation(){
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String loginUserStorageLocation = sp.getString("UserSourceLocationSPK",null);
-        return loginUserStorageLocation;
-    }*/
-
-/*    private String getUserPlantCode(){
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String loginUserPlantCode = sp.getString("userPlantLocationSPK",null);
-        return loginUserPlantCode;
-    }*/
-
     private void loadMenuBasedOnRoles(String userRole) {
-        Log.i(TAG, "loadMenuBasedOnRoles: userROles : " + userRole);
-        Log.i(TAG, "loadMenuBasedOnRoles: ");
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.menu_logout);
         getMenuNavigation();
         if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+            Log.i(TAG, "loadMenuBasedOnRoles: " + userRole);
             loadFragment(new LoadingAdviseFragment(), 1);
-            Log.i(TAG, "loadMenuBasedOnRoles: user 1 : " + userRole + " and :  ROLES_BWH : " + ROLES_LAO);
         }
         if (userRole.equalsIgnoreCase(ROLES_CWH)) {
-            Log.i(TAG, "loadMenuBasedOnRoles: user 2 : " + userRole + " and :  ROLES_BWH : " + ROLES_CWH);
+            Log.i(TAG, "loadMenuBasedOnRoles: " + userRole);
             loadFragment(new CWHFragment(), 1);
         }
         if (userRole.equalsIgnoreCase(ROLES_BWH)) {
-            Log.i(TAG, "loadMenuBasedOnRoles: user 3 : " + userRole + " and :  ROLES_BWH : " + ROLES_BWH);
+            Log.i(TAG, "loadMenuBasedOnRoles: " + userRole);
             loadFragment(new BWHFragment(), 1);
         } else {
-            Log.i(TAG, "loadMenuBasedOnRoles: user 4 : " + userRole + " and :  ROLES_BWH : " + ROLES_BWH);
-            Log.i(TAG, "No User found : " + ROLES_BWH);
+            Log.i(TAG, "No User found : " + userRole);
         }
     }
 
@@ -178,29 +153,19 @@ public class MainActivity extends AppCompatActivity {
         txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
         headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
         headerLayoutStorage = headerView.findViewById(R.id.ll_header_source_code);
-//        login_username.setText(getLoginUsername());
-        login_username.setText(getSharedPrefsValues(USERNAME));
-//        txtHeaderStorageLocation.setText(getUserStorageLocation());
-        txtHeaderStorageLocation.setText(getSharedPrefsValues(USER_SOURCE_LOCATION));
-//        txtHeaderPlantCode.setText(getUserPlantCode());
-        txtHeaderPlantCode.setText(getSharedPrefsValues(USER_PLANT_LOCATION));
+        login_username.setText(getLoginUsername());
+        txtHeaderStorageLocation.setText(getLoginUserStorageCode());
+        txtHeaderPlantCode.setText(getLoginUserPlantCode());
 
         if (isPlantDetailsRequiredInSideNav == true) {
             headerLayoutPlant.setVisibility(View.VISIBLE);
             headerLayoutStorage.setVisibility(View.VISIBLE);
         }
-
     }
 
-//    private String getLoginUsername(){
-//        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-//        String username = sp.getString("usernameSPK",null);
-//        return username;
-//    }
-
     private void logout() {
-        SharedPreferences sp = MainActivity.this.getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        SharedPreferences checkBox = MainActivity.this.getSharedPreferences("rememberMe", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        SharedPreferences checkBox = getSharedPreferences("rememberMe", MODE_PRIVATE);
         checkBox.edit().putString("remember", "false").apply();
         sp.edit().remove("userIDSPK").apply();
         sp.edit().remove("usernameSPK").apply();
@@ -208,11 +173,11 @@ public class MainActivity extends AppCompatActivity {
         sp.edit().remove("tokenSPK").apply();
         sp.edit().remove("userLoginStatus").apply();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        MainActivity.this.startActivity(intent);
-        MainActivity.this.finish();
+        startActivity(intent);
+        finish();
     }
 
-    public String getSharedPrefsValues(String key) {
+/*    public String getSharedPrefsValues(String key) {
         Log.i(TAG, "getSharedPrefsValues: <<Start>>");
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         String userIDSPK = sp.getString("userIDSPK", null);
@@ -249,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             alertBuilder("Data Inconsistency \n Error code : " + ERROR_CODE_E20051);
             return null;
         }
-    }
+    }*/
 
     public void alertBuilder(String alertMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -265,5 +230,35 @@ public class MainActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public String getLoginUsername() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String username = sp.getString("usernameSPK", null);
+        return username;
+    }
+
+    public String getLoginUserRole() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String userRole = sp.getString("roleSPK", null);
+        return userRole;
+    }
+
+    public String getLoginUserStorageCode() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String loginUserStorageLocation = sp.getString("UserSourceLocationSPK", null);
+        return loginUserStorageLocation;
+    }
+
+    public String getLoginUserPlantCode() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String loginUserPlantCode = sp.getString("userPlantLocationSPK", null);
+        return loginUserPlantCode;
+    }
+
+    public int getLoginUserId() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        int loginUserId = Integer.parseInt(sp.getString("userIDSPK", null));
+        return loginUserId;
     }
 }

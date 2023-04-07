@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import com.sipl.rfidtagscanner.api.LoadingAdviseApi;
 import com.sipl.rfidtagscanner.fragments.LoadingAdviseFragment;
 import com.sipl.rfidtagscanner.utils.ApiConstants;
+import com.sipl.rfidtagscanner.utils.RetryInterceptor;
 
 import java.io.IOException;
 
@@ -21,12 +22,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitController {
     private static RetrofitController instance = null;
     private LoadingAdviseApi loadingAdviseApi;
-    private LoginActivity loginActivity = new LoginActivity();
-//    String token = loginActivity.getToken();
+
+    OkHttpClient client = new OkHttpClient.Builder()
+            .addInterceptor(new RetryInterceptor(3, 1000))
+            .build();
+
 
     private RetrofitController() {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstants.BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

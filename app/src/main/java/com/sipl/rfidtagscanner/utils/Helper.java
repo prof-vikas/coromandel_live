@@ -1,10 +1,14 @@
 package com.sipl.rfidtagscanner.utils;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class Helper {
 
@@ -21,4 +25,5 @@ public class Helper {
 
         textview.setText(builder, TextView.BufferType.SPANNABLE);
     }
+
 }

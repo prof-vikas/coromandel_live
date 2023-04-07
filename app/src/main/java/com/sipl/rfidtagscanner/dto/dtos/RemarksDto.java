@@ -1,10 +1,12 @@
-package com.sipl.rfidtagscanner.dto;
+package com.sipl.rfidtagscanner.dto.dtos;
 
 public class RemarksDto {
 
     private Integer id;
     private Boolean isActive;
     private String remarks;
+
+
 
     public RemarksDto(Integer id, Boolean isActive, String remarks) {
         this.id = id;

@@ -26,20 +26,9 @@ public class ToastConstants {
     public static final String ROLES_CWH = "Coromandel Warehouse Supervisor\r\n";
     public static final String ROLES_LAO = "Loading Advise Operator";
 
-    //    Failed connection
-    public static final String FAILED_CONNECTION = "Failed to connect with server, Trying to connect...";
-    public static final String FAILED_CONNECTION_SOURCE_LOCATION = "Failed to connect with server, Trying to connect";
-    public static final String FAILED_CONNECTION_DESTINATION_LOCATION = "Failed to connect with server, Trying to connect";
-    public static final String FAILED_CONNECTION_PINNACLE_SUPERVISOR = "Failed to connect with server, Trying to connect";
-    public static final String FAILED_CONNECTION_BOTHRA_SUPERVISOR = "Failed to connect with server, Trying to connect";
-    public static final String FAILED_CONNECTION_GET_ALL_LEP_NUMBER = "Failed to connect with server, Trying to connect";
-
-    public static final String RESPONSE_200 = "Data Added Successfully";
-    public static final String RESPONSE_NOT_200 = "Failed to add data";
 
     public static final String EMPTY_LEP_NUMBER_LIST = "No lep Number is available";
-    public static final String EMPTY_SOURCE_LOCATION = "No source location available";
-    public static final String EMPTY_DESTINATION_LOCATION = "No source location available";
+    public static final String EMPTY_DESTINATION_LOCATION = "No Destination location available";
     public static final String EMPTY_BOTHRA_SUPERVISOR = "No Bothra Supervisor is available";
     public static final String EMPTY_PINNACLE_SUPERVISOR = "No Pinnacle Supervisor is available";
 
