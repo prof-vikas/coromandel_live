@@ -1,6 +1,6 @@
 package com.sipl.rfidtagscanner.utils;
 
-public class ToastConstants {
+public class Config {
 
     //    view constants
     public static final boolean isRMGTableRequired = false;

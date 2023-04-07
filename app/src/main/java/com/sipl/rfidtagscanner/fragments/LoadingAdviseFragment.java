@@ -1,14 +1,14 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_BOTHRA_SUPERVISOR;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_DESTINATION_LOCATION;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_LEP_NUMBER_LIST;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_PINNACLE_SUPERVISOR;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.PLANT_BOTHRA;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.isGetPlantLocationByDescEnable;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.isGetSourceLocationByDescEnable;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.isRMGTableRequired;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_BOTHRA_SUPERVISOR;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_DESTINATION_LOCATION;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_LEP_NUMBER_LIST;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_PINNACLE_SUPERVISOR;
+import static com.sipl.rfidtagscanner.utils.Config.PLANT_BOTHRA;
+import static com.sipl.rfidtagscanner.utils.Config.isGetPlantLocationByDescEnable;
+import static com.sipl.rfidtagscanner.utils.Config.isGetSourceLocationByDescEnable;
+import static com.sipl.rfidtagscanner.utils.Config.isRMGTableRequired;
 
 import android.content.Context;
 import android.content.DialogInterface;

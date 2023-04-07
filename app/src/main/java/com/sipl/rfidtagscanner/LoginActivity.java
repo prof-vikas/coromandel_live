@@ -2,10 +2,10 @@ package com.sipl.rfidtagscanner;
 
 //import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.ErrorCode.ERROR_CODE_E20051;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_BWH;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_CWH;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_LAO;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.isJWTEnable;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
+import static com.sipl.rfidtagscanner.utils.Config.isJWTEnable;
 
 import android.content.DialogInterface;
 import android.content.Intent;

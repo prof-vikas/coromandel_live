@@ -2,18 +2,11 @@ package com.sipl.rfidtagscanner;
 
 //import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_BWH;
 
-import static com.sipl.rfidtagscanner.utils.ErrorCode.ERROR_CODE_E20051;
 import static com.sipl.rfidtagscanner.utils.ErrorCode.ERROR_CODE_E20052;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_BWH;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_CWH;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_LAO;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.USERNAME;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.USER_ID;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.USER_PLANT_LOCATION;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.USER_ROLE;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.USER_SOURCE_LOCATION;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.USER_TOKEN;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.isPlantDetailsRequiredInSideNav;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
+import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
 import android.content.DialogInterface;
 import android.content.Intent;

@@ -1,10 +1,10 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_LEP_NUMBER_LIST;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_REMARKS;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.EMPTY_WAREHOUSE_NUMBER;
-import static com.sipl.rfidtagscanner.utils.ToastConstants.isRMGTableRequired;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_LEP_NUMBER_LIST;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_WAREHOUSE_NUMBER;
+import static com.sipl.rfidtagscanner.utils.Config.isRMGTableRequired;
 
 import android.content.Context;
 import android.content.DialogInterface;
