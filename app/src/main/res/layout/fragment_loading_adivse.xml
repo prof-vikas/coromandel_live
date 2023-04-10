@@ -575,7 +575,9 @@
 
             <include layout="@layout/common_layout_recyclerview_data_items_rows" />
 
-            <include layout="@layout/footer" />
+            <include layout="@layout/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

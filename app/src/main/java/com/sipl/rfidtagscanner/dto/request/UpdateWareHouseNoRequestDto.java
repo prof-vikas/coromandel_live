@@ -13,18 +13,16 @@ public class UpdateWareHouseNoRequestDto {
     private RfidLepIssueDto rfidLepIssueModel;
     private RemarksDto whSupervisorRemark;
     private Integer transactionFlag;
-    private String unloadingTime;
+//    private String unloadingTime;
 
 
-
-    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto whSupervisorRemark, Integer transactionFlag, String unloadingTime) {
+    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto whSupervisorRemark, Integer transactionFlag) {
         this.auditEntity = auditEntity;
         this.priviousWarehouse = priviousWarehouse;
         this.warehouse = warehouse;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.whSupervisorRemark = whSupervisorRemark;
         this.transactionFlag = transactionFlag;
-        this.unloadingTime = unloadingTime;
     }
 
     public AuditEntity getAuditEntity() {
@@ -73,13 +71,5 @@ public class UpdateWareHouseNoRequestDto {
 
     public void setTransactionFlag(Integer transactionFlag) {
         this.transactionFlag = transactionFlag;
-    }
-
-    public String getUnloadingTime() {
-        return unloadingTime;
-    }
-
-    public void setUnloadingTime(String unloadingTime) {
-        this.unloadingTime = unloadingTime;
     }
 }

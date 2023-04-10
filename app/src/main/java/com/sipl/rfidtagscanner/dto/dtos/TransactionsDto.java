@@ -28,6 +28,13 @@ public class TransactionsDto {
     private Integer tareWtPrintCount;
     private BigDecimal netWeight;
     private String netWeightTime;
+    private BigDecimal bothraGrossWeight;
+    private String bothraGrossWeightTime;
+    private Integer bothraGrossWtPrintCount;
+    private BigDecimal bothraTareWeight;
+    private Integer bothraTareWtPrintCount;
+    private BigDecimal bothraNetWeight;
+    private String bothraNetWeightTime;
     private String vehicleInTime;
     private String vehicleOutTime;
     private String whSupervisorRemark;
@@ -37,7 +44,7 @@ public class TransactionsDto {
     private Integer rStat;
     private AuditEntity auditEntity;
 
-    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, BigDecimal grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity) {
+    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, BigDecimal grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, BigDecimal bothraGrossWeight, String bothraGrossWeightTime, Integer bothraGrossWtPrintCount, BigDecimal bothraTareWeight, Integer bothraTareWtPrintCount, BigDecimal bothraNetWeight, String bothraNetWeightTime, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity) {
         this.id = id;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.coromandelLoadingSupervisor = coromandelLoadingSupervisor;
@@ -61,6 +68,13 @@ public class TransactionsDto {
         this.tareWtPrintCount = tareWtPrintCount;
         this.netWeight = netWeight;
         this.netWeightTime = netWeightTime;
+        this.bothraGrossWeight = bothraGrossWeight;
+        this.bothraGrossWeightTime = bothraGrossWeightTime;
+        this.bothraGrossWtPrintCount = bothraGrossWtPrintCount;
+        this.bothraTareWeight = bothraTareWeight;
+        this.bothraTareWtPrintCount = bothraTareWtPrintCount;
+        this.bothraNetWeight = bothraNetWeight;
+        this.bothraNetWeightTime = bothraNetWeightTime;
         this.vehicleInTime = vehicleInTime;
         this.vehicleOutTime = vehicleOutTime;
         this.whSupervisorRemark = whSupervisorRemark;
@@ -253,6 +267,62 @@ public class TransactionsDto {
 
     public void setNetWeightTime(String netWeightTime) {
         this.netWeightTime = netWeightTime;
+    }
+
+    public BigDecimal getBothraGrossWeight() {
+        return bothraGrossWeight;
+    }
+
+    public void setBothraGrossWeight(BigDecimal bothraGrossWeight) {
+        this.bothraGrossWeight = bothraGrossWeight;
+    }
+
+    public String getBothraGrossWeightTime() {
+        return bothraGrossWeightTime;
+    }
+
+    public void setBothraGrossWeightTime(String bothraGrossWeightTime) {
+        this.bothraGrossWeightTime = bothraGrossWeightTime;
+    }
+
+    public Integer getBothraGrossWtPrintCount() {
+        return bothraGrossWtPrintCount;
+    }
+
+    public void setBothraGrossWtPrintCount(Integer bothraGrossWtPrintCount) {
+        this.bothraGrossWtPrintCount = bothraGrossWtPrintCount;
+    }
+
+    public BigDecimal getBothraTareWeight() {
+        return bothraTareWeight;
+    }
+
+    public void setBothraTareWeight(BigDecimal bothraTareWeight) {
+        this.bothraTareWeight = bothraTareWeight;
+    }
+
+    public Integer getBothraTareWtPrintCount() {
+        return bothraTareWtPrintCount;
+    }
+
+    public void setBothraTareWtPrintCount(Integer bothraTareWtPrintCount) {
+        this.bothraTareWtPrintCount = bothraTareWtPrintCount;
+    }
+
+    public BigDecimal getBothraNetWeight() {
+        return bothraNetWeight;
+    }
+
+    public void setBothraNetWeight(BigDecimal bothraNetWeight) {
+        this.bothraNetWeight = bothraNetWeight;
+    }
+
+    public String getBothraNetWeightTime() {
+        return bothraNetWeightTime;
+    }
+
+    public void setBothraNetWeightTime(String bothraNetWeightTime) {
+        this.bothraNetWeightTime = bothraNetWeightTime;
     }
 
     public String getVehicleInTime() {

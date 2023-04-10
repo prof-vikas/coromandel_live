@@ -147,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
         headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
         headerLayoutStorage = headerView.findViewById(R.id.ll_header_source_code);
         login_username.setText(getLoginUsername());
-        txtHeaderStorageLocation.setText(getLoginUserStorageCode());
-        txtHeaderPlantCode.setText(getLoginUserPlantCode());
+        txtHeaderStorageLocation.setText(getLoginUserStorageCode() + " - " + getLoginUserSourceLocationDesc());
+        txtHeaderPlantCode.setText(getLoginUserPlantCode() + " - " + getLoginUserPlantLocationDesc());
 
         if (isPlantDetailsRequiredInSideNav == true) {
             headerLayoutPlant.setVisibility(View.VISIBLE);
@@ -163,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
         sp.edit().remove("userIDSPK").apply();
         sp.edit().remove("usernameSPK").apply();
         sp.edit().remove("roleSPK").apply();
+        sp.edit().remove("UserSourceLocationDescSPK").apply();
+        sp.edit().remove("userPlantLocationDescSPK").apply();
         sp.edit().remove("tokenSPK").apply();
         sp.edit().remove("userLoginStatus").apply();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -253,5 +255,17 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         int loginUserId = Integer.parseInt(sp.getString("userIDSPK", null));
         return loginUserId;
+    }
+
+    public String getLoginUserPlantLocationDesc() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String loginUserPlantLocationDesc = sp.getString("userPlantLocationDescSPK", null);
+        return loginUserPlantLocationDesc;
+    }
+
+    public String getLoginUserSourceLocationDesc() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String loginSourceKLocationDesc = sp.getString("UserSourceLocationDescSPK", null);
+        return loginSourceKLocationDesc;
     }
 }

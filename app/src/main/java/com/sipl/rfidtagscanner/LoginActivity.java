@@ -142,10 +142,12 @@ public class LoginActivity extends AppCompatActivity {
                         String username = response.body().getUser().getName();
                         String userID = String.valueOf(response.body().getUser().getId());
                         String userSourceLocation = response.body().getUser().getStorageLocation().getStrLocationCode();
+                        String userSourceLocationDesc = response.body().getUser().getStorageLocation().getStrLocationDesc();
                         String userPlantLocation = response.body().getUser().getPlantMaster().getPlantCode();
-                        Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : "  + userSourceLocation + " userPlantLocation : " + userPlantLocation);
-                        if (token != null && role != null && username != null && userID != null && userSourceLocation != null && userPlantLocation != null){
-                        savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userPlantLocation);
+                        String userPlantLocationDesc = response.body().getUser().getPlantMaster().getPlantDesc();
+                        Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : "  + userSourceLocation + " - " + userSourceLocationDesc + " userPlantLocation : " + userPlantLocation + " - " + userPlantLocationDesc);
+                        if (token != null && role != null && username != null && userID != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc !=null && userPlantLocationDesc !=null){
+                        savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc);
                         }else {
                            alertBuilder(ERROR_CODE_E20051);
                            return;
@@ -167,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void savingLoginUserToSharedPref(String userID, String username, String role, String token, String userSourceLocation, String userPlantLocation) {
+    private void savingLoginUserToSharedPref(String userID, String username, String role, String token, String userSourceLocation, String userSourceLocationDesc, String userPlantLocation, String userPlantLocationDesc) {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("userIDSPK", userID).apply();
@@ -175,7 +177,9 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("roleSPK", role).apply();
         editor.putString("tokenSPK", token).apply();
         editor.putString("UserSourceLocationSPK", userSourceLocation).apply();
+        editor.putString("UserSourceLocationDescSPK", userSourceLocationDesc).apply();
         editor.putString("userPlantLocationSPK", userPlantLocation).apply();
+        editor.putString("userPlantLocationDescSPK", userPlantLocationDesc).apply();
         editor.putString("userLoginStatus", "login").apply();
         editor.commit();
         editor.apply();
@@ -194,23 +198,24 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
+//        if (username.equals("operator") && password.equals("password")){
         if (username.equals("") && password.equals("")){
-            savingLoginUserToSharedPref("6","Vishwanath8990",ROLES_LAO,"apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0001", "CFVZ");
+            savingLoginUserToSharedPref("6","Vishwanath8990",ROLES_LAO,"apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0050","CWC-I Godown", "CFVZ","Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("boperator") && password.equals("password")) {
-            savingLoginUserToSharedPref("82","boperator",ROLES_LAO,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0002","BTVZ");
+            savingLoginUserToSharedPref("82","boperator",ROLES_LAO,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0006","Gas Cylinder Shd","BTVZ","Bothra-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
-        } else if (username.equals("cSupervisor") && password.equals("password")) {
-            savingLoginUserToSharedPref("7","CSuperv",ROLES_CWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0003","CFVZ");
+        } else if (username.equals("csupervisor") && password.equals("password")) {
+            savingLoginUserToSharedPref("7","CSuperv",ROLES_CWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0010","Western Mezzanin","CFVZ","Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
-        }else if (username.equals("bSupervisor") && password.equals("password")) {
-            savingLoginUserToSharedPref("8","BSuperv",ROLES_BWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0002","BTVZ");
+        }else if (username.equals("bsupervisor") && password.equals("password")) {
+            savingLoginUserToSharedPref("8","BSuperv",ROLES_BWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0002","Chemical Godown","BTVZ","Bothra-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();

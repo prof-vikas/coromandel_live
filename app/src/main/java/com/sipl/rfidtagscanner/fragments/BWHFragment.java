@@ -279,7 +279,14 @@ public class BWHFragment extends Fragment {
                             strDriverName = transactionsDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName();
                             strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                             strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                            grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
+
+                            if (transactionsDtoList.get(i).getBothraNetWeight() == null) {
+                                Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getBothraNetWeight());
+                                grossWeight = String.valueOf(transactionsDtoList.get(i).getBothraGrossWeight());
+                            } else {
+                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
+                                Log.i(TAG, "onResponse:else transactionsDtoList.get(i).getGrossWeight() : " + transactionsDtoList.get(i).getGrossWeight());
+                            }
                             strPreviousWareHouseNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
                             arrAutoCompleteLepNo.add(strLepNumber);
                         }
@@ -512,7 +519,7 @@ public class BWHFragment extends Fragment {
             remarksDto = new RemarksDto(selectedRemarksId);
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
-        UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, LocalDateTime.now().toString());
+        UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
         return updateWareHouseNoRequestDto;
     }
 
