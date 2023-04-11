@@ -6,8 +6,6 @@ import static com.sipl.rfidtagscanner.utils.Config.EMPTY_DESTINATION_LOCATION;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_LEP_NUMBER_LIST;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_PINNACLE_SUPERVISOR;
 import static com.sipl.rfidtagscanner.utils.Config.PLANT_BOTHRA;
-import static com.sipl.rfidtagscanner.utils.Config.isGetPlantLocationByDescEnable;
-import static com.sipl.rfidtagscanner.utils.Config.isGetSourceLocationByDescEnable;
 import static com.sipl.rfidtagscanner.utils.Config.isRMGTableRequired;
 
 import android.content.Context;
@@ -71,6 +69,12 @@ import retrofit2.Response;
 
 public class LoadingAdviseFragment extends Fragment {
     private static final String TAG = "TracingError";
+
+    ArrayList<String> arrPinnacleSupervisor;
+    ArrayList<String> arrAutoCompleteLepNo;
+    ArrayList<String> arrBothraSupervisor;
+
+
     private TextClock tvClock;
     private ProgressBar progressBar;
     private LinearLayout mainRecyclerViewLayout;
@@ -86,6 +90,7 @@ public class LoadingAdviseFragment extends Fragment {
     private String loginUserName;
     private String token;
     private String loginUserStorageLocation;
+    private String loginUserStorageLocationDesc;
     private String loginUserPlantCode;
     private int loginUserId;
 
@@ -145,11 +150,11 @@ public class LoadingAdviseFragment extends Fragment {
         this.loginUserId = ((MainActivity) getActivity()).getLoginUserId();
         this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
+        this.loginUserStorageLocationDesc = ((MainActivity) getActivity()).getLoginUserSourceLocationDesc();
         this.token = getToken();
 
         edtLoadingSupervisor.setText(loginUserName);
-        edtSourceLocation.setText(loginUserStorageLocation);
-
+        edtSourceLocation.setText(loginUserStorageLocation + " - " + loginUserStorageLocationDesc);
 
         /*
          *  methods need to run on onCreate
@@ -164,7 +169,6 @@ public class LoadingAdviseFragment extends Fragment {
             public void onClick(View view) {
                 if (validateLoadingAdviseForm()) {
                     chooseMethodToCall();
-                    return;
                 }
             }
         });
@@ -380,7 +384,7 @@ public class LoadingAdviseFragment extends Fragment {
     private boolean getAllLepNumber() {
         progressBar.setVisibility(View.VISIBLE);
         HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
-        ArrayList<String> arrAutoCompleteLepNo = new ArrayList<>();
+        arrAutoCompleteLepNo = new ArrayList<>();
         try {
             Call<RfidLepApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumber("Bearer " + token);
             call.enqueue(new Callback<RfidLepApiResponse>() {
@@ -468,8 +472,10 @@ public class LoadingAdviseFragment extends Fragment {
     private boolean getAllDestinationLocation() {
         Call<DestinationLocationResponseApi> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllDestinationLocation("Bearer " + token);
-        HashMap<String, Integer> hashMapDestinationLocation = new HashMap<>();
+        HashMap<String, String> hashMapDestinationLocation = new HashMap<>();
+        HashMap<String, String> hashMapDestinationLocationWithDesc = new HashMap<>();
         ArrayList<String> arrDestinationLocation = new ArrayList<>();
+        ArrayList<String> arrDestinationLocationDis = new ArrayList<>();
         call.enqueue(new Callback<DestinationLocationResponseApi>() {
             @Override
             public void onResponse(Call<DestinationLocationResponseApi> call, Response<DestinationLocationResponseApi> response) {
@@ -491,26 +497,25 @@ public class LoadingAdviseFragment extends Fragment {
                         }
                         for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
                             String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
+                            String sourceLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
+                            arrDestinationLocation.add(s);
+                            hashMapDestinationLocation.put(s, sourceLocationDesc);
 
-                            if (isGetSourceLocationByDescEnable == true) {
-                                String StorageCodeDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
-                                arrDestinationLocation.add(StorageCodeDesc);
-                            } else if (isGetPlantLocationByDescEnable == true) {
-                                String plantCode = functionalLocationMasterDtoList.get(i).getPlantMaster().getPlantCode();
-                                arrDestinationLocation.add(plantCode);
-                            } else {
-                                arrDestinationLocation.add(s);
-                            }
+                            String srcDis = s + " - " + sourceLocationDesc;
+                            arrDestinationLocationDis.add(srcDis);
+                            hashMapDestinationLocationWithDesc.put(srcDis, s);
+
 
                         }
-                        arrDestinationLocation.add("Select Destination");
+                        arrDestinationLocationDis.add("Select Destination");
+//                        arrDestinationLocation.add("Select Destination");
                         String userSourceLocation = loginUserStorageLocation;
                         if (arrDestinationLocation.contains(userSourceLocation)) {
                             arrDestinationLocation.remove(userSourceLocation);
                         }
                         Log.i(TAG, "onResponse: array : " + arrDestinationLocation.size());
 
-                        destinationLocationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocation) {
+                        destinationLocationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDis) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -534,7 +539,15 @@ public class LoadingAdviseFragment extends Fragment {
                         spinnerDestinationLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                selectedDestinationLocation = adapterView.getSelectedItem().toString();
+                                String s = adapterView.getSelectedItem().toString();
+                              /*  if (hashMapDestinationLocation.containsKey(selectedDestinationLocation)){
+                                    Log.i(TAG, "onItemSelected: hashMapDestinationLocation.get(selectedDestinationLocation) : " + hashMapDestinationLocation.get(selectedDestinationLocation));
+                                }*/
+                                if (hashMapDestinationLocationWithDesc.containsKey(s)) {
+                                    Log.i(TAG, "onItemSelected: hashMapDestinationLocation.get(selectedDestinationLocation) : " + hashMapDestinationLocationWithDesc.get(s));
+                                    selectedDestinationLocation = hashMapDestinationLocationWithDesc.get(s);
+                                    Log.i(TAG, "onItemSelected: selectedDestinationLocation : " + selectedDestinationLocation);
+                                }
                             }
 
                             @Override
@@ -560,7 +573,7 @@ public class LoadingAdviseFragment extends Fragment {
     private boolean getAllBothraSupervisor() {
         Call<BothraSupervisorApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getAllBothraSupervisor("Bearer " + token);
         HashMap<String, Integer> hashMapBothraSupervisor = new HashMap<>();
-        ArrayList<String> arrBothraSupervisor = new ArrayList<>();
+        arrBothraSupervisor = new ArrayList<>();
         call.enqueue(new Callback<BothraSupervisorApiResponse>() {
             @Override
             public void onResponse(Call<BothraSupervisorApiResponse> call, Response<BothraSupervisorApiResponse> response) {
@@ -618,7 +631,7 @@ public class LoadingAdviseFragment extends Fragment {
         Log.i(TAG, "getAllPinnacleSupervisor: " + token);
         Call<PinnacleSupervisorApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getAllPinnacleSupervisor("Bearer " + token);
         HashMap<String, Integer> hashMapPinnacleSupervisor = new HashMap<>();
-        ArrayList<String> arrPinnacleSupervisor = new ArrayList<>();
+        arrPinnacleSupervisor = new ArrayList<>();
         call.enqueue(new Callback<PinnacleSupervisorApiResponse>() {
             @Override
             public void onResponse(Call<PinnacleSupervisorApiResponse> call, Response<PinnacleSupervisorApiResponse> response) {
@@ -731,16 +744,32 @@ public class LoadingAdviseFragment extends Fragment {
     private LoadingAdviseRequestDto setData() {
         final Integer RSTAT = 1;
         final Integer FLAG = 1;
+
         AuditEntity auditEntity = new AuditEntity(loginUserName, null);
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
         StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
         UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
-        LoadingAdviseRequestDto loadingAdviseRequestDto;
+        LoadingAdviseRequestDto loadingAdviseRequestDto = null;
         BothraLoadingSupervisorDto bothraLoadingDto = new BothraLoadingSupervisorDto(selectedBothraSupervisorId);
         PinnacleLoadingSupervisorDto pinnacleLoadingDto = new PinnacleLoadingSupervisorDto(selectedPinnacleSupervisorId);
         loadingAdviseRequestDto = new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
         return loadingAdviseRequestDto;
+
+    }
+
+    private boolean nullCheck() {
+        Log.i(TAG, "nullCheck: in null check");
+        if (selectedBothraSupervisorId == null) {
+            alertBuilder("Bothra Supervisor is not selected \n Please select Bothra supervisor from dropdown");
+            return false;
+        } else if (selectedPinnacleSupervisorId == null) {
+            alertBuilder("Pinnacle Supervisor is not selected \n Please select Pinnacle Supervisor no from dropdown");
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     private UpdateBothraLoadingAdviseDto updateData() {
@@ -749,7 +778,7 @@ public class LoadingAdviseFragment extends Fragment {
         UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
-        AuditEntity auditEntity = new AuditEntity(null,null,loginUserName, null);
+        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
         UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto = new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, LocalDateTime.now().toString(), BOTHRA_FLAG);
         return updateBothraLoadingAdviseDto;
     }
@@ -765,10 +794,28 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void chooseMethodToCall() {
-        if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
-            UpdateBothraLoadingAdviseDetails(updateData());
-        } else {
-            sendLoadingAdviseDetails(setData());
+        String lepNo = autoCompleteLepNumber.getText().toString();
+        if (arrAutoCompleteLepNo.contains(lepNo)) {
+
+            if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
+                UpdateBothraLoadingAdviseDetails(updateData());
+            } else {
+                String pinnacle = autoCompletePinnacleSupervisor.getText().toString();
+                String bothra = autoCompleteBothraSupervisor.getText().toString();
+                if (arrPinnacleSupervisor.contains(pinnacle) && arrBothraSupervisor.contains(bothra)){
+                    if (nullCheck()) {
+                        sendLoadingAdviseDetails(setData());
+                    }
+                }else {
+                    if (!arrPinnacleSupervisor.contains(pinnacle)){
+                        alertBuilder("Enter Pinnacle supervisor is not valid");
+                    } else if (!arrBothraSupervisor.contains(bothra)) {
+                        alertBuilder("Enter Bothra supervisor is not valid");
+                    }
+                }
+            }
+        }else {
+            alertBuilder("Enter Lep number is not valid");
         }
     }
 }
