@@ -265,7 +265,15 @@ public class CWHFragment extends Fragment {
                                 strDriverName = transactionsDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
+//                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
+                                if (transactionsDtoList.get(i).getSourceNetWeight() == null) {
+                                    Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getSourceNetWeight());
+                                    grossWeight = String.valueOf(transactionsDtoList.get(i).getSourceNetWeight());
+                                } else {
+                                    grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
+                                    Log.i(TAG, "onResponse:else transactionsDtoList.get(i).getGrossWeight() : " + transactionsDtoList.get(i).getGrossWeight());
+                                }
+
                                 strPreviousRmgNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 srtPreviousRmgNoDesc = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationDesc();
 

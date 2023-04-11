@@ -280,9 +280,9 @@ public class BWHFragment extends Fragment {
                             strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                             strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
 
-                            if (transactionsDtoList.get(i).getBothraNetWeight() == null) {
-                                Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getBothraNetWeight());
-                                grossWeight = String.valueOf(transactionsDtoList.get(i).getBothraGrossWeight());
+                            if (transactionsDtoList.get(i).getSourceNetWeight() == null) {
+                                Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getSourceNetWeight());
+                                grossWeight = String.valueOf(transactionsDtoList.get(i).getSourceNetWeight());
                             } else {
                                 grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
                                 Log.i(TAG, "onResponse:else transactionsDtoList.get(i).getGrossWeight() : " + transactionsDtoList.get(i).getGrossWeight());
