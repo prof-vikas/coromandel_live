@@ -209,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
-        } else if (username.equals("csupervisor") && password.equals("password")) {
+        } else if (username.equals("1") && password.equals("")) {
             savingLoginUserToSharedPref("7","CSuperv",ROLES_CWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0010","Western Mezzanin","CFVZ","Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);

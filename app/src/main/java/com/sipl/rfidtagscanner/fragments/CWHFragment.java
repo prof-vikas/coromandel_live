@@ -52,7 +52,6 @@ import com.sipl.rfidtagscanner.utils.CustomToast;
 import com.sipl.rfidtagscanner.utils.Helper;
 import com.sipl.rfidtagscanner.utils.RecyclerviewHardcodedData;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +66,7 @@ public class CWHFragment extends Fragment {
     private final String TAG = "BothraAdvicePage";
     ArrayAdapter<String> updateRmgNoAdapter;
     ArrayAdapter<String> arrayAdapterForLepNumber;
+    ArrayList<String> arrAutoCompleteLepNo;
     ArrayAdapter<String> remarksAdapter;
     EditText edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
     TextView tvLepNumber;
@@ -126,8 +126,13 @@ public class CWHFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (validateLoadingAdviseForm()) {
+                    String lepNo = autoCompleteLepNo.getText().toString();
+                    if (arrAutoCompleteLepNo.contains(lepNo)){
                     updateRmgNo(setData());
+                    }else {
+                        alertBuilder("Selected Lep Number is invalid \nPlease select from drop-down ");
                     return;
+                    }
                 }
             }
         });
@@ -244,7 +249,8 @@ public class CWHFragment extends Fragment {
                         Log.i(TAG, "getAllLepNo : response.isSuccessful() : " + response.isSuccessful() + " responseCode : " + response.code() + " responseRaw : " + response.raw());
                         List<TransactionsDto> transactionsDtoList = response.body().getTransactionsDtos();
                         HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
-                        ArrayList<String> arrAutoCompleteLepNo = new ArrayList<>();
+                        HashMap<String, String> hashMapForPreviousRmgNo = new HashMap<>();
+                        arrAutoCompleteLepNo = new ArrayList<>();
 
                         try {
                             if (transactionsDtoList == null || transactionsDtoList.isEmpty()) {
@@ -252,7 +258,7 @@ public class CWHFragment extends Fragment {
                                 Toast.makeText(getActivity(), EMPTY_LEP_NUMBER_LIST, Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            String strTruckNo = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
+                            String strTruckNo = null, srtPreviousRmgNoDesc = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
                             for (int i = 0; i < transactionsDtoList.size(); i++) {
                                 String strLepNumber = transactionsDtoList.get(i).getRfidLepIssueModel().getLepNumber();
                                 int id = transactionsDtoList.get(i).getRfidLepIssueModel().getId();
@@ -261,6 +267,8 @@ public class CWHFragment extends Fragment {
                                 strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
                                 grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
                                 strPreviousRmgNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
+                                srtPreviousRmgNoDesc = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationDesc();
+
                                 arrAutoCompleteLepNo.add(strLepNumber);
                                 hashMapLepNumber.put(strLepNumber, id);
                             }
@@ -272,6 +280,7 @@ public class CWHFragment extends Fragment {
                             String finalStrCommodity = strCommodity;
                             String finalGrossWeight = grossWeight;
                             String finalStrPreviousRmgNo = strPreviousRmgNo;
+                            String finalStrPreviousRmgNoDesc = srtPreviousRmgNoDesc.toLowerCase();
                             autoCompleteLepNo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -286,7 +295,7 @@ public class CWHFragment extends Fragment {
                                         edtDriverName.setText(finalStrDriverName);
                                         edtCommodity.setText(finalStrCommodity);
                                         edtGrossWeight.setText(finalGrossWeight);
-                                        edtPreviousRmgNo.setText(finalStrPreviousRmgNo);
+                                        edtPreviousRmgNo.setText(finalStrPreviousRmgNo + " - " + finalStrPreviousRmgNoDesc);
                                     }
                                 }
                             });
@@ -327,8 +336,10 @@ public class CWHFragment extends Fragment {
                 Log.i(TAG, "onResponse: getAllUpdateRmgNo : responseCode : " + response.code() + " " + response.raw());
 
                 if (response.isSuccessful()) {
+                    HashMap<String, String> hashMapLocationCode = new HashMap<>();
                     List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
                     ArrayList<String> arrDestinationLocation = new ArrayList<>();
+                    ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
                     try {
                         if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
                             customToast.toastMessage(getActivity(), EMPTY_RMG_NUMBER, 0);
@@ -336,11 +347,19 @@ public class CWHFragment extends Fragment {
                         }
                         for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
                             String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
+                            String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
                             arrDestinationLocation.add(s);
+                            String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
+                            arrDestinationLocationDesc.add(strLocationDescWithCode);
+                            hashMapLocationCode.put(strLocationDescWithCode, s);
                         }
-                        arrDestinationLocation.add("Update RMG No");
+//                        arrDestinationLocation.add("Update RMG No");
+                        arrDestinationLocationDesc.add("Update RMG No");
+                        for (String a: arrDestinationLocationDesc) {
+                            Log.i(TAG, "onResponse: " + a.toLowerCase());
+                        }
 
-                        updateRmgNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocation) {
+                        updateRmgNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -363,10 +382,14 @@ public class CWHFragment extends Fragment {
                         spinnerUpdateRmgNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                selectedRmgNo = adapterView.getSelectedItem().toString();
-                                Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgNo);
+                                String selectedRmgCode = adapterView.getSelectedItem().toString();
+                                Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
+                                if (hashMapLocationCode.containsKey(selectedRmgCode)) {
+                                    String selectedRmgNo = hashMapLocationCode.get(selectedRmgCode);
+                                    Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedRmgNo);
+                                }
 
-                                if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
+                                if (!selectedRmgCode.equalsIgnoreCase("Update RMG No")) {
                                     spinnerRemark.setEnabled(true);
                                     spinnerRemark.setClickable(true);
                                     spinnerRemark.setFocusable(true);
