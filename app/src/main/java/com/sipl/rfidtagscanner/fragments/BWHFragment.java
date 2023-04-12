@@ -52,10 +52,10 @@ import com.sipl.rfidtagscanner.utils.CustomToast;
 import com.sipl.rfidtagscanner.utils.Helper;
 import com.sipl.rfidtagscanner.utils.RecyclerviewHardcodedData;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +67,7 @@ public class BWHFragment extends Fragment {
     private final String TAG = "TracingError";
     private final Helper helper = new Helper();
     private final CustomToast customToast = new CustomToast();
+    ArrayList<String> arrAutoCompleteLepNo;
     private TextClock tvClock;
     private ProgressBar progressBar;
     private TextView tvLepNumber;
@@ -130,8 +131,15 @@ public class BWHFragment extends Fragment {
 
         btnSubmit.setOnClickListener(view12 -> {
             if (validateLoadingAdviseForm()) {
-                updateWareHouseNo(setData());
+                String lepNo = autoCompleteLepNo.getText().toString();
+                if (arrAutoCompleteLepNo.contains(lepNo)) {
+                    updateWareHouseNo(setData());
+                } else {
+                    alertBuilder("Selected Lep Number is invalid \nPlease select from drop-down ");
+                    return;
+                }
             }
+
         });
 
         btnReset.setOnClickListener(view1 -> resetFields());
@@ -262,7 +270,8 @@ public class BWHFragment extends Fragment {
                 if (response.isSuccessful()) {
                     List<TransactionsDto> transactionsDtoList = response.body().getTransactionsDtos();
                     HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
-                    ArrayList<String> arrAutoCompleteLepNo = new ArrayList<>();
+                    HashMap<String, String> hashMapForPreviousWareHouse = new HashMap<>();
+                    arrAutoCompleteLepNo = new ArrayList<>();
                     try {
                         if (transactionsDtoList == null || transactionsDtoList.isEmpty()) {
                             autoCompleteLepNo.setHint("No Lep number available");
@@ -270,7 +279,7 @@ public class BWHFragment extends Fragment {
                             return;
                         }
 
-                        String strTruckNo = null, strDriverName = null, grossWeight = null, strCommodity = null;
+                        String strTruckNo = null, srtPreviousWareHouseDesc = null, strDriverName = null, grossWeight = null, strCommodity = null;
                         String strPreviousWareHouseNo = null;
                         for (int i = 0; i < transactionsDtoList.size(); i++) {
                             String strLepNumber = transactionsDtoList.get(i).getRfidLepIssueModel().getLepNumber();
@@ -288,6 +297,7 @@ public class BWHFragment extends Fragment {
                                 Log.i(TAG, "onResponse:else transactionsDtoList.get(i).getGrossWeight() : " + transactionsDtoList.get(i).getGrossWeight());
                             }
                             strPreviousWareHouseNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
+                            srtPreviousWareHouseDesc = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationDesc();
                             arrAutoCompleteLepNo.add(strLepNumber);
                         }
 
@@ -298,6 +308,7 @@ public class BWHFragment extends Fragment {
                         String finalStrCommodity = strCommodity;
                         String finalGrossWeight = grossWeight;
                         String finalStrPreviousWareHouse = strPreviousWareHouseNo;
+                        String finalStrPreviousWareHouseDesc = srtPreviousWareHouseDesc;
                         autoCompleteLepNo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -312,7 +323,7 @@ public class BWHFragment extends Fragment {
                                     edtDriverName.setText(finalStrDriverName);
                                     edtCommodity.setText(finalStrCommodity);
                                     edtGrossWeight.setText(finalGrossWeight);
-                                    edtPreviousWareHouseNo.setText(finalStrPreviousWareHouse);
+                                    edtPreviousWareHouseNo.setText(finalStrPreviousWareHouse + " - " + finalStrPreviousWareHouseDesc);
                                 }
                             }
                         });
@@ -355,8 +366,11 @@ public class BWHFragment extends Fragment {
                 }
                 Log.i(TAG, "onResponse: getAllWareHouse " + response.code());
                 List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
+                HashMap<String, String> hashMapLocationCode = new HashMap<>();
                 HashMap<String, Integer> hashMapUpdateRmgNo = new HashMap<>();
                 ArrayList<String> arrDestinationLocation = new ArrayList<>();
+                ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
+
 
                 try {
                     if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
@@ -365,13 +379,27 @@ public class BWHFragment extends Fragment {
                     }
                     for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
                         String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
+                        String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
 //                        int id = functionalLocationMasterDtoList.get(i).getId();
 //                        hashMapUpdateRmgNo.put(s, id);
+                        String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
+                        arrDestinationLocationDesc.add(strLocationDescWithCode);
+                        hashMapLocationCode.put(strLocationDescWithCode, s);
                         arrDestinationLocation.add(s);
                     }
-                    arrDestinationLocation.add("Select Warehouse No");
+//                    arrDestinationLocation.add("Select Warehouse No");
+                    arrDestinationLocationDesc.add("Select Warehouse No");
+                    for (String a : arrDestinationLocationDesc) {
+                        Log.i(TAG, "onResponse: " + a.toLowerCase());
+                    }
 
-                    updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocation) {
+                    for (Map.Entry<String, String> entry : hashMapLocationCode.entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+                        Log.i(TAG, "onResponse: hashMapLocationCode : key : " + key + " --- Value : " + value);
+                    }
+
+                    updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                         @Override
                         public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -394,12 +422,18 @@ public class BWHFragment extends Fragment {
                     spinnerWarehouseNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            selectedWareHouseNumber = adapterView.getSelectedItem().toString();
+                            String selectedRmgCode = adapterView.getSelectedItem().toString();
                             /*if (hashMapUpdateRmgNo.containsKey(selectedWareHouseNumber)) {
                                 selectedWareHouseNumberId = hashMapUpdateRmgNo.get(selectedWareHouseNumber);
                                 Log.i(TAG, "onItemSelected: selectedBothraSupervisorId " + selectedWareHouseNumberId);
                             }*/
-                            if (!selectedWareHouseNumber.equalsIgnoreCase("Select Warehouse No")) {
+
+                            Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
+                            if (hashMapLocationCode.containsKey(selectedRmgCode)) {
+                                selectedWareHouseNumber = hashMapLocationCode.get(selectedRmgCode);
+                                Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedWareHouseNumber);
+                            }
+                            if (!selectedRmgCode.equalsIgnoreCase("Select Warehouse No")) {
                                 spinnerRemark.setEnabled(true);
                                 spinnerRemark.setClickable(true);
                             }
@@ -512,11 +546,14 @@ public class BWHFragment extends Fragment {
         Integer FLAG = 8;
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousWarehouseCode);
-        if (!selectedWareHouseNumber.equals("Select Warehouse No")) {
-            selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber);
-        }
-        if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
-            remarksDto = new RemarksDto(selectedRemarksId);
+        if (selectedWareHouseNumber != null) {
+            Log.i(TAG, "setData: " + selectedWareHouseNumber);
+            if (!selectedWareHouseNumber.equals("Select Warehouse No")) {
+                selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber);
+            }
+            if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
+                remarksDto = new RemarksDto(selectedRemarksId);
+            }
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
         UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
@@ -530,7 +567,7 @@ public class BWHFragment extends Fragment {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
-                    alertBuilder(response.errorBody().toString());
+                    alertBuilder(response.errorBody().toString() + " " + response.code());
                 }
                 Log.i(TAG, "onResponse: code" + response.code());
                 if (response.isSuccessful()) {
@@ -543,6 +580,7 @@ public class BWHFragment extends Fragment {
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 alertBuilder(t.getMessage());
+                t.printStackTrace();
             }
         });
     }

@@ -393,7 +393,7 @@ public class CWHFragment extends Fragment {
                                 String selectedRmgCode = adapterView.getSelectedItem().toString();
                                 Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
                                 if (hashMapLocationCode.containsKey(selectedRmgCode)) {
-                                    String selectedRmgNo = hashMapLocationCode.get(selectedRmgCode);
+                                    selectedRmgNo = hashMapLocationCode.get(selectedRmgCode);
                                     Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedRmgNo);
                                 }
 

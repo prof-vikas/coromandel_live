@@ -214,7 +214,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
-        }else if (username.equals("bsupervisor") && password.equals("password")) {
+        }else if (username.equals("2") && password.equals("")) {
             savingLoginUserToSharedPref("8","BSuperv",ROLES_BWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0002","Chemical Godown","BTVZ","Bothra-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
