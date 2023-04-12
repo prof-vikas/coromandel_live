@@ -277,6 +277,8 @@ public class BWHFragment extends Fragment {
                             autoCompleteLepNo.setHint("No Lep number available");
                             customToast.toastMessage(getActivity(), EMPTY_LEP_NUMBER_LIST, 0);
                             return;
+                        }else {
+                            autoCompleteLepNo.setHint("Search Lep Number");
                         }
 
                         String strTruckNo = null, srtPreviousWareHouseDesc = null, strDriverName = null, grossWeight = null, strCommodity = null;
@@ -562,12 +564,14 @@ public class BWHFragment extends Fragment {
 
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
         Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto).toString());
+        progressBar.setVisibility(View.VISIBLE);
         Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
-                    alertBuilder(response.errorBody().toString() + " " + response.code());
+                    alertBuilder(response.errorBody().toString());
+                    progressBar.setVisibility(View.GONE);
                 }
                 Log.i(TAG, "onResponse: code" + response.code());
                 if (response.isSuccessful()) {

@@ -405,6 +405,8 @@ public class LoadingAdviseFragment extends Fragment {
                                 autoCompleteLepNumber.setHint("No Lep number available");
                                 Toast.makeText(getActivity(), EMPTY_LEP_NUMBER_LIST, Toast.LENGTH_SHORT).show();
                                 return;
+                            }else{
+                                autoCompleteLepNumber.setHint("Search Lep Number");
                             }
                             String strSapGrNo = null, strTruckNo = null, strDriverName = null, strDriverMobileNo = null, strDriverLicenseNo = null, strVesselName = null, strTruckCapacity = null, strCommodity = null;
                             for (int i = 0; i < rfidLepIssueDtoList.size(); i++) {
@@ -461,6 +463,7 @@ public class LoadingAdviseFragment extends Fragment {
                 public void onFailure(Call<RfidLepApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     alertBuilder(t.getMessage());
+                    t.printStackTrace();
                 }
             });
         } catch (Exception e) {

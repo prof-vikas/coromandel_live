@@ -257,6 +257,8 @@ public class CWHFragment extends Fragment {
                                 autoCompleteLepNo.setHint("No Lep number available");
                                 Toast.makeText(getActivity(), EMPTY_LEP_NUMBER_LIST, Toast.LENGTH_SHORT).show();
                                 return;
+                            }else {
+                                autoCompleteLepNo.setHint("Search Lep Number");
                             }
                             String strTruckNo = null, srtPreviousRmgNoDesc = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
                             for (int i = 0; i < transactionsDtoList.size(); i++) {
@@ -514,13 +516,13 @@ public class CWHFragment extends Fragment {
     private void updateRmgNo(UpdateRmgRequestDto updateRmgRequestDto) {
         Log.i(TAG, new Gson().toJson(updateRmgRequestDto).toString());
         Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateRmgNo("Bearer " + token, updateRmgRequestDto);
-
+        progressBar.setVisibility(View.VISIBLE);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-                progressBar.setVisibility(View.VISIBLE);
                 if (!response.isSuccessful()) {
                     alertBuilder(response.errorBody().toString());
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 Log.i(TAG, "onResponse: code" + response.code());
@@ -545,11 +547,13 @@ public class CWHFragment extends Fragment {
         final Integer FLAG = 4;
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousRmgNoId);
-        if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
-            selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
-        }
-        if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
-            remarksDto = new RemarksDto(selectedRemarksId);
+        if (selectedRmgNo != null) {
+            if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
+                selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
+            }
+            if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
+                remarksDto = new RemarksDto(selectedRemarksId);
+            }
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
         UpdateRmgRequestDto updateRmgRequestDto = new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
