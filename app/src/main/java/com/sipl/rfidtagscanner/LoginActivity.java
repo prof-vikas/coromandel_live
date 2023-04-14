@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner;
 
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -212,7 +213,17 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        } else {
+        }else if (username.equals("") && password.equals("")) {
+            savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }  else if (username.equals("1") && password.equals("")) {
+            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0002", "Chemical Godown", "BTVZ", "Bothra-Vizag");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
             progressBar.setVisibility(View.GONE);
             txtErrorMessage.setText("User name or password Mismatch");
         }

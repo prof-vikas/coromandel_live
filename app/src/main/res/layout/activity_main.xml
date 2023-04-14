@@ -22,7 +22,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_layout"
-        app:menu="@menu/menu_coromandel_warehouse_supervisor"
+        app:menu="@menu/menu_logout"
         app:itemIconTint="@color/drawer_icons"
         app:itemTextColor="@color/drawer_text"
         app:itemBackground="@color/drawer_bg"
