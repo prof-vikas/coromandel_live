@@ -1,7 +1,5 @@
 package com.sipl.rfidtagscanner;
 
-//import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_BWH;
-import static com.sipl.rfidtagscanner.utils.ErrorCode.ERROR_CODE_E20051;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -9,15 +7,9 @@ import static com.sipl.rfidtagscanner.utils.Config.isJWTEnable;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,9 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -36,10 +26,12 @@ import com.google.gson.Gson;
 import com.sipl.rfidtagscanner.dto.request.JwtRequest;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class LoginActivity extends AppCompatActivity {
-
-    private int counter = 0;
 
     private static final String TAG = "TestingArea2";
     Button btnLogin;
@@ -90,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences loginCredentials = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         String checkBox = sp.getString("remember", "");
         String loginStatus = loginCredentials.getString("userLoginStatus", "");
-        if (loginStatus.equals("login")){
+        if (loginStatus.equals("login")) {
             if (checkBox.equals("true")) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -122,9 +114,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void processLogin() {
-        if (isJWTEnable == false){
+        if (isJWTEnable == false) {
             hardCodeLogin();
-        }else {
+        } else {
             progressBar.setVisibility(View.VISIBLE);
             String username = edtUsername.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
@@ -134,11 +126,12 @@ public class LoginActivity extends AppCompatActivity {
             call.enqueue(new Callback<JwtAuthResponse>() {
                 @Override
                 public void onResponse(Call<JwtAuthResponse> call, Response<JwtAuthResponse> response) {
-                    progressBar.setVisibility(View.GONE);
                     if (!response.isSuccessful()) {
-                        Log.i(TAG, "onResponse: " + response.message());
+                        progressBar.setVisibility(View.GONE);
+                        alert(LoginActivity.this, "error", response.errorBody().toString(), null, "OK");
                     }
                     if (response.isSuccessful()) {
+                        progressBar.setVisibility(View.GONE);
                         String token = response.body().getToken();
                         String role = response.body().getUser().getRole().getName();
                         String username = response.body().getUser().getName();
@@ -147,16 +140,14 @@ public class LoginActivity extends AppCompatActivity {
                         String userSourceLocationDesc = response.body().getUser().getStorageLocation().getStrLocationDesc();
                         String userPlantLocation = response.body().getUser().getPlantMaster().getPlantCode();
                         String userPlantLocationDesc = response.body().getUser().getPlantMaster().getPlantDesc();
-                        Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : "  + userSourceLocation + " - " + userSourceLocationDesc + " userPlantLocation : " + userPlantLocation + " - " + userPlantLocationDesc);
-                        if (token != null && role != null && username != null && userID != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc !=null && userPlantLocationDesc !=null){
-                        savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc);
-                        }else {
-//                           alertBuilder(ERROR_CODE_E20051);
-                          alertBuilder3(LoginActivity.this,"error","Something went wrong with this user credentials","Try login with other user credentials","OK");
-                           return;
+                        Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : " + userSourceLocation + " - " + userSourceLocationDesc + " userPlantLocation : " + userPlantLocation + " - " + userPlantLocationDesc);
+                        if (token != null && role != null && username != null && userID != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
+                            savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc);
+                        } else {
+                            alert(LoginActivity.this, "error", "Something went wrong with this user credentials", "Try login with other user credentials", "OK");
+                            return;
                         }
                     }
-
                     if (response.code() != 200) {
                         Log.i(TAG, "onResponse: response code : " + response.code() + " response message" + response.message() + response.raw());
                         txtErrorMessage.setText(response.message());
@@ -165,8 +156,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<JwtAuthResponse> call, Throwable t) {
-                    Log.i(TAG, "onFailure: login failure : " + t.getMessage());
                     progressBar.setVisibility(View.GONE);
+                    alert(LoginActivity.this, "error", t.getMessage(), null, "OK");
                 }
             });
         }
@@ -197,51 +188,37 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void hardCodeLogin(){
+    private void hardCodeLogin() {
         progressBar.setVisibility(View.VISIBLE);
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
-//        if (username.equals("operator") && password.equals("password")){
-        if (username.equals("la") && password.equals("password")){
-            savingLoginUserToSharedPref("6","Vishwanath8990",ROLES_LAO,"apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0050","CWC-I Godown", "CFVZ","Corormandel-Vizag");
-            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        if (username.equals("la") && password.equals("password")) {
+            savingLoginUserToSharedPref("6", "Vishwanath8990", ROLES_LAO, "apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0050", "CWC-I Godown", "CFVZ", "Corormandel-Vizag");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("bla") && password.equals("password")) {
-            savingLoginUserToSharedPref("82","boperator",ROLES_LAO,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0006","Gas Cylinder Shd","BTVZ","Bothra-Vizag");
-            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+            savingLoginUserToSharedPref("82", "boperator", ROLES_LAO, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0006", "Gas Cylinder Shd", "BTVZ", "Bothra-Vizag");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        } else if (username.equals("cws") && password.equals("")) {
-            savingLoginUserToSharedPref("7","CSuperv",ROLES_CWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0010","Western Mezzanin","CFVZ","Corormandel-Vizag");
-            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        } else if (username.equals("cws") && password.equals("password")) {
+            savingLoginUserToSharedPref("7", "CSuperv", ROLES_CWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }else if (username.equals("bws") && password.equals("")) {
-            savingLoginUserToSharedPref("8","BSuperv",ROLES_BWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0002","Chemical Godown","BTVZ","Bothra-Vizag");
-            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        } else if (username.equals("bws") && password.equals("password")) {
+            savingLoginUserToSharedPref("8", "BSuperv", ROLES_BWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0002", "Chemical Godown", "BTVZ", "Bothra-Vizag");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else {
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(this, "User name or password Mismatch", Toast.LENGTH_SHORT).show();
+            txtErrorMessage.setText("User name or password Mismatch");
         }
     }
 
-/*    private void alertBuilder(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(alertMessage)
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }*/
-
-    public void alertBuilder3(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
+    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
         Dialog dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.custom_alert_dialog_box);
@@ -249,18 +226,17 @@ public class LoginActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         TextView error = dialog.findViewById(R.id.dialog_type_error);
         TextView success = dialog.findViewById(R.id.dialog_type_success);
-        if (dialogType.equalsIgnoreCase("error")){
+        if (dialogType.equalsIgnoreCase("error")) {
             error.setVisibility(View.VISIBLE);
             success.setVisibility(View.GONE);
         } else if (dialogType.equalsIgnoreCase("success")) {
             error.setVisibility(View.GONE);
             success.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
         }
-
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
-        if (dialogMessage == null){
+        if (dialogMessage == null) {
             dialogMessageTxt.setVisibility(View.GONE);
         }
         TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
