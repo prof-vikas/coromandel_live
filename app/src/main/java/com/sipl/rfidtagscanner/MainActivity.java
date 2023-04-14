@@ -8,6 +8,8 @@ import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -70,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
             loadMenuBasedOnRoles(userRoles);
             showSideBarLoginUsername();
         } else {
-            alertBuilder("User Role not undefined \n Error code : " + ERROR_CODE_E20052);
+//            alertBuilder("User Role not undefined \n Error code : " + ERROR_CODE_E20052);
+            alertBuilder3(MainActivity.this,"error", "User Role not undefined ",null,"OK");
         }
 
 //        show plant details to header bar
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
 
-    public void alertBuilder(String alertMessage) {
+   /* public void alertBuilder(String alertMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(alertMessage)
                 .setCancelable(false)
@@ -225,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
-    }
+    }*/
 
     public String getLoginUsername() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
@@ -267,5 +270,41 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         String loginSourceKLocationDesc = sp.getString("UserSourceLocationDescSPK", null);
         return loginSourceKLocationDesc;
+    }
+
+    public void alertBuilder3(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
+        Dialog dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setContentView(R.layout.custom_alert_dialog_box);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView error = dialog.findViewById(R.id.dialog_type_error);
+        TextView success = dialog.findViewById(R.id.dialog_type_success);
+        if (dialogType.equalsIgnoreCase("error")){
+            error.setVisibility(View.VISIBLE);
+            success.setVisibility(View.GONE);
+        } else if (dialogType.equalsIgnoreCase("success")) {
+            error.setVisibility(View.GONE);
+            success.setVisibility(View.VISIBLE);
+        }else {
+            Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
+        }
+
+        TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
+        if (dialogMessage == null){
+            dialogMessageTxt.setVisibility(View.GONE);
+        }
+        TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
+        TextView btn = dialog.findViewById(R.id.text_btn);
+        dialogTitleTxt.setText(dialogTitle);
+        dialogMessageTxt.setText(dialogMessage);
+        btn.setText(dialogBtnText);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }

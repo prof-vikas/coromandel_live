@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="30dp"
+    android:background="@drawable/custom_edittext"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp">
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+
+        <TextView
+            android:id="@+id/dialog_type_error"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/alert_triangle_svgrepo_com"
+            android:text="Error"
+            android:fontFamily="@font/source_sans_pro_black"
+            android:drawablePadding="10dp"
+            android:textAlignment="center"
+            android:textColor="#E91E63"
+            android:textSize="24sp"
+            android:visibility="gone"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:id="@+id/dialog_type_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/check_circle_svgrepo_com"
+            android:text="Success"
+            android:fontFamily="@font/source_sans_pro_black"
+            android:drawablePadding="10dp"
+            android:textAlignment="center"
+            android:textColor="#009688"
+            android:textSize="24sp"
+            android:textStyle="bold"></TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:id="@+id/text_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:fontFamily="@font/source_sans_pro_regular"
+            android:text="Message"
+            android:textColor="#000"
+            android:textSize="16sp"></TextView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:id="@+id/text_msg2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Message"
+            android:fontFamily="@font/source_sans_pro_regular"
+            android:textColor="#000"
+            android:textSize="16sp"></TextView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+
+        <TextView
+            android:id="@+id/text_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="right"
+            android:text="OK"
+            android:fontFamily="@font/source_sans_pro_black"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="14sp"></TextView>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

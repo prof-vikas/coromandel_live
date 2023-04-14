@@ -133,9 +133,13 @@ public class BWHFragment extends Fragment {
             if (validateLoadingAdviseForm()) {
                 String lepNo = autoCompleteLepNo.getText().toString();
                 if (arrAutoCompleteLepNo.contains(lepNo)) {
-                    updateWareHouseNo(setData());
+                    if (validateLepNoChange()) {
+                        updateWareHouseNo(setData());
+                    } else {
+                        ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error","It seems selected Lep number is change","Please try to select from Lep Number drop-down..!","OK");
+                    }
                 } else {
-                    alertBuilder("Selected Lep Number is invalid \nPlease select from drop-down ");
+                    ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error","Selected Lep Number is invalid","Please select Lep number from drop-down..!","OK");
                     return;
                 }
             }
@@ -165,7 +169,6 @@ public class BWHFragment extends Fragment {
             arrayAdapterForLepNumber.clear();
         }
         getALlLepNumberBothra();
-
         removeErrorMessage();
     }
 
@@ -210,7 +213,6 @@ public class BWHFragment extends Fragment {
             return false;
         }
         if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Select Warehouse No") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
-            btnSubmit.setEnabled(false);
             Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -257,17 +259,21 @@ public class BWHFragment extends Fragment {
     }
 
     private boolean getALlLepNumberBothra() {
+        progressBar.setVisibility(View.VISIBLE);
         Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberBothra("Bearer " + token);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
 
                 if (!response.isSuccessful()) {
-                    alertBuilder(response.errorBody().toString());
+//                    alertBuilder(response.errorBody().toString());
+                  progressBar.setVisibility(View.GONE);
+                    ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error",response.errorBody().toString(),null,"OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getALlLepNumberBothra : responseCode : " + response.code());
                 if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
                     List<TransactionsDto> transactionsDtoList = response.body().getTransactionsDtos();
                     HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
                     HashMap<String, String> hashMapForPreviousWareHouse = new HashMap<>();
@@ -277,7 +283,7 @@ public class BWHFragment extends Fragment {
                             autoCompleteLepNo.setHint("No Lep number available");
                             customToast.toastMessage(getActivity(), EMPTY_LEP_NUMBER_LIST, 0);
                             return;
-                        }else {
+                        } else {
                             autoCompleteLepNo.setHint("Search Lep Number");
                         }
 
@@ -291,7 +297,7 @@ public class BWHFragment extends Fragment {
                             strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                             strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
 
-                            if (transactionsDtoList.get(i).getSourceNetWeight() == null) {
+                            if (transactionsDtoList.get(i).getSourceNetWeight() != null) {
                                 Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getSourceNetWeight());
                                 grossWeight = String.valueOf(transactionsDtoList.get(i).getSourceNetWeight());
                             } else {
@@ -338,7 +344,8 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                alertBuilder(t.getMessage());
+//                alertBuilder(t.getMessage());
+                ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error",t.getMessage(),null,"OK");
             }
         });
         return true;
@@ -346,6 +353,7 @@ public class BWHFragment extends Fragment {
 
     private boolean getAllWareHouse() {
         Log.i(TAG, "getAllWareHouse: ()");
+        progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllWareHouse("Bearer " + token, loginUserPlantCode);
 
@@ -353,124 +361,126 @@ public class BWHFragment extends Fragment {
             @Override
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 if (!response.isSuccessful()) {
-                    String responseCode = String.valueOf(response.code());
-                    Log.i(TAG, "getAllWareHouse: responseCode : " + responseCode);
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error",response.errorBody().toString(),null,"OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllWareHouse : responseCode : " + response.code());
-                if (response.code() != 200) {
-                    getAllWareHouse();
-                    return;
-                }
-
-                if (response.code() == 200) {
-                    Log.i(TAG, "onResponse:WareHouse found successfully");
-                }
-                Log.i(TAG, "onResponse: getAllWareHouse " + response.code());
-                List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
-                HashMap<String, String> hashMapLocationCode = new HashMap<>();
-                HashMap<String, Integer> hashMapUpdateRmgNo = new HashMap<>();
-                ArrayList<String> arrDestinationLocation = new ArrayList<>();
-                ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
-
-
-                try {
-                    if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
-                        customToast.toastMessage(getActivity(), EMPTY_WAREHOUSE_NUMBER, 0);
-                        return;
-                    }
-                    for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
-                        String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
-                        String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
+                if (response.isSuccessful()) {
+                    Log.i(TAG, "onResponse: getAllWareHouse " + response.code());
+                    List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
+                    HashMap<String, String> hashMapLocationCode = new HashMap<>();
+                    HashMap<String, Integer> hashMapUpdateRmgNo = new HashMap<>();
+                    ArrayList<String> arrDestinationLocation = new ArrayList<>();
+                    ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
+                    try {
+                        if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
+                            customToast.toastMessage(getActivity(), EMPTY_WAREHOUSE_NUMBER, 0);
+                            return;
+                        }
+                        for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
+                            String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
+                            String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
 //                        int id = functionalLocationMasterDtoList.get(i).getId();
 //                        hashMapUpdateRmgNo.put(s, id);
-                        String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
-                        arrDestinationLocationDesc.add(strLocationDescWithCode);
-                        hashMapLocationCode.put(strLocationDescWithCode, s);
-                        arrDestinationLocation.add(s);
-                    }
+                            String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
+                            arrDestinationLocationDesc.add(strLocationDescWithCode);
+                            hashMapLocationCode.put(strLocationDescWithCode, s);
+                            arrDestinationLocation.add(s);
+                        }
 //                    arrDestinationLocation.add("Select Warehouse No");
-                    arrDestinationLocationDesc.add("Select Warehouse No");
-                    for (String a : arrDestinationLocationDesc) {
-                        Log.i(TAG, "onResponse: " + a.toLowerCase());
-                    }
+                        arrDestinationLocationDesc.add("Select Warehouse No");
+                        for (String a : arrDestinationLocationDesc) {
+                            Log.i(TAG, "onResponse: " + a.toLowerCase());
+                        }
 
-                    for (Map.Entry<String, String> entry : hashMapLocationCode.entrySet()) {
-                        String key = entry.getKey();
-                        String value = entry.getValue();
-                        Log.i(TAG, "onResponse: hashMapLocationCode : key : " + key + " --- Value : " + value);
-                    }
+                        for (Map.Entry<String, String> entry : hashMapLocationCode.entrySet()) {
+                            String key = entry.getKey();
+                            String value = entry.getValue();
+                            Log.i(TAG, "onResponse: hashMapLocationCode : key : " + key + " --- Value : " + value);
+                        }
 
-                    updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
-                        @Override
-                        public View getView(int position, View convertView, ViewGroup parent) {
+                        updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
+                            @Override
+                            public View getView(int position, View convertView, ViewGroup parent) {
 
-                            View v = super.getView(position, convertView, parent);
-                            if (position == getCount()) {
-                                ((TextView) v.findViewById(android.R.id.text1)).setText("");
-                                ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                                View v = super.getView(position, convertView, parent);
+                                if (position == getCount()) {
+                                    ((TextView) v.findViewById(android.R.id.text1)).setText("");
+                                    ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                                }
+                                return v;
                             }
-                            return v;
-                        }
 
-                        @Override
-                        public int getCount() {
-                            return super.getCount() - 1;
-                        }
-                    };
-                    spinnerWarehouseNo.setAdapter(updateWareHouseNoAdapter);
-                    spinnerWarehouseNo.setSelection(updateWareHouseNoAdapter.getCount());
+                            @Override
+                            public int getCount() {
+                                return super.getCount() - 1;
+                            }
+                        };
+                        spinnerWarehouseNo.setAdapter(updateWareHouseNoAdapter);
+                        spinnerWarehouseNo.setSelection(updateWareHouseNoAdapter.getCount());
 
-                    spinnerWarehouseNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            String selectedRmgCode = adapterView.getSelectedItem().toString();
+                        spinnerWarehouseNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                String selectedRmgCode = adapterView.getSelectedItem().toString();
                             /*if (hashMapUpdateRmgNo.containsKey(selectedWareHouseNumber)) {
                                 selectedWareHouseNumberId = hashMapUpdateRmgNo.get(selectedWareHouseNumber);
                                 Log.i(TAG, "onItemSelected: selectedBothraSupervisorId " + selectedWareHouseNumberId);
                             }*/
 
-                            Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
-                            if (hashMapLocationCode.containsKey(selectedRmgCode)) {
-                                selectedWareHouseNumber = hashMapLocationCode.get(selectedRmgCode);
-                                Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedWareHouseNumber);
+                                Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
+                                if (hashMapLocationCode.containsKey(selectedRmgCode)) {
+                                    selectedWareHouseNumber = hashMapLocationCode.get(selectedRmgCode);
+                                    Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedWareHouseNumber);
+                                }
+                                if (!selectedRmgCode.equalsIgnoreCase("Select Warehouse No")) {
+                                    spinnerRemark.setEnabled(true);
+                                    spinnerRemark.setClickable(true);
+                                }else {
+                                    spinnerRemark.setEnabled(false);
+                                    spinnerRemark.setClickable(false);
+                                    spinnerRemark.setFocusable(false);
+                                }
                             }
-                            if (!selectedRmgCode.equalsIgnoreCase("Select Warehouse No")) {
-                                spinnerRemark.setEnabled(true);
-                                spinnerRemark.setClickable(true);
-                            }
-                        }
 
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-                        }
-                    });
-                } catch (Exception e) {
-                    e.getMessage();
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
-                alertBuilder(t.getMessage());
+//                alertBuilder(t.getMessage());
+                progressBar.setVisibility(View.GONE);
+                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
     }
 
     private boolean getAllBothraRemark() {
+        progressBar.setVisibility(View.VISIBLE);
         Call<RemarkApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllBothraRemark("Bearer " + token);
         call.enqueue(new Callback<RemarkApiResponse>() {
             @Override
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
-                    alertBuilder(response.errorBody().toString());
+                    progressBar.setVisibility(View.GONE);
+//                    alertBuilder(response.errorBody().toString());
+                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllBothraRemark : responseCode : " + response.code());
 
                 if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
                     List<RemarksDto> remarksDtoList = response.body().getRemarksDtos();
                     HashMap<String, Integer> hashMapRemarks = new HashMap<>();
                     ArrayList<String> arrRemarks = new ArrayList<>();
@@ -505,8 +515,6 @@ public class BWHFragment extends Fragment {
                                 return super.getCount() - 1;
                             }
                         };
-                        spinnerRemark.setEnabled(false);
-                        spinnerRemark.setClickable(false);
                         spinnerRemark.setAdapter(remarkAdapter);
                         spinnerRemark.setSelection(remarkAdapter.getCount());
                         spinnerRemark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -517,11 +525,11 @@ public class BWHFragment extends Fragment {
                                     selectedRemarksId = hashMapRemarks.get(selectedRemarks);
                                     Log.i(TAG, "onItemSelected: Selected Remarks Id " + selectedRemarksId);
                                 }
-                                if (selectedRemarks.equalsIgnoreCase("Update RMG No")) {
+                               /* if (selectedRemarks.equalsIgnoreCase("Update RMG No")) {
                                     spinnerRemark.setEnabled(false);
                                     spinnerRemark.setClickable(false);
                                     spinnerRemark.setFocusable(false);
-                                }
+                                }*/
                             }
 
                             @Override
@@ -536,7 +544,9 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
-                alertBuilder(t.getMessage());
+//                alertBuilder(t.getMessage());
+                progressBar.setVisibility(View.GONE);
+                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
@@ -570,20 +580,22 @@ public class BWHFragment extends Fragment {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
-                    alertBuilder(response.errorBody().toString());
+//                    alertBuilder(response.errorBody().toString());
                     progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
                 Log.i(TAG, "onResponse: code" + response.code());
                 if (response.isSuccessful()) {
-                    alertBuilder(response.body().getMessage());
                     progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "success", response.body().getMessage(), null, "OK");
                     resetFields();
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                alertBuilder(t.getMessage());
+//                alertBuilder(t.getMessage());
+                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
                 t.printStackTrace();
             }
         });
@@ -597,7 +609,14 @@ public class BWHFragment extends Fragment {
         }
     }
 
-    private void alertBuilder(String alertMessage) {
+    private boolean validateLepNoChange() {
+        String lepNo = autoCompleteLepNo.getText().toString();
+        if (selectedLepNumber.equalsIgnoreCase(lepNo)) {
+            return true;
+        } else return false;
+    }
+
+  /*  private void alertBuilder(String alertMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(alertMessage)
                 .setCancelable(false)
@@ -608,5 +627,5 @@ public class BWHFragment extends Fragment {
                 });
         AlertDialog alert = builder.create();
         alert.show();
-    }
+    }*/
 }

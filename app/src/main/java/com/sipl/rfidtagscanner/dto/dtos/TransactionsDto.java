@@ -35,6 +35,7 @@ public class TransactionsDto {
     private Integer sourceTareWtPrintCount;
     private BigDecimal sourceNetWeight;
     private String sourceNetWeightTime;
+    private String weighBridgeNo;
     private String vehicleInTime;
     private String vehicleOutTime;
     private String whSupervisorRemark;
@@ -44,7 +45,7 @@ public class TransactionsDto {
     private Integer rStat;
     private AuditEntity auditEntity;
 
-    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, BigDecimal grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, BigDecimal sourceGrossWeight, String sourceGrossWeightTime, Integer sourceGrossWtPrintCount, BigDecimal sourceTareWeight, Integer sourceTareWtPrintCount, BigDecimal sourceNetWeight, String sourceNetWeightTime, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity) {
+    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, BigDecimal grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, BigDecimal sourceGrossWeight, String sourceGrossWeightTime, Integer sourceGrossWtPrintCount, BigDecimal sourceTareWeight, Integer sourceTareWtPrintCount, BigDecimal sourceNetWeight, String sourceNetWeightTime, String weighBridgeNo, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity) {
         this.id = id;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.coromandelLoadingSupervisor = coromandelLoadingSupervisor;
@@ -75,6 +76,7 @@ public class TransactionsDto {
         this.sourceTareWtPrintCount = sourceTareWtPrintCount;
         this.sourceNetWeight = sourceNetWeight;
         this.sourceNetWeightTime = sourceNetWeightTime;
+        this.weighBridgeNo = weighBridgeNo;
         this.vehicleInTime = vehicleInTime;
         this.vehicleOutTime = vehicleOutTime;
         this.whSupervisorRemark = whSupervisorRemark;
@@ -323,6 +325,14 @@ public class TransactionsDto {
 
     public void setSourceNetWeightTime(String sourceNetWeightTime) {
         this.sourceNetWeightTime = sourceNetWeightTime;
+    }
+
+    public String getWeighBridgeNo() {
+        return weighBridgeNo;
+    }
+
+    public void setWeighBridgeNo(String weighBridgeNo) {
+        this.weighBridgeNo = weighBridgeNo;
     }
 
     public String getVehicleInTime() {

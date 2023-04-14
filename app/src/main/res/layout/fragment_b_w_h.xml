@@ -278,6 +278,8 @@
                         android:textColor="@color/fragment_tv_text"
                         android:textSize="@dimen/common_tv_text" />
 
+
+
                     <Spinner
                         android:id="@+id/bwh_spinner_remark"
                         android:layout_width="0dp"

@@ -7,6 +7,8 @@ import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isJWTEnable;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -149,7 +151,8 @@ public class LoginActivity extends AppCompatActivity {
                         if (token != null && role != null && username != null && userID != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc !=null && userPlantLocationDesc !=null){
                         savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc);
                         }else {
-                           alertBuilder(ERROR_CODE_E20051);
+//                           alertBuilder(ERROR_CODE_E20051);
+                          alertBuilder3(LoginActivity.this,"error","Something went wrong with this user credentials","Try login with other user credentials","OK");
                            return;
                         }
                     }
@@ -199,22 +202,22 @@ public class LoginActivity extends AppCompatActivity {
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 //        if (username.equals("operator") && password.equals("password")){
-        if (username.equals("") && password.equals("")){
+        if (username.equals("la") && password.equals("password")){
             savingLoginUserToSharedPref("6","Vishwanath8990",ROLES_LAO,"apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0050","CWC-I Godown", "CFVZ","Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
-        } else if (username.equals("boperator") && password.equals("password")) {
+        } else if (username.equals("bla") && password.equals("password")) {
             savingLoginUserToSharedPref("82","boperator",ROLES_LAO,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0006","Gas Cylinder Shd","BTVZ","Bothra-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
-        } else if (username.equals("1") && password.equals("")) {
+        } else if (username.equals("cws") && password.equals("")) {
             savingLoginUserToSharedPref("7","CSuperv",ROLES_CWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0010","Western Mezzanin","CFVZ","Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
-        }else if (username.equals("2") && password.equals("")) {
+        }else if (username.equals("bws") && password.equals("")) {
             savingLoginUserToSharedPref("8","BSuperv",ROLES_BWH,"eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv","0002","Chemical Godown","BTVZ","Bothra-Vizag");
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             startActivity(intent);
@@ -225,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void alertBuilder(String alertMessage) {
+/*    private void alertBuilder(String alertMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(alertMessage)
                 .setCancelable(false)
@@ -236,5 +239,41 @@ public class LoginActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }*/
+
+    public void alertBuilder3(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
+        Dialog dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setContentView(R.layout.custom_alert_dialog_box);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView error = dialog.findViewById(R.id.dialog_type_error);
+        TextView success = dialog.findViewById(R.id.dialog_type_success);
+        if (dialogType.equalsIgnoreCase("error")){
+            error.setVisibility(View.VISIBLE);
+            success.setVisibility(View.GONE);
+        } else if (dialogType.equalsIgnoreCase("success")) {
+            error.setVisibility(View.GONE);
+            success.setVisibility(View.VISIBLE);
+        }else {
+            Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
+        }
+
+        TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
+        if (dialogMessage == null){
+            dialogMessageTxt.setVisibility(View.GONE);
+        }
+        TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
+        TextView btn = dialog.findViewById(R.id.text_btn);
+        dialogTitleTxt.setText(dialogTitle);
+        dialogMessageTxt.setText(dialogMessage);
+        btn.setText(dialogBtnText);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }
