@@ -1,8 +1,5 @@
 package com.sipl.rfidtagscanner;
 
-//import static com.sipl.rfidtagscanner.utils.ToastConstants.ROLES_BWH;
-
-import static com.sipl.rfidtagscanner.utils.ErrorCode.ERROR_CODE_E20052;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -10,19 +7,16 @@ import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideN
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -42,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-
-    ImageView titleCoromandelLogo;
 
     LinearLayout headerLayoutPlant, headerLayoutStorage, plant_linearLayout;
     TextView toolbarTitle, login_username, txtPlantCode, txtStorageLocation, txtHeaderPlantCode, txtHeaderStorageLocation;
@@ -72,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
             loadMenuBasedOnRoles(userRoles);
             showSideBarLoginUsername();
         } else {
-//            alertBuilder("User Role not undefined \n Error code : " + ERROR_CODE_E20052);
-            alertBuilder3(MainActivity.this,"error", "User Role not undefined ",null,"OK");
+            alert(MainActivity.this, "error", "User Role not undefined ", null, "OK");
         }
 
 //        show plant details to header bar
@@ -124,15 +115,12 @@ public class MainActivity extends AppCompatActivity {
         navigationView.inflateMenu(R.menu.menu_logout);
         getMenuNavigation();
         if (userRole.equalsIgnoreCase(ROLES_LAO)) {
-            Log.i(TAG, "loadMenuBasedOnRoles: " + userRole);
             loadFragment(new LoadingAdviseFragment(), 1);
         }
         if (userRole.equalsIgnoreCase(ROLES_CWH)) {
-            Log.i(TAG, "loadMenuBasedOnRoles: " + userRole);
             loadFragment(new CWHFragment(), 1);
         }
         if (userRole.equalsIgnoreCase(ROLES_BWH)) {
-            Log.i(TAG, "loadMenuBasedOnRoles: " + userRole);
             loadFragment(new BWHFragment(), 1);
         } else {
             Log.i(TAG, "No User found : " + userRole);
@@ -174,61 +162,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-/*    public String getSharedPrefsValues(String key) {
-        Log.i(TAG, "getSharedPrefsValues: <<Start>>");
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String userIDSPK = sp.getString("userIDSPK", null);
-        String usernameSPK = sp.getString("usernameSPK", null);
-        String roleSPK = sp.getString("roleSPK", null);
-        String tokenSPK = sp.getString("tokenSPK", null);
-        String userSourceLocationSPK = sp.getString("UserSourceLocationSPK", null);
-        String userPlantLocationSPK = sp.getString("userPlantLocationSPK", null);
-        if (userIDSPK != null || usernameSPK != null || roleSPK != null || tokenSPK != null || userSourceLocationSPK != null || userPlantLocationSPK != null) {
-            if (key.equalsIgnoreCase(USER_ID)) {
-                Log.i(TAG, "getSharedPrefsValues: returing userIDSPK " + userIDSPK);
-                return userIDSPK;
-            } else if (key.equalsIgnoreCase(USERNAME)) {
-                Log.i(TAG, "getSharedPrefsValues: returing usernameSPK " + usernameSPK);
-                return usernameSPK;
-            } else if (key.equalsIgnoreCase(USER_ROLE)) {
-                Log.i(TAG, "getSharedPrefsValues: returing roles " + roleSPK);
-                return roleSPK;
-            } else if (key.equalsIgnoreCase(USER_TOKEN)) {
-                Log.i(TAG, "getSharedPrefsValues: returing tokenSPK " + tokenSPK);
-                return tokenSPK;
-            } else if (key.equalsIgnoreCase(USER_SOURCE_LOCATION)) {
-                Log.i(TAG, "getSharedPrefsValues: returing userSourceLocationSPK " + userSourceLocationSPK);
-                return userSourceLocationSPK;
-            } else if (key.equalsIgnoreCase(USER_PLANT_LOCATION)) {
-                Log.i(TAG, "getSharedPrefsValues: returing userPlantLocationSPK " + userPlantLocationSPK);
-                return userPlantLocationSPK;
-            } else {
-                return "No valid key";
-            }
-        } else {
-            Log.i(TAG, "getSharedPrefsValues: in else block ");
-            //TODO error handling code
-            alertBuilder("Data Inconsistency \n Error code : " + ERROR_CODE_E20051);
-            return null;
-        }
-    }*/
-
-   /* public void alertBuilder(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(alertMessage)
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }*/
 
     public String getLoginUsername() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
@@ -272,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         return loginSourceKLocationDesc;
     }
 
-    public void alertBuilder3(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
+    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
         Dialog dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.custom_alert_dialog_box);
@@ -280,18 +213,18 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         TextView error = dialog.findViewById(R.id.dialog_type_error);
         TextView success = dialog.findViewById(R.id.dialog_type_success);
-        if (dialogType.equalsIgnoreCase("error")){
+        if (dialogType.equalsIgnoreCase("error")) {
             error.setVisibility(View.VISIBLE);
             success.setVisibility(View.GONE);
         } else if (dialogType.equalsIgnoreCase("success")) {
             error.setVisibility(View.GONE);
             success.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
         }
 
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
-        if (dialogMessage == null){
+        if (dialogMessage == null) {
             dialogMessageTxt.setVisibility(View.GONE);
         }
         TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);

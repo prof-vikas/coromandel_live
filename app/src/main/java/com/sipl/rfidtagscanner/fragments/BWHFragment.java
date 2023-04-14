@@ -7,7 +7,6 @@ import static com.sipl.rfidtagscanner.utils.Config.EMPTY_WAREHOUSE_NUMBER;
 import static com.sipl.rfidtagscanner.utils.Config.isRMGTableRequired;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +27,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -136,10 +134,10 @@ public class BWHFragment extends Fragment {
                     if (validateLepNoChange()) {
                         updateWareHouseNo(setData());
                     } else {
-                        ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error","It seems selected Lep number is change","Please try to select from Lep Number drop-down..!","OK");
+                        ((MainActivity)getActivity()).alert(getActivity(),"error","It seems selected Lep number is change","Please try to select from Lep Number drop-down..!","OK");
                     }
                 } else {
-                    ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error","Selected Lep Number is invalid","Please select Lep number from drop-down..!","OK");
+                    ((MainActivity)getActivity()).alert(getActivity(),"error","Selected Lep Number is invalid","Please select Lep number from drop-down..!","OK");
                     return;
                 }
             }
@@ -268,7 +266,7 @@ public class BWHFragment extends Fragment {
                 if (!response.isSuccessful()) {
 //                    alertBuilder(response.errorBody().toString());
                   progressBar.setVisibility(View.GONE);
-                    ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error",response.errorBody().toString(),null,"OK");
+                    ((MainActivity)getActivity()).alert(getActivity(),"error",response.errorBody().toString(),null,"OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getALlLepNumberBothra : responseCode : " + response.code());
@@ -345,7 +343,7 @@ public class BWHFragment extends Fragment {
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
 //                alertBuilder(t.getMessage());
-                ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error",t.getMessage(),null,"OK");
+                ((MainActivity)getActivity()).alert(getActivity(),"error",t.getMessage(),null,"OK");
             }
         });
         return true;
@@ -362,7 +360,7 @@ public class BWHFragment extends Fragment {
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity)getActivity()).alertBuilder3(getActivity(),"error",response.errorBody().toString(),null,"OK");
+                    ((MainActivity)getActivity()).alert(getActivity(),"error",response.errorBody().toString(),null,"OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllWareHouse : responseCode : " + response.code());
@@ -458,7 +456,7 @@ public class BWHFragment extends Fragment {
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
 //                alertBuilder(t.getMessage());
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
@@ -474,7 +472,7 @@ public class BWHFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(response.errorBody().toString());
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllBothraRemark : responseCode : " + response.code());
@@ -546,7 +544,7 @@ public class BWHFragment extends Fragment {
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
 //                alertBuilder(t.getMessage());
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
@@ -582,12 +580,12 @@ public class BWHFragment extends Fragment {
                 if (!response.isSuccessful()) {
 //                    alertBuilder(response.errorBody().toString());
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
                 Log.i(TAG, "onResponse: code" + response.code());
                 if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
                     resetFields();
                 }
             }
@@ -595,7 +593,7 @@ public class BWHFragment extends Fragment {
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 t.printStackTrace();
             }
         });
