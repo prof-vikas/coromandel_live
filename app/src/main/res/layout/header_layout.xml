@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="260dp"
+    android:layout_height="280dp"
     android:background="@color/textFieldColor"
     android:backgroundTint="@color/headerBg"
     android:orientation="vertical"
     android:padding="10dp">
 
     <ImageView
-        android:layout_width="220dp"
+        android:layout_width="260dp"
         android:layout_height="140dp"
         android:scaleType="fitCenter"
         android:paddingTop="40dp"
@@ -20,10 +20,10 @@
         android:src="@drawable/coromandel_logo_edited_1"></ImageView>
 
     <LinearLayout
-        android:layout_width="220dp"
+        android:layout_width="260dp"
         android:layout_height="30dp"
         android:orientation="horizontal"
-        android:weightSum="5.7">
+        android:weightSum="5">
 
         <View
             android:layout_width="0dp"
@@ -34,34 +34,34 @@
             android:id="@+id/login_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.7"
+            android:layout_weight="1.3"
             android:text="Welcome"
             android:textColor="@color/header_color_username"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.0" />
+            android:layout_weight="0.1" />
 
         <TextView
             android:id="@+id/login_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3.8"
+            android:layout_weight="3.4"
             android:text="login_username"
             android:textAllCaps="false"
             android:textColor="@color/header_color_welcome"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_header_plant_code"
-        android:layout_width="220dp"
+        android:layout_width="260dp"
         android:layout_height="30dp"
         android:orientation="horizontal"
-        android:visibility="gone"
-        android:weightSum="5.7">
+        android:visibility="visible"
+        android:weightSum="5">
 
         <View
             android:layout_width="0dp"
@@ -71,34 +71,34 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2.3"
-            android:text="Plant Code : "
+            android:layout_weight="1.3"
+            android:text="Plant : "
             android:textColor="@color/header_color_username"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.0" />
+            android:layout_weight="0.1" />
 
         <TextView
             android:id="@+id/login_plantCode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3.2"
+            android:layout_weight="3.4"
             android:text="plant_code"
             android:textAllCaps="false"
             android:textColor="@color/gray"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/ll_header_source_code"
-        android:layout_width="220dp"
+        android:layout_width="260dp"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:visibility="gone"
-        android:weightSum="5.7">
+        android:visibility="visible"
+        android:weightSum="5">
 
         <View
             android:layout_width="0dp"
@@ -108,25 +108,25 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.3"
             android:text="Location : "
             android:textColor="@color/header_color_username"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.0" />
+            android:layout_weight="0.1" />
 
         <TextView
             android:id="@+id/login_Storage_Location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3.5"
+            android:layout_weight="3.4"
             android:text="login_username"
             android:textAllCaps="false"
             android:textColor="@color/gray"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

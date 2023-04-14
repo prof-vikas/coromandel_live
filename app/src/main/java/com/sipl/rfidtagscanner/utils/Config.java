@@ -1,6 +1,6 @@
 package com.sipl.rfidtagscanner.utils;
 
-public class ToastConstants {
+public class Config {
 
     //    view constants
     public static final boolean isRMGTableRequired = false;
@@ -10,16 +10,6 @@ public class ToastConstants {
     public static final boolean isGetSourceLocationByDescEnable = false;
     public static final boolean isGetPlantLocationByDescEnable = false;
     public static final boolean isPlantDetailsRequiredInSideNav = true;
-
-    //Shared Preferences constants
-    public static final String USER_ID = "USER_ID";
-    public static final String USERNAME = "USERNAME";
-    public static final String USER_ROLE = "USER_ROLE";
-    public static final String USER_TOKEN = "USER_TOKEN";
-    public static final String USER_SOURCE_LOCATION = "USER_SOURCE_LOCATION";
-    public static final String USER_PLANT_LOCATION = "USER_PLANT_LOCATION";
-
-
 
     //    Roles Constants
     public static final String ROLES_BWH = "Bothra Warehouse Supervisor\r\n";

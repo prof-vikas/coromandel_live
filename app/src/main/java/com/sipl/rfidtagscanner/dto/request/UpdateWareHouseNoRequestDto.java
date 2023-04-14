@@ -11,20 +11,18 @@ public class UpdateWareHouseNoRequestDto {
     private StorageLocationDto priviousWarehouse;
     private StorageLocationDto warehouse;
     private RfidLepIssueDto rfidLepIssueModel;
-    private RemarksDto whSupervisorRemark;
+    private RemarksDto remarkMaster;
     private Integer transactionFlag;
-    private String unloadingTime;
+//    private String unloadingTime;
 
 
-
-    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto whSupervisorRemark, Integer transactionFlag, String unloadingTime) {
+    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag) {
         this.auditEntity = auditEntity;
         this.priviousWarehouse = priviousWarehouse;
         this.warehouse = warehouse;
         this.rfidLepIssueModel = rfidLepIssueModel;
-        this.whSupervisorRemark = whSupervisorRemark;
+        this.remarkMaster = remarkMaster;
         this.transactionFlag = transactionFlag;
-        this.unloadingTime = unloadingTime;
     }
 
     public AuditEntity getAuditEntity() {
@@ -60,11 +58,11 @@ public class UpdateWareHouseNoRequestDto {
     }
 
     public RemarksDto getWhSupervisorRemark() {
-        return whSupervisorRemark;
+        return remarkMaster;
     }
 
-    public void setWhSupervisorRemark(RemarksDto whSupervisorRemark) {
-        this.whSupervisorRemark = whSupervisorRemark;
+    public void setWhSupervisorRemark(RemarksDto remarkMaster) {
+        this.remarkMaster = remarkMaster;
     }
 
     public Integer getTransactionFlag() {
@@ -73,13 +71,5 @@ public class UpdateWareHouseNoRequestDto {
 
     public void setTransactionFlag(Integer transactionFlag) {
         this.transactionFlag = transactionFlag;
-    }
-
-    public String getUnloadingTime() {
-        return unloadingTime;
-    }
-
-    public void setUnloadingTime(String unloadingTime) {
-        this.unloadingTime = unloadingTime;
     }
 }
