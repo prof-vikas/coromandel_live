@@ -6,13 +6,16 @@ import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     Toolbar toolbar;
 
-    LinearLayout headerLayoutPlant, headerLayoutStorage, plant_linearLayout;
-    TextView toolbarTitle, login_username, txtPlantCode, txtStorageLocation, txtHeaderPlantCode, txtHeaderStorageLocation;
+    LinearLayout headerLayoutPlant, headerLayoutStorage;
+    TextView toolbarTitle, login_username, txtHeaderPlantCode, txtHeaderStorageLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +51,22 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerlayout);
         navigationView = findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);
-        txtPlantCode = findViewById(R.id.txt_plant_code);
-        txtStorageLocation = findViewById(R.id.txt_storage_location);
-        plant_linearLayout = findViewById(R.id.plant_linearLayout);
+        ImageView refesh = findViewById(R.id.refresh);
 
         //Setting custom toolbar and navigation bar and drawer
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.OpenDrawer, R.string.ClosedDrawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        refesh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        });
 
         //loading user screen based on their roles
         String userRoles = getLoginUserRole();
@@ -68,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
             alert(MainActivity.this, "error", "User Role not undefined ", null, "OK");
         }
 
-//        show plant details to header bar
-        if (isPlantDetailsRequiredInSideNav == false) {
-            plant_linearLayout.setVisibility(View.VISIBLE);
-            txtPlantCode.setText(getLoginUserPlantCode());
-            txtStorageLocation.setText(getLoginUserStorageCode());
-        }
     }
 
     public void loadFragment(Fragment fragment, int flag) {
