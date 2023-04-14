@@ -174,11 +174,11 @@ public class LoadingAdviseFragment extends Fragment {
                         if (validateLepNoChange()) {
                             chooseMethodToCall();
                         } else {
-                            ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems selected Lep number is change", "Please try to select from Lep Number drop-down..!", "OK");
+                            ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Lep number is change", "Please try to select from Lep Number drop-down..!", "OK");
                             return;
                         }
                     } else {
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "Selected Lep Number is invalid", "Please select Lep number from drop-down..!", "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", "Selected Lep Number is invalid", "Please select Lep number from drop-down..!", "OK");
                         return;
                     }
                 }
@@ -410,7 +410,7 @@ public class LoadingAdviseFragment extends Fragment {
                     if (!response.isSuccessful()) {
 //                        alertBuilder(response.errorBody().toString());
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                         return;
                     }
 
@@ -481,7 +481,7 @@ public class LoadingAdviseFragment extends Fragment {
                 public void onFailure(Call<RfidLepApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(t.getMessage());
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                     t.printStackTrace();
                 }
             });
@@ -502,7 +502,7 @@ public class LoadingAdviseFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(response.errorBody().toString());
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllDestinationLocation : responseCode : " + response.code());
@@ -590,7 +590,7 @@ public class LoadingAdviseFragment extends Fragment {
             public void onFailure(Call<DestinationLocationResponseApi> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
 //                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -607,7 +607,7 @@ public class LoadingAdviseFragment extends Fragment {
             public void onResponse(Call<BothraSupervisorApiResponse> call, Response<BothraSupervisorApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                     return;
                 }
@@ -652,7 +652,7 @@ public class LoadingAdviseFragment extends Fragment {
             public void onFailure(Call<BothraSupervisorApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
 //                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -669,7 +669,7 @@ public class LoadingAdviseFragment extends Fragment {
             public void onResponse(Call<PinnacleSupervisorApiResponse> call, Response<PinnacleSupervisorApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                     return;
                 }
@@ -712,7 +712,7 @@ public class LoadingAdviseFragment extends Fragment {
             public void onFailure(Call<PinnacleSupervisorApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
 //                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -729,13 +729,13 @@ public class LoadingAdviseFragment extends Fragment {
                 Log.i(TAG, "onResponse code : " + response.code());
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                 }
 
                 if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
                     resetTextField();
                 }
             }
@@ -743,7 +743,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<LoadingAdvisePostApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
     }
@@ -757,12 +757,12 @@ public class LoadingAdviseFragment extends Fragment {
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                 }
                 if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
                     resetTextField();
                 }
             }
@@ -770,7 +770,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
     }
@@ -878,26 +878,26 @@ public class LoadingAdviseFragment extends Fragment {
                     return true;
                 } else {
                     if (!bothraSupervisor.equalsIgnoreCase(selectedBothraSupervisor)) {
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems selected Bothra Supervisor is change", "Please try to select from drop-down..!", "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Bothra Supervisor is change", "Please try to select from drop-down..!", "OK");
                         return false;
                     } else if (!pinnacleSupervisor.equalsIgnoreCase(selectedPinnacleSupervisor)) {
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems selected Pinnacle Supervisor is change", "Please try to select from drop-down..!", "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Pinnacle Supervisor is change", "Please try to select from drop-down..!", "OK");
                         return false;
                     }else
                         return false;
                 }
             } else {
                 if (!arrPinnacleSupervisor.contains(pinnacleSupervisor)) {
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "Selected Pinnacle supervisor is invalid", "Please try to select from drop-down..!", "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", "Selected Pinnacle supervisor is invalid", "Please try to select from drop-down..!", "OK");
                     return false;
                 } else if (!arrBothraSupervisor.contains(bothraSupervisor)) {
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "Selected Bothra supervisor is invalid", "Please try to select from drop-down..!", "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", "Selected Bothra supervisor is invalid", "Please try to select from drop-down..!", "OK");
                     return false;
                 }
                 return false;
             }
         } else {
-            ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems supervisor is type manually", "Please try to select from drop-down..!", "OK");
+            ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems supervisor is type manually", "Please try to select from drop-down..!", "OK");
             return false;
         }
 

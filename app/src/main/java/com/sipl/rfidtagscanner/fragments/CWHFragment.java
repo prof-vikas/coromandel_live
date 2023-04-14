@@ -130,10 +130,10 @@ public class CWHFragment extends Fragment {
                             updateRmgNo(setData());
                         } else {
 //                            alertBuilder("Selected LepNumber is change \nPlease try to select from Lep Number drop-down");
-                            ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems selected Lep number is change", "Please try to select from Lep Number drop-down..!", "OK");
+                            ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Lep number is change", "Please try to select from Lep Number drop-down..!", "OK");
                         }
                     } else {
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "Selected Lep Number is invalid", "Please select Lep number from drop-down..!", "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", "Selected Lep Number is invalid", "Please select Lep number from drop-down..!", "OK");
 //                        alertBuilder("Selected Lep Number is invalid \nPlease select from drop-down ");
                         return;
                     }
@@ -248,7 +248,7 @@ public class CWHFragment extends Fragment {
                     if (!response.isSuccessful()) {
 //                        alertBuilder(response.errorBody().toString());
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                         return;
                     }
                     if (response.isSuccessful()) {
@@ -327,7 +327,7 @@ public class CWHFragment extends Fragment {
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(t.getMessage());
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 }
             });
         } catch (Exception e) {
@@ -348,7 +348,7 @@ public class CWHFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(response.errorBody().toString());
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllUpdateRmgNo : responseCode : " + response.code() + " " + response.raw());
@@ -434,7 +434,7 @@ public class CWHFragment extends Fragment {
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
 
@@ -451,7 +451,7 @@ public class CWHFragment extends Fragment {
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                     return;
                 }
@@ -527,7 +527,7 @@ public class CWHFragment extends Fragment {
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
@@ -542,14 +542,14 @@ public class CWHFragment extends Fragment {
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                 }
 
                 Log.i(TAG, "onResponse: code" + response.code());
                 if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alertBuilder3(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
 //                    alertBuilder(response.body().getMessage());
                     resetFields();
                 }
@@ -559,7 +559,7 @@ public class CWHFragment extends Fragment {
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 t.printStackTrace();
             }
         });
