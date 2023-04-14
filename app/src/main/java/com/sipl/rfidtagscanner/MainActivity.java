@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner;
 
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -94,6 +95,12 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.logout) {
                 logout();
+            }else if (id == R.id.item_menu_loading_advise){
+                loadFragment(new LoadingAdviseFragment(),1);
+            }else if (id == R.id.item_menu_cwh) {
+                loadFragment(new CWHFragment(), 1);
+            }else if (id == R.id.item_menu_bwh) {
+                loadFragment(new BWHFragment(), 1);
             } else {
                 Toast.makeText(MainActivity.this, "click outside of menu", Toast.LENGTH_SHORT).show();
             }
@@ -111,19 +118,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMenuBasedOnRoles(String userRole) {
-        navigationView.getMenu().clear();
-        navigationView.inflateMenu(R.menu.menu_logout);
-        getMenuNavigation();
-        if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+        if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_admin);
+            getMenuNavigation();
             loadFragment(new LoadingAdviseFragment(), 1);
-        }
-        if (userRole.equalsIgnoreCase(ROLES_CWH)) {
-            loadFragment(new CWHFragment(), 1);
-        }
-        if (userRole.equalsIgnoreCase(ROLES_BWH)) {
-            loadFragment(new BWHFragment(), 1);
         } else {
-            Log.i(TAG, "No User found : " + userRole);
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_logout);
+            getMenuNavigation();
+            if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+                loadFragment(new LoadingAdviseFragment(), 1);
+            }
+            if (userRole.equalsIgnoreCase(ROLES_CWH)) {
+                loadFragment(new CWHFragment(), 1);
+            }
+            if (userRole.equalsIgnoreCase(ROLES_BWH)) {
+                loadFragment(new BWHFragment(), 1);
+            } else {
+                Log.i(TAG, "No User found : " + userRole);
+            }
         }
     }
 

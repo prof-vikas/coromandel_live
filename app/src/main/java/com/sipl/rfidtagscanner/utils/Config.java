@@ -15,6 +15,7 @@ public class Config {
     public static final String ROLES_BWH = "Bothra Warehouse Supervisor\r\n";
     public static final String ROLES_CWH = "Coromandel Warehouse Supervisor\r\n";
     public static final String ROLES_LAO = "Loading Advise Operator";
+    public static final String ROLES_ADMIN = "super admin";
 
 
     public static final String EMPTY_LEP_NUMBER_LIST = "No lep Number is available";
