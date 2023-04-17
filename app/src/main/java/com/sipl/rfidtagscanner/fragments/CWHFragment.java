@@ -82,6 +82,8 @@ public class CWHFragment extends Fragment {
     private String loginUserName;
     private String token;
     private String loginUserPlantCode;
+    private String loginUserSourceCode;
+    private String loginUserSourceCodeDesc;
 
     private String selectedRemarks;
     private Integer selectedRemarksId;
@@ -116,6 +118,8 @@ public class CWHFragment extends Fragment {
         this.token = getToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
         this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
+        this.loginUserSourceCode = ((MainActivity) getActivity()).getLoginUserStorageCode();
+        this.loginUserSourceCodeDesc = ((MainActivity) getActivity()).getLoginUserSourceLocationDesc();
 
         currentTime();
         callOnCreateApi();
@@ -374,9 +378,21 @@ public class CWHFragment extends Fragment {
                         }
 //                        arrDestinationLocation.add("Update RMG No");
                         arrDestinationLocationDesc.add("Update RMG No");
-                        for (String a : arrDestinationLocationDesc) {
+                        /*for (String a : arrDestinationLocationDesc) {
                             Log.i(TAG, "onResponse: " + a.toLowerCase());
+                        }*/
+/*
+
+                        String userSourceLocation = loginUserSourceCode;
+                        String userSourceLocationDesc = loginUserSourceCodeDesc;
+                        String userSourceDesc = userSourceLocation + " - " + userSourceLocationDesc;
+                        Log.i(TAG, "onResponse: userSourceDesc : " + userSourceDesc);
+                        if (arrDestinationLocationDesc.contains(userSourceDesc)) {
+                            Log.i(TAG, "onResponse: in array testing" + arrDestinationLocationDesc.size());
+                            arrDestinationLocationDesc.remove(userSourceDesc);
                         }
+                            Log.i(TAG, "onResponse: in array testing" + arrDestinationLocationDesc.size());
+*/
 
                         updateRmgNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
@@ -547,10 +563,20 @@ public class CWHFragment extends Fragment {
                 }
 
                 Log.i(TAG, "onResponse: code" + response.code());
-                if (response.isSuccessful()) {
+               /* if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
 //                    alertBuilder(response.body().getMessage());
+                    resetFields();
+                }*/
+
+                if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    resetFields();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
                     resetFields();
                 }
             }

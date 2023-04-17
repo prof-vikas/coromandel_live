@@ -7,6 +7,7 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_REMARK;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_REMARKS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_RMG_NUMBER;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_WAREHOUSE_NUMBER;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_BOTHRA_LEP_NUMBER;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_DESTINATION_LOCATION_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER_BOTHRA;
@@ -52,8 +53,11 @@ public interface LoadingAdviseApi {
     @GET(GET_LEP_NUMBER)
     Call<RfidLepApiResponse> getALlLepNumber(@Header("Authorization") String authToken);
 
-    @GET(GET_SOURCE_LOCATION_DETAILS)
-    Call<SourceLocationApiResponse> getAllSourceLocation(@Header("Authorization") String authToken);
+    @GET(GET_BOTHRA_LEP_NUMBER)
+    Call<TransactionsApiResponse> getALlBothraLepNumber(@Header("Authorization") String authToken);
+
+   /* @GET(GET_SOURCE_LOCATION_DETAILS)
+    Call<SourceLocationApiResponse> getAllSourceLocation(@Header("Authorization") String authToken);*/
 
     @GET(GET_DESTINATION_LOCATION_DETAILS)
     Call<DestinationLocationResponseApi> getAllDestinationLocation(@Header("Authorization") String authToken);

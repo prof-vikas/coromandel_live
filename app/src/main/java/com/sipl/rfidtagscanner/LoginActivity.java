@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else if (username.equals("bla") && password.equals("password")) {
-            savingLoginUserToSharedPref("82", "boperator", ROLES_LAO, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0006", "Gas Cylinder Shd", "BTVZ", "Bothra-Vizag");
+            savingLoginUserToSharedPref("2087", "bothraL", ROLES_LAO, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0006", "Gas Cylinder Shd", "BTVZ", "Bothra-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

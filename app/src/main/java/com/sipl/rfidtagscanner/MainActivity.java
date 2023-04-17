@@ -6,10 +6,8 @@ import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -99,11 +97,11 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.logout) {
                 logout();
-            }else if (id == R.id.item_menu_loading_advise){
-                loadFragment(new LoadingAdviseFragment(),1);
-            }else if (id == R.id.item_menu_cwh) {
+            } else if (id == R.id.item_menu_loading_advise) {
+                loadFragment(new LoadingAdviseFragment(), 1);
+            } else if (id == R.id.item_menu_cwh) {
                 loadFragment(new CWHFragment(), 1);
-            }else if (id == R.id.item_menu_bwh) {
+            } else if (id == R.id.item_menu_bwh) {
                 loadFragment(new BWHFragment(), 1);
             } else {
                 Toast.makeText(MainActivity.this, "click outside of menu", Toast.LENGTH_SHORT).show();
@@ -240,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
         }
-
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
         if (dialogMessage == null) {
             dialogMessageTxt.setVisibility(View.GONE);

@@ -83,6 +83,8 @@ public class BWHFragment extends Fragment {
     private String loginUserName;
     private String token;
     private String loginUserPlantCode;
+    private String loginUserSourceCode;
+    private String loginUserSourceCodeDesc;
 
     private String selectedRemarks;
     private Integer selectedRemarksId;
@@ -123,6 +125,9 @@ public class BWHFragment extends Fragment {
         this.token = getToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
         this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
+        this.loginUserSourceCode = ((MainActivity) getActivity()).getLoginUserStorageCode();
+        this.loginUserSourceCodeDesc = ((MainActivity) getActivity()).getLoginUserSourceLocationDesc();
+
 
         setTvClock();
         callOnCreateApi();
@@ -388,7 +393,9 @@ public class BWHFragment extends Fragment {
                         }
 //                    arrDestinationLocation.add("Select Warehouse No");
                         arrDestinationLocationDesc.add("Select Warehouse No");
-                        for (String a : arrDestinationLocationDesc) {
+
+
+                       /* for (String a : arrDestinationLocationDesc) {
                             Log.i(TAG, "onResponse: " + a.toLowerCase());
                         }
 
@@ -397,7 +404,7 @@ public class BWHFragment extends Fragment {
                             String value = entry.getValue();
                             Log.i(TAG, "onResponse: hashMapLocationCode : key : " + key + " --- Value : " + value);
                         }
-
+*/
                         updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
@@ -582,10 +589,20 @@ public class BWHFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
-                Log.i(TAG, "onResponse: code" + response.code());
-                if (response.isSuccessful()) {
+                Log.i(TAG, "onResponse: code" + response.code() + "status : " + response.body().getStatus());
+             /*   if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    resetFields();
+                }*/
+
+                if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    resetFields();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
                     resetFields();
                 }
             }

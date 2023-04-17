@@ -11,7 +11,7 @@ public class DailyTransportReportModuleDto {
     private String truckNumber;
     private String vesselName;
     private Integer sapGrNumber;
-    private String truckCapacity;
+    private Integer truckCapacity;
     private String date;
     private String batch;
     private Integer grSloc;
@@ -26,7 +26,7 @@ public class DailyTransportReportModuleDto {
     private Boolean isProcessed;
     private String remark;
 
-    public DailyTransportReportModuleDto(Integer id, String commodity, AuditDtrRequestDto auditDtrRequest, String truckNumber, String vesselName, Integer sapGrNumber, String truckCapacity, String date, String batch, Integer grSloc, Integer billNo, String uom, Integer billOfEntry, String billOfDate, String status, Boolean isActive, Integer rStat, AuditEntity auditEntity, Boolean isProcessed, String remark) {
+    public DailyTransportReportModuleDto(Integer id, String commodity, AuditDtrRequestDto auditDtrRequest, String truckNumber, String vesselName, Integer sapGrNumber, Integer truckCapacity, String date, String batch, Integer grSloc, Integer billNo, String uom, Integer billOfEntry, String billOfDate, String status, Boolean isActive, Integer rStat, AuditEntity auditEntity, Boolean isProcessed, String remark) {
         this.id = id;
         this.commodity = commodity;
         this.auditDtrRequest = auditDtrRequest;
@@ -97,11 +97,11 @@ public class DailyTransportReportModuleDto {
         this.sapGrNumber = sapGrNumber;
     }
 
-    public String getTruckCapacity() {
+    public Integer getTruckCapacity() {
         return truckCapacity;
     }
 
-    public void setTruckCapacity(String truckCapacity) {
+    public void setTruckCapacity(Integer truckCapacity) {
         this.truckCapacity = truckCapacity;
     }
 

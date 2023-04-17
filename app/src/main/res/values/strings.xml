@@ -50,7 +50,6 @@
     <string name="placeholder_confirm_password">Confirm password</string>
     <string name="placeholder_username">Username</string>
     <string name="placeholder_password">Password</string>
-    <string name="login_app_version">Version 1.0.0</string>
     <string name="login_btn_login">Login</string>
     <string name="login_btn_update_password">Update password</string>
 
@@ -74,4 +73,5 @@
     <string name="update_wh_no">Warehouse No</string>
 
 
+    <string name="login_app_version">Version 1.0.1</string>
 </resources>

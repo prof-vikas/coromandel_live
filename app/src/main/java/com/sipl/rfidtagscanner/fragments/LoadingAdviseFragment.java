@@ -43,6 +43,7 @@ import com.sipl.rfidtagscanner.dto.dtos.BothraLoadingSupervisorDto;
 import com.sipl.rfidtagscanner.dto.dtos.PinnacleLoadingSupervisorDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
+import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
@@ -359,6 +360,7 @@ public class LoadingAdviseFragment extends Fragment {
         }
         if (arrayAdapterForLepNumber != null) {
             arrayAdapterForLepNumber.clear();
+//            arrAutoCompleteLepNo.clear();
         }
         getAllLepNumber();
         removeErrorMessage();
@@ -398,15 +400,14 @@ public class LoadingAdviseFragment extends Fragment {
         return token;
     }
 
-    private boolean getAllLepNumber() {
+    private boolean getAllLepNo() {
         progressBar.setVisibility(View.VISIBLE);
-        HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
-        arrAutoCompleteLepNo = new ArrayList<>();
         try {
-            Call<RfidLepApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumber("Bearer " + token);
-            call.enqueue(new Callback<RfidLepApiResponse>() {
+            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlBothraLepNumber("Bearer " + token);
+            call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
-                public void onResponse(Call<RfidLepApiResponse> call, Response<RfidLepApiResponse> response) {
+                public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+
                     if (!response.isSuccessful()) {
 //                        alertBuilder(response.errorBody().toString());
                         progressBar.setVisibility(View.GONE);
@@ -415,9 +416,11 @@ public class LoadingAdviseFragment extends Fragment {
                     }
 
                     if (response.isSuccessful()) {
+                        HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
+                        arrAutoCompleteLepNo = new ArrayList<>();
                         progressBar.setVisibility(View.GONE);
                         Log.i(TAG, "getAllLepNumber : response.isSuccessful() : " + response.isSuccessful() + " responseCode : " + response.code() + " responseRaw : " + response.raw());
-                        List<RfidLepIssueDto> rfidLepIssueDtoList = response.body().getRfidLepIssueDtos();
+                        List<TransactionsDto> rfidLepIssueDtoList = response.body().getTransactionsDtos();
                         try {
                             if (rfidLepIssueDtoList == null || rfidLepIssueDtoList.isEmpty()) {
                                 autoCompleteLepNumber.setHint("No Lep number available");
@@ -426,18 +429,19 @@ public class LoadingAdviseFragment extends Fragment {
                             } else {
                                 autoCompleteLepNumber.setHint("Search Lep Number");
                             }
-                            String strSapGrNo = null, strTruckNo = null, strDriverName = null, strDriverMobileNo = null, strDriverLicenseNo = null, strVesselName = null, strTruckCapacity = null, strCommodity = null;
+                            String strSapGrNo = null, strTruckNo = null, strDriverName = null, strDriverMobileNo = null, strDriverLicenseNo = null, strVesselName = null, strCommodity = null;
+                            Integer strTruckCapacity = null;
                             for (int i = 0; i < rfidLepIssueDtoList.size(); i++) {
-                                String strLepNumber = rfidLepIssueDtoList.get(i).getLepNumber();
-                                int id = rfidLepIssueDtoList.get(i).getId();
-                                strDriverName = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverName());
-                                strDriverMobileNo = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverMobileNo());
-                                strDriverLicenseNo = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverLicenseNo());
-                                strSapGrNo = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getSapGrNumber());
-                                strTruckNo = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getTruckNumber());
-                                strVesselName = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getVesselName());
-                                strTruckCapacity = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getTruckCapacity());
-                                strCommodity = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getCommodity());
+                                String strLepNumber = rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getLepNumber();
+                                int id = rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getId();
+                                strDriverName = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName());
+                                strDriverMobileNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverMobileNo());
+                                strDriverLicenseNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo());
+                                strSapGrNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getSapGrNumber());
+                                strTruckNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber());
+                                strVesselName = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getVesselName());
+                                strTruckCapacity = rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity();
+                                strCommodity = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity());
                                 arrAutoCompleteLepNo.add(strLepNumber);
                                 hashMapLepNumber.put(strLepNumber, id);
                             }
@@ -449,7 +453,7 @@ public class LoadingAdviseFragment extends Fragment {
                             String finalStrDriverMobileNo = strDriverMobileNo;
                             String finalStrDriverLicenseNo = strDriverLicenseNo;
                             String finalStrVesselName = strVesselName;
-                            String finalStrTruckCapacity = strTruckCapacity;
+                            Integer finalStrTruckCapacity = strTruckCapacity;
                             String finalStrCommodity = strCommodity;
                             autoCompleteLepNumber.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
@@ -466,7 +470,7 @@ public class LoadingAdviseFragment extends Fragment {
                                         edtDriverLicenseNo.setText(finalStrDriverLicenseNo);
                                         edtVesselName.setText(finalStrVesselName);
                                         edtCommodity.setText(finalStrCommodity);
-                                        edtTruckCapacity.setText(finalStrTruckCapacity);
+                                        edtTruckCapacity.setText(String.valueOf(finalStrTruckCapacity));
                                     }
                                 }
                             });
@@ -478,13 +482,110 @@ public class LoadingAdviseFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<RfidLepApiResponse> call, Throwable t) {
+                public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(t.getMessage());
                     ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-                    t.printStackTrace();
                 }
             });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private boolean getAllLepNumber() {
+        progressBar.setVisibility(View.VISIBLE);
+        HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
+        arrAutoCompleteLepNo = new ArrayList<>();
+        try {
+            if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
+                getAllLepNo();
+            } else {
+                Call<RfidLepApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumber("Bearer " + token);
+                call.enqueue(new Callback<RfidLepApiResponse>() {
+                    @Override
+                    public void onResponse(Call<RfidLepApiResponse> call, Response<RfidLepApiResponse> response) {
+                        if (!response.isSuccessful()) {
+//                        alertBuilder(response.errorBody().toString());
+                            progressBar.setVisibility(View.GONE);
+                            ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                            return;
+                        }
+
+                        if (response.isSuccessful()) {
+                            progressBar.setVisibility(View.GONE);
+                            Log.i(TAG, "getAllLepNumber : response.isSuccessful() : " + response.isSuccessful() + " responseCode : " + response.code() + " responseRaw : " + response.raw());
+                            List<RfidLepIssueDto> rfidLepIssueDtoList = response.body().getRfidLepIssueDtos();
+                            try {
+                                if (rfidLepIssueDtoList == null || rfidLepIssueDtoList.isEmpty()) {
+                                    autoCompleteLepNumber.setHint("No Lep number available");
+                                    Toast.makeText(getActivity(), EMPTY_LEP_NUMBER_LIST, Toast.LENGTH_SHORT).show();
+                                    return;
+                                } else {
+                                    autoCompleteLepNumber.setHint("Search Lep Number");
+                                }
+                                String strSapGrNo = null, strTruckNo = null, strDriverName = null, strDriverMobileNo = null, strDriverLicenseNo = null, strVesselName = null, strCommodity = null;
+                                Integer strTruckCapacity = null;
+                                for (int i = 0; i < rfidLepIssueDtoList.size(); i++) {
+                                    String strLepNumber = rfidLepIssueDtoList.get(i).getLepNumber();
+                                    int id = rfidLepIssueDtoList.get(i).getId();
+                                    strDriverName = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverName());
+                                    strDriverMobileNo = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverMobileNo());
+                                    strDriverLicenseNo = String.valueOf(rfidLepIssueDtoList.get(i).getDriverMaster().getDriverLicenseNo());
+                                    strSapGrNo = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getSapGrNumber());
+                                    strTruckNo = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getTruckNumber());
+                                    strVesselName = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getVesselName());
+                                    strTruckCapacity = rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getTruckCapacity();
+                                    strCommodity = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getCommodity());
+                                    arrAutoCompleteLepNo.add(strLepNumber);
+                                    hashMapLepNumber.put(strLepNumber, id);
+                                }
+                                arrayAdapterForLepNumber = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrAutoCompleteLepNo);
+                                autoCompleteLepNumber.setAdapter(arrayAdapterForLepNumber);
+                                String finalStrSapGrNo = strSapGrNo;
+                                String finalStrTruckNo = strTruckNo;
+                                String finalStrDriverName = strDriverName;
+                                String finalStrDriverMobileNo = strDriverMobileNo;
+                                String finalStrDriverLicenseNo = strDriverLicenseNo;
+                                String finalStrVesselName = strVesselName;
+                                Integer finalStrTruckCapacity = strTruckCapacity;
+                                String finalStrCommodity = strCommodity;
+                                autoCompleteLepNumber.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                        SelectedLepNo = arrayAdapterForLepNumber.getItem(i);
+                                        if (hashMapLepNumber.containsKey(SelectedLepNo)) {
+                                            selectedLepNumberId = hashMapLepNumber.get(SelectedLepNo);
+                                        }
+                                        if (arrAutoCompleteLepNo.contains(SelectedLepNo)) {
+                                            edtSapGrNo.setText(finalStrSapGrNo);
+                                            edtTruckNumber.setText(finalStrTruckNo);
+                                            edtDriverName.setText(finalStrDriverName);
+                                            edtDriverMobileNo.setText(finalStrDriverMobileNo);
+                                            edtDriverLicenseNo.setText(finalStrDriverLicenseNo);
+                                            edtVesselName.setText(finalStrVesselName);
+                                            edtCommodity.setText(finalStrCommodity);
+                                            edtTruckCapacity.setText(String.valueOf(finalStrTruckCapacity));
+                                        }
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.getMessage();
+                                return;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RfidLepApiResponse> call, Throwable t) {
+                        progressBar.setVisibility(View.GONE);
+//                    alertBuilder(t.getMessage());
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                        t.printStackTrace();
+                    }
+                });
+            }
         } catch (Exception e) {
             Log.i(TAG, "getALlLepNumberWithFlag: " + e.getMessage());
         }
@@ -536,10 +637,12 @@ public class LoadingAdviseFragment extends Fragment {
                         arrDestinationLocationDis.add("Select Destination");
 //                        arrDestinationLocation.add("Select Destination");
                         String userSourceLocation = loginUserStorageLocation;
-                        if (arrDestinationLocation.contains(userSourceLocation)) {
-                            arrDestinationLocation.remove(userSourceLocation);
+                        String userSourceLocationDesc = loginUserStorageLocationDesc;
+                        String userSourceDesc = userSourceLocation + " - " + userSourceLocationDesc;
+                        if (arrDestinationLocationDis.contains(userSourceDesc)) {
+                            arrDestinationLocationDis.remove(userSourceDesc);
                         }
-                        Log.i(TAG, "onResponse: array : " + arrDestinationLocation.size());
+                        Log.i(TAG, "onResponse: array : " + arrDestinationLocationDis.size());
 
                         destinationLocationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDis) {
                             @Override
@@ -732,10 +835,14 @@ public class LoadingAdviseFragment extends Fragment {
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                 }
-
-                if (response.isSuccessful()) {
+                Log.i(TAG, "onResponse: add loading advise : " + response.body().getStatus());
+                if (response.body().getStatus().equalsIgnoreCase("CREATED")) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    resetTextField();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
                     resetTextField();
                 }
             }
@@ -748,7 +855,8 @@ public class LoadingAdviseFragment extends Fragment {
         });
     }
 
-    private void UpdateBothraLoadingAdviseDetails(UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto) {
+    private void UpdateBothraLoadingAdviseDetails(UpdateBothraLoadingAdviseDto
+                                                          updateBothraLoadingAdviseDto) {
         progressBar.setVisibility(View.VISIBLE);
         Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(updateBothraLoadingAdviseDto).toString());
         Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
@@ -760,10 +868,15 @@ public class LoadingAdviseFragment extends Fragment {
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
 //                    alertBuilder(response.errorBody().toString());
                 }
-                if (response.isSuccessful()) {
+
+                if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
                     resetTextField();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
+//                    resetTextField();
                 }
             }
 
@@ -778,13 +891,13 @@ public class LoadingAdviseFragment extends Fragment {
     private LoadingAdviseRequestDto setData() {
         final Integer RSTAT = 1;
         final Integer FLAG = 1;
+        LoadingAdviseRequestDto loadingAdviseRequestDto = null;
 
         AuditEntity auditEntity = new AuditEntity(loginUserName, null);
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
         StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
         UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
-        LoadingAdviseRequestDto loadingAdviseRequestDto = null;
         BothraLoadingSupervisorDto bothraLoadingDto = new BothraLoadingSupervisorDto(selectedBothraSupervisorId);
         PinnacleLoadingSupervisorDto pinnacleLoadingDto = new PinnacleLoadingSupervisorDto(selectedPinnacleSupervisorId);
         loadingAdviseRequestDto = new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
@@ -832,37 +945,7 @@ public class LoadingAdviseFragment extends Fragment {
         if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
             UpdateBothraLoadingAdviseDetails(updateData());
         } else {
-          /*  String bothraSupervisor = autoCompleteBothraSupervisor.getText().toString();
-            String pinnacleSupervisor = autoCompleteBothraSupervisor.getText().toString();
-            if (selectedBothraSupervisorId != null && selectedPinnacleSupervisorId != null) {
-                Log.i(TAG, "chooseMethodToCall: selectedBothraSupervisorId " + selectedBothraSupervisorId + " selectedPinnacleSupervisorId" + selectedPinnacleSupervisorId);
-                if (arrPinnacleSupervisor.contains(pinnacleSupervisor) && arrBothraSupervisor.contains(bothraSupervisor)) {
-                    if (selectedPinnacleSupervisor.equalsIgnoreCase(pinnacleSupervisor) && selectedBothraSupervisor.equalsIgnoreCase(bothraSupervisor)) {
-                        sendLoadingAdviseDetails(setData());
-                    } else {
-                        if (!bothraSupervisor.equalsIgnoreCase(selectedBothraSupervisor)) {
-                            ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems selected Bothra Supervisor is change", "Please try to select from drop-down..!", "OK");
-
-                        } else if (!pinnacleSupervisor.equalsIgnoreCase(selectedBothraSupervisor)) {
-                            ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems selected Pinnacle Supervisor is change", "Please try to select from drop-down..!", "OK");
-
-                        }
-                    }
-                } else {
-                    if (!arrPinnacleSupervisor.contains(pinnacleSupervisor)) {
-//                    alertBuilder("Enter Pinnacle supervisor is not valid");
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "Selected Pinnacle supervisor is invalid", "Please try to select from drop-down..!", "OK");
-
-                    } else if (!arrBothraSupervisor.contains(bothraSupervisor)) {
-                        ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "Selected Bothra supervisor is invalid", "Please try to select from drop-down..!", "OK");
-
-//                    alertBuilder("Enter Bothra supervisor is not valid");
-                    }
-                }
-            } else {
-                ((MainActivity) getActivity()).alertBuilder3(getActivity(), "error", "It seems supervisor is type manually", "Please try to select from drop-down..!", "OK");
-            }*/
-            if (nullCheckMethod()){
+            if (nullCheckMethod()) {
                 sendLoadingAdviseDetails(setData());
             }
         }
@@ -883,7 +966,7 @@ public class LoadingAdviseFragment extends Fragment {
                     } else if (!pinnacleSupervisor.equalsIgnoreCase(selectedPinnacleSupervisor)) {
                         ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Pinnacle Supervisor is change", "Please try to select from drop-down..!", "OK");
                         return false;
-                    }else
+                    } else
                         return false;
                 }
             } else {

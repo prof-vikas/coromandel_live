@@ -10,10 +10,13 @@ public class ApiConstants {
     public static final String LOGIN = BASE_URL + "api/v1/auth/login/";
 
     // Loading Advise
-    public static final String GET_LEP_NUMBER = BASE_URL + "RfidLepIssue/getAllRfidLepTransaction/";
+    public static final String GET_LEP_NUMBER = BASE_URL + "RfidLepIssue/getAllRfidLepTransaction";
+    public static final String GET_BOTHRA_LEP_NUMBER = BASE_URL + "transactions/11/12";
 
     // Bothra loading advise
     public static final String UPDATE_BOTHRA_LOADING_ADVISE = BASE_URL + "transactions/updateLoadingTransactions/";
+
+
     public static final String GET_SOURCE_LOCATION_DETAILS = BASE_URL + "source/getAllSourceDetails/";
     public static final String GET_DESTINATION_LOCATION_DETAILS = BASE_URL + "storageLocation/getAllStorageLocation/";
     public static final String GET_ALL_PINNACLE_SUPERVISOR = BASE_URL + "pinnacle/getAllPinnacleDetails/";
