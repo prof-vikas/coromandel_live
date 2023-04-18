@@ -403,11 +403,12 @@ public class LoadingAdviseFragment extends Fragment {
     private boolean getAllLepNo() {
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlBothraLepNumber("Bearer " + token);
+            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlBothraLepNumber("Bearer " + token, "12","11");
+
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-
+                    Log.i(TAG, "onResponse: getAllLepNo() <-----------> " + response.raw());
                     if (!response.isSuccessful()) {
 //                        alertBuilder(response.errorBody().toString());
                         progressBar.setVisibility(View.GONE);

@@ -244,7 +244,7 @@ public class CWHFragment extends Fragment {
     private boolean getAllLepNo() {
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberWithFlag("Bearer " + token);
+            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberWithFlag("Bearer " + token, "4","3");
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {

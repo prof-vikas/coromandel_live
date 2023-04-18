@@ -54,7 +54,7 @@ public interface LoadingAdviseApi {
     Call<RfidLepApiResponse> getALlLepNumber(@Header("Authorization") String authToken);
 
     @GET(GET_BOTHRA_LEP_NUMBER)
-    Call<TransactionsApiResponse> getALlBothraLepNumber(@Header("Authorization") String authToken);
+    Call<TransactionsApiResponse> getALlBothraLepNumber(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransaction, @Query("prevTransactionFlag") String previousTransaction);
 
    /* @GET(GET_SOURCE_LOCATION_DETAILS)
     Call<SourceLocationApiResponse> getAllSourceLocation(@Header("Authorization") String authToken);*/
@@ -73,7 +73,7 @@ public interface LoadingAdviseApi {
 
     //Coromandel
     @GET(GET_LEP_NUMBER_COROMANDEL)
-    Call<TransactionsApiResponse> getALlLepNumberWithFlag(@Header("Authorization") String authToken);
+    Call<TransactionsApiResponse> getALlLepNumberWithFlag(@Header("Authorization") String authToken,@Query("currentTransactionFlag") String currentTransaction, @Query("prevTransactionFlag") String previousTransaction);
 
     @GET(GET_ALL_RMG_NUMBER)
     Call<RmgNumberApiResponse> getAllCoromandelRmgNo(@Header("Authorization") String authToken, @Query("plantCode") String id);
@@ -87,7 +87,7 @@ public interface LoadingAdviseApi {
 
     //Bothra
     @GET(GET_LEP_NUMBER_BOTHRA)
-    Call<TransactionsApiResponse> getALlLepNumberBothra(@Header("Authorization") String authToken);
+    Call<TransactionsApiResponse> getALlLepNumberBothra(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransaction, @Query("prevTransactionFlag") String previousTransaction);
 
     @GET(GET_ALL_WAREHOUSE_NUMBER)
     Call<RmgNumberApiResponse> getAllWareHouse(@Header("Authorization") String authToken, @Query("plantCode") String id);

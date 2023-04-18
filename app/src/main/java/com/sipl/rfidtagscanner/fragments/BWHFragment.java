@@ -263,7 +263,7 @@ public class BWHFragment extends Fragment {
 
     private boolean getALlLepNumberBothra() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberBothra("Bearer " + token);
+        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberBothra("Bearer " + token, "8","7");
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
