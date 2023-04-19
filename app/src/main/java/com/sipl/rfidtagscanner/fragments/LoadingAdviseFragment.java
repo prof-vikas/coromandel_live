@@ -54,6 +54,8 @@ import com.sipl.rfidtagscanner.dto.response.PinnacleSupervisorApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
+import com.sipl.rfidtagscanner.entites.BothraWHDto;
+import com.sipl.rfidtagscanner.entites.LoadingAdviseLepDto;
 import com.sipl.rfidtagscanner.utils.Helper;
 import com.sipl.rfidtagscanner.utils.RecyclerviewHardcodedData;
 
@@ -68,6 +70,10 @@ import retrofit2.Response;
 
 public class LoadingAdviseFragment extends Fragment {
     private static final String TAG = "TracingError";
+
+    LoadingAdviseLepDto loadingAdviseLepDto;
+    List<LoadingAdviseLepDto> loadingAdviseLepDtoList = new ArrayList<>();
+
 
     ArrayList<String> arrPinnacleSupervisor;
     ArrayList<String> arrAutoCompleteLepNo;
@@ -244,18 +250,6 @@ public class LoadingAdviseFragment extends Fragment {
         recyclerViewTrip.setAdapter(tripRmgDataAdapter);
     }
 
-/*    private void alertBuilder(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(alertMessage)
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }*/
 
     private boolean validateLoadingAdviseForm() {
         if (autoCompleteLepNumber.length() == 0) {
@@ -408,7 +402,6 @@ public class LoadingAdviseFragment extends Fragment {
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-                    Log.i(TAG, "onResponse: getAllLepNo() <-----------> " + response.raw());
                     if (!response.isSuccessful()) {
 //                        alertBuilder(response.errorBody().toString());
                         progressBar.setVisibility(View.GONE);
@@ -416,7 +409,9 @@ public class LoadingAdviseFragment extends Fragment {
                         return;
                     }
 
-                    if (response.isSuccessful()) {
+
+                    if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
+                        Log.i(TAG, "onResponse: " + response.body().getStatus());
                         HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
                         arrAutoCompleteLepNo = new ArrayList<>();
                         progressBar.setVisibility(View.GONE);
@@ -430,32 +425,29 @@ public class LoadingAdviseFragment extends Fragment {
                             } else {
                                 autoCompleteLepNumber.setHint("Search Lep Number");
                             }
-                            String strSapGrNo = null, strTruckNo = null, strDriverName = null, strDriverMobileNo = null, strDriverLicenseNo = null, strVesselName = null, strCommodity = null;
-                            Integer strTruckCapacity = null;
+                            Log.i(TAG, "onResponse: " + response.body().getStatus());
                             for (int i = 0; i < rfidLepIssueDtoList.size(); i++) {
                                 String strLepNumber = rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getLepNumber();
                                 int id = rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getId();
-                                strDriverName = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName());
-                                strDriverMobileNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverMobileNo());
-                                strDriverLicenseNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo());
-                                strSapGrNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getSapGrNumber());
-                                strTruckNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber());
-                                strVesselName = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getVesselName());
-                                strTruckCapacity = rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity();
-                                strCommodity = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity());
+                                String strDriverName = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName());
+                                String strDriverMobileNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverMobileNo());
+                                String strDriverLicenseNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo());
+                                String strSapGrNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getSapGrNumber());
+                                String strTruckNo = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber());
+                                String strVesselName = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getVesselName());
+                                Integer strTruckCapacity = rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity();
+                                String strCommodity = String.valueOf(rfidLepIssueDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity());
+
+                                loadingAdviseLepDto = new LoadingAdviseLepDto(strLepNumber,strDriverName,strDriverMobileNo,strDriverLicenseNo,strSapGrNo,strTruckNo,strVesselName,strTruckCapacity,strCommodity);
+                                loadingAdviseLepDtoList.add(loadingAdviseLepDto);
+
                                 arrAutoCompleteLepNo.add(strLepNumber);
                                 hashMapLepNumber.put(strLepNumber, id);
                             }
+                            Log.i(TAG, "onResponse: loadingAdviseLepDtoList.size() : " + loadingAdviseLepDtoList.size());
                             arrayAdapterForLepNumber = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrAutoCompleteLepNo);
                             autoCompleteLepNumber.setAdapter(arrayAdapterForLepNumber);
-                            String finalStrSapGrNo = strSapGrNo;
-                            String finalStrTruckNo = strTruckNo;
-                            String finalStrDriverName = strDriverName;
-                            String finalStrDriverMobileNo = strDriverMobileNo;
-                            String finalStrDriverLicenseNo = strDriverLicenseNo;
-                            String finalStrVesselName = strVesselName;
-                            Integer finalStrTruckCapacity = strTruckCapacity;
-                            String finalStrCommodity = strCommodity;
+
                             autoCompleteLepNumber.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -463,15 +455,22 @@ public class LoadingAdviseFragment extends Fragment {
                                     if (hashMapLepNumber.containsKey(SelectedLepNo)) {
                                         selectedLepNumberId = hashMapLepNumber.get(SelectedLepNo);
                                     }
+                                    Log.i(TAG, "onItemClick: SelectedLepNo : " + SelectedLepNo);
+
                                     if (arrAutoCompleteLepNo.contains(SelectedLepNo)) {
-                                        edtSapGrNo.setText(finalStrSapGrNo);
-                                        edtTruckNumber.setText(finalStrTruckNo);
-                                        edtDriverName.setText(finalStrDriverName);
-                                        edtDriverMobileNo.setText(finalStrDriverMobileNo);
-                                        edtDriverLicenseNo.setText(finalStrDriverLicenseNo);
-                                        edtVesselName.setText(finalStrVesselName);
-                                        edtCommodity.setText(finalStrCommodity);
-                                        edtTruckCapacity.setText(String.valueOf(finalStrTruckCapacity));
+                                        for (LoadingAdviseLepDto d : loadingAdviseLepDtoList) {
+                                            Log.i(TAG, "onItemClick: in foreach leoop" );
+                                            if (SelectedLepNo.equalsIgnoreCase(d.getLepNumber())) {
+                                                edtSapGrNo.setText(d.getSapGrnNo());
+                                                edtTruckNumber.setText(d.getTruckNo());
+                                                edtDriverName.setText(d.getDriverName());
+                                                edtDriverMobileNo.setText(d.getDriverMobileNo());
+                                                edtDriverLicenseNo.setText(d.getDriverLicenseNo());
+                                                edtVesselName.setText(d.getVesselName());
+                                                edtCommodity.setText(d.getCommodity());
+                                                edtTruckCapacity.setText(String.valueOf(d.getTruckCapacity()));
+                                            }
+                                        }
                                     }
                                 }
                             });
@@ -479,6 +478,9 @@ public class LoadingAdviseFragment extends Fragment {
                             e.getMessage();
                             return;
                         }
+                    }else {
+                        progressBar.setVisibility(View.GONE);
+                        ((MainActivity) getActivity()).alert(getActivity(),"warning", "No LEP no is available",null,"OK");
                     }
                 }
 
@@ -539,19 +541,23 @@ public class LoadingAdviseFragment extends Fragment {
                                     strVesselName = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getVesselName());
                                     strTruckCapacity = rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getTruckCapacity();
                                     strCommodity = String.valueOf(rfidLepIssueDtoList.get(i).getDailyTransportReportModule().getCommodity());
+
+                                    loadingAdviseLepDto = new LoadingAdviseLepDto(strLepNumber,strDriverName,strDriverMobileNo,strDriverLicenseNo,strSapGrNo,strTruckNo,strVesselName,strTruckCapacity,strCommodity);
+                                    loadingAdviseLepDtoList.add(loadingAdviseLepDto);
+
                                     arrAutoCompleteLepNo.add(strLepNumber);
                                     hashMapLepNumber.put(strLepNumber, id);
                                 }
                                 arrayAdapterForLepNumber = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrAutoCompleteLepNo);
                                 autoCompleteLepNumber.setAdapter(arrayAdapterForLepNumber);
-                                String finalStrSapGrNo = strSapGrNo;
+                           /*     String finalStrSapGrNo = strSapGrNo;
                                 String finalStrTruckNo = strTruckNo;
                                 String finalStrDriverName = strDriverName;
                                 String finalStrDriverMobileNo = strDriverMobileNo;
                                 String finalStrDriverLicenseNo = strDriverLicenseNo;
                                 String finalStrVesselName = strVesselName;
                                 Integer finalStrTruckCapacity = strTruckCapacity;
-                                String finalStrCommodity = strCommodity;
+                                String finalStrCommodity = strCommodity;*/
                                 autoCompleteLepNumber.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -559,15 +565,22 @@ public class LoadingAdviseFragment extends Fragment {
                                         if (hashMapLepNumber.containsKey(SelectedLepNo)) {
                                             selectedLepNumberId = hashMapLepNumber.get(SelectedLepNo);
                                         }
+                                        Log.i(TAG, "onItemClick: SelectedLepNo : " + SelectedLepNo);
+
                                         if (arrAutoCompleteLepNo.contains(SelectedLepNo)) {
-                                            edtSapGrNo.setText(finalStrSapGrNo);
-                                            edtTruckNumber.setText(finalStrTruckNo);
-                                            edtDriverName.setText(finalStrDriverName);
-                                            edtDriverMobileNo.setText(finalStrDriverMobileNo);
-                                            edtDriverLicenseNo.setText(finalStrDriverLicenseNo);
-                                            edtVesselName.setText(finalStrVesselName);
-                                            edtCommodity.setText(finalStrCommodity);
-                                            edtTruckCapacity.setText(String.valueOf(finalStrTruckCapacity));
+                                            for (LoadingAdviseLepDto d : loadingAdviseLepDtoList) {
+                                                Log.i(TAG, "onItemClick: in foreach leoop" );
+                                                if (SelectedLepNo.equalsIgnoreCase(d.getLepNumber())) {
+                                                    edtSapGrNo.setText(d.getSapGrnNo());
+                                                    edtTruckNumber.setText(d.getTruckNo());
+                                                    edtDriverName.setText(d.getDriverName());
+                                                    edtDriverMobileNo.setText(d.getDriverMobileNo());
+                                                    edtDriverLicenseNo.setText(d.getDriverLicenseNo());
+                                                    edtVesselName.setText(d.getVesselName());
+                                                    edtCommodity.setText(d.getCommodity());
+                                                    edtTruckCapacity.setText(String.valueOf(d.getTruckCapacity()));
+                                                }
+                                            }
                                         }
                                     }
                                 });

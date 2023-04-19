@@ -46,6 +46,7 @@ import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
+import com.sipl.rfidtagscanner.entites.CoromandelWHDto;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 import com.sipl.rfidtagscanner.utils.Helper;
 import com.sipl.rfidtagscanner.utils.RecyclerviewHardcodedData;
@@ -62,7 +63,11 @@ import retrofit2.Response;
 public class CWHFragment extends Fragment {
 
     private final String TAG = "BothraAdvicePage";
+
+    CoromandelWHDto coromandelWHDto;
+    List<CoromandelWHDto> coromandelWHDtoList = new ArrayList<>();
     ArrayAdapter<String> updateRmgNoAdapter;
+
     ArrayAdapter<String> arrayAdapterForLepNumber;
     ArrayList<String> arrAutoCompleteLepNo;
     ArrayAdapter<String> remarksAdapter;
@@ -244,7 +249,7 @@ public class CWHFragment extends Fragment {
     private boolean getAllLepNo() {
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberWithFlag("Bearer " + token, "4","3");
+            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberWithFlag("Bearer " + token, "4", "3");
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
@@ -263,6 +268,9 @@ public class CWHFragment extends Fragment {
                         HashMap<String, String> hashMapForPreviousRmgNo = new HashMap<>();
                         arrAutoCompleteLepNo = new ArrayList<>();
 
+
+                        String strTruckNo = null, srtPreviousRmgNoDesc = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
+
                         try {
                             if (transactionsDtoList == null || transactionsDtoList.isEmpty()) {
                                 autoCompleteLepNo.setHint("No Lep number available");
@@ -271,52 +279,45 @@ public class CWHFragment extends Fragment {
                             } else {
                                 autoCompleteLepNo.setHint("Search Lep Number");
                             }
-                            String strTruckNo = null, srtPreviousRmgNoDesc = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
+
                             for (int i = 0; i < transactionsDtoList.size(); i++) {
                                 String strLepNumber = transactionsDtoList.get(i).getRfidLepIssueModel().getLepNumber();
                                 int id = transactionsDtoList.get(i).getRfidLepIssueModel().getId();
                                 strDriverName = transactionsDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-//                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
-                                if (transactionsDtoList.get(i).getSourceNetWeight() != null) {
-                                    Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getSourceNetWeight());
-                                    grossWeight = String.valueOf(transactionsDtoList.get(i).getSourceNetWeight());
-                                } else {
-                                    grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
-                                    Log.i(TAG, "onResponse:else transactionsDtoList.get(i).getGrossWeight() : " + transactionsDtoList.get(i).getGrossWeight());
-                                }
-
+                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
                                 strPreviousRmgNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 srtPreviousRmgNoDesc = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationDesc();
 
+                                coromandelWHDto = new CoromandelWHDto(strLepNumber, strTruckNo, strDriverName, strCommodity, grossWeight, strPreviousRmgNo, srtPreviousRmgNoDesc);
+                                coromandelWHDtoList.add(coromandelWHDto);
                                 arrAutoCompleteLepNo.add(strLepNumber);
                                 hashMapLepNumber.put(strLepNumber, id);
                             }
 
                             arrayAdapterForLepNumber = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrAutoCompleteLepNo);
                             autoCompleteLepNo.setAdapter(arrayAdapterForLepNumber);
-                            String finalStrTruckNo = strTruckNo;
-                            String finalStrDriverName = strDriverName;
-                            String finalStrCommodity = strCommodity;
-                            String finalGrossWeight = grossWeight;
-                            String finalStrPreviousRmgNo = strPreviousRmgNo;
-                            String finalStrPreviousRmgNoDesc = srtPreviousRmgNoDesc.toLowerCase();
                             autoCompleteLepNo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                     selectedLepNumber = arrayAdapterForLepNumber.getItem(i);
-                                    previousRmgNoId = finalStrPreviousRmgNo;
+//                                    previousRmgNoId = finalStrPreviousRmgNo;
                                     if (hashMapLepNumber.containsKey(selectedLepNumber)) {
                                         selectedLepNumberId = hashMapLepNumber.get(selectedLepNumber);
                                     }
 
                                     if (arrAutoCompleteLepNo.contains(selectedLepNumber)) {
-                                        edtTruckNumber.setText(finalStrTruckNo);
-                                        edtDriverName.setText(finalStrDriverName);
-                                        edtCommodity.setText(finalStrCommodity);
-                                        edtGrossWeight.setText(finalGrossWeight);
-                                        edtPreviousRmgNo.setText(finalStrPreviousRmgNo + " - " + finalStrPreviousRmgNoDesc);
+                                        for (CoromandelWHDto d : coromandelWHDtoList) {
+                                            if (d.getLepNo().equalsIgnoreCase(selectedLepNumber)) {
+                                                edtTruckNumber.setText(d.getTruckNo());
+                                                edtDriverName.setText(d.getDriverName());
+                                                edtCommodity.setText(d.getCommodity());
+                                                edtGrossWeight.setText(d.getGrossWeight());
+                                                edtPreviousRmgNo.setText(d.getPreviousRMGNo() + " - " + d.getPreviousRMGNoDesc().toLowerCase());
+                                                previousRmgNoId = d.getPreviousRMGNo();
+                                            }
+                                        }
                                     }
                                 }
                             });
@@ -331,7 +332,7 @@ public class CWHFragment extends Fragment {
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(t.getMessage());
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 }
             });
         } catch (Exception e) {

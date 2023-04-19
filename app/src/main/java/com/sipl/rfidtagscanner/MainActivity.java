@@ -229,12 +229,19 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         TextView error = dialog.findViewById(R.id.dialog_type_error);
         TextView success = dialog.findViewById(R.id.dialog_type_success);
+        TextView warning = dialog.findViewById(R.id.dialog_type_warning);
         if (dialogType.equalsIgnoreCase("error")) {
             error.setVisibility(View.VISIBLE);
             success.setVisibility(View.GONE);
+            warning.setVisibility(View.GONE);
         } else if (dialogType.equalsIgnoreCase("success")) {
             error.setVisibility(View.GONE);
+            warning.setVisibility(View.GONE);
             success.setVisibility(View.VISIBLE);
+        }else if (dialogType.equalsIgnoreCase("warning")) {
+            error.setVisibility(View.GONE);
+            success.setVisibility(View.GONE);
+            warning.setVisibility(View.VISIBLE);
         } else {
             Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
         }
