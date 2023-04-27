@@ -98,7 +98,7 @@
                     <EditText
                         android:id="@+id/edt_la_sap_rg_no"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
@@ -158,7 +158,7 @@
                     <EditText
                         android:id="@+id/edt_la_driver_name"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
@@ -218,7 +218,7 @@
                     <EditText
                         android:id="@+id/edt_la_driver_license_no"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
@@ -249,7 +249,7 @@
                     <EditText
                         android:id="@+id/edt_la_vessel_name"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
@@ -279,7 +279,7 @@
                     <EditText
                         android:id="@+id/edt_la_commodity"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
@@ -344,7 +344,7 @@
                     <EditText
                         android:id="@+id/la_edt_source_location"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
@@ -406,7 +406,7 @@
                     <EditText
                         android:id="@+id/edt_la_loading_supervisor"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
@@ -438,7 +438,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/ll_auto_pinnacle_supervisor"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:hint="Search Supervisor"
@@ -470,7 +470,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/ll_auto_bothra_supervisor"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
                         android:hint="Search Supervisor"

@@ -56,9 +56,6 @@ public interface LoadingAdviseApi {
     @GET(GET_BOTHRA_LEP_NUMBER)
     Call<TransactionsApiResponse> getALlBothraLepNumber(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransaction, @Query("prevTransactionFlag") String previousTransaction);
 
-   /* @GET(GET_SOURCE_LOCATION_DETAILS)
-    Call<SourceLocationApiResponse> getAllSourceLocation(@Header("Authorization") String authToken);*/
-
     @GET(GET_DESTINATION_LOCATION_DETAILS)
     Call<DestinationLocationResponseApi> getAllDestinationLocation(@Header("Authorization") String authToken);
 
