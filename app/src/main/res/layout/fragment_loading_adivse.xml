@@ -36,6 +36,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/cardView" />
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,11 +48,41 @@
                 android:paddingRight="10dp">
 
                 <LinearLayout
+                    android:id="@+id/title_rfid_tag_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/la_ly_pd_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="RFID Tag"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/edt_la_rfid_tag_no"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/title_lep_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -64,16 +95,15 @@
                         android:textColor="@color/fragment_tv_text"
                         android:textSize="@dimen/common_tv_text" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/la_auto_complete_lep_number"
+                    <EditText
+                        android:id="@+id/la_edt_lep_number"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
-                        android:background="@drawable/rectangle_edt_write_able_field"
+                        android:background="@drawable/rectangle_edt_read_only_field"
                         android:inputType="textCapCharacters"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:hint="Search Lep Number"
                         android:textColor="@color/fragment_edt_text"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
@@ -82,8 +112,8 @@
                     android:id="@+id/title_sap_gr_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -112,8 +142,8 @@
                     android:id="@+id/title_truck_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -142,8 +172,8 @@
                     android:id="@+id/title_driver_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -172,8 +202,8 @@
                     android:id="@+id/title_driver_mobile_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -202,8 +232,8 @@
                     android:id="@+id/title_driver_license_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -233,8 +263,8 @@
                     android:id="@+id/title_vessel_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -263,8 +293,8 @@
                     android:id="@+id/title_commodity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -293,8 +323,8 @@
                     android:id="@+id/title_quantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -358,8 +388,8 @@
                     android:id="@+id/loading_advise_destination_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -389,8 +419,8 @@
                     android:id="@+id/title_loading_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -420,8 +450,8 @@
                     android:id="@+id/title_pinnacle_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -441,8 +471,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
-                        android:hint="Search Supervisor"
                         android:background="@drawable/rectangle_edt_write_able_field"
+                        android:hint="Search Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
@@ -452,8 +482,8 @@
                     android:id="@+id/title_bothra_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -473,8 +503,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
-                        android:hint="Search Supervisor"
                         android:background="@drawable/rectangle_edt_write_able_field"
+                        android:hint="Search Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
@@ -484,8 +514,8 @@
                     android:id="@+id/title_date_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -497,32 +527,32 @@
                         android:textColor="@color/fragment_tv_text"
                         android:textSize="@dimen/common_tv_text" />
 
-<!--                    <EditText-->
-<!--                        android:id="@+id/loading_advise_loading_time"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="@dimen/la_edt_rectangle_height"-->
-<!--                        android:layout_marginStart="32dp"-->
-<!--                        android:layout_weight="4"-->
-<!--                        android:background="@drawable/rectangle_edt_read_only_field"-->
-<!--                        android:enabled="false"-->
-<!--                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"-->
-<!--                        android:text="09-09-2022 04:55 PM"-->
-<!--                        android:textColor="@color/fragment_edt_text"-->
-<!--                        android:textSize="@dimen/common_edt_text" />-->
+                    <!--                    <EditText-->
+                    <!--                        android:id="@+id/loading_advise_loading_time"-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="@dimen/la_edt_rectangle_height"-->
+                    <!--                        android:layout_marginStart="32dp"-->
+                    <!--                        android:layout_weight="4"-->
+                    <!--                        android:background="@drawable/rectangle_edt_read_only_field"-->
+                    <!--                        android:enabled="false"-->
+                    <!--                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"-->
+                    <!--                        android:text="09-09-2022 04:55 PM"-->
+                    <!--                        android:textColor="@color/fragment_edt_text"-->
+                    <!--                        android:textSize="@dimen/common_edt_text" />-->
 
                     <TextClock
                         android:id="@+id/la_tv_clock"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:gravity="center_vertical"
-                        android:layout_weight="4"
                         android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
+                        android:format12Hour="dd-MM-yy hh:mm:ss a"
+                        android:gravity="center_vertical"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textColor="@color/fragment_edt_text"
-                        android:background="@drawable/rectangle_edt_read_only_field"
-                        android:textSize="@dimen/common_edt_text"
-                        android:format12Hour="dd-MM-yy hh:mm:ss a"/>
+                        android:textSize="@dimen/common_edt_text" />
                     <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
                 </LinearLayout>
 
@@ -572,8 +602,6 @@
 
 
             </LinearLayout>
-
-            <include layout="@layout/common_layout_recyclerview_data_items_rows" />
 
             <include layout="@layout/footer"
                 android:layout_width="match_parent"

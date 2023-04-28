@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerlayout);
         navigationView = findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);
-        ImageView refesh = findViewById(R.id.refresh);
 
         //Setting custom toolbar and navigation bar and drawer
         setSupportActionBar(toolbar);
@@ -56,14 +54,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        refesh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
-            }
-        });
 
         String userRoles = getLoginUserRole();
         Log.i(TAG, "onCreate: userRoles : " + userRoles);
@@ -76,12 +66,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadFragment(Fragment fragment, int flag) {
+        Log.i(TAG, "loadFragment: in load fragment method()");
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (flag == 0) {
+            Log.i(TAG, "loadFragment: in if <<start>>");
             ft.add(R.id.main_container, fragment);
+            Log.i(TAG, "loadFragment: in if <<end>>");
         } else {
+            Log.i(TAG, "loadFragment: in else <<Start>>");
             ft.replace(R.id.main_container, fragment);
+            Log.i(TAG, "loadFragment: in else <<end>>");
         }
         ft.commit();
     }

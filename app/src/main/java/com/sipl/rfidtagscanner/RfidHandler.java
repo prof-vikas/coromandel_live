@@ -131,6 +131,7 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
     }
 
     private void makeConfiguration() {
+        Log.i(TAG, "makeConfiguration: " + reader.isConnected());
         if (reader.isConnected()) {
             TriggerInfo triggerInfo = new TriggerInfo();
             triggerInfo.StartTrigger.setTriggerType(START_TRIGGER_TYPE.START_TRIGGER_TYPE_IMMEDIATE);

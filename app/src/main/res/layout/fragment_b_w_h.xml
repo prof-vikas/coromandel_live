@@ -45,6 +45,37 @@
                 android:paddingRight="10dp">
 
                 <LinearLayout
+                    android:id="@+id/bwh_title_rfid_tag_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/cwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:id="@+id/bwh_rfid_tag_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="RFID Tag"
+                        android:textColor="@color/fragment_tv_text"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/bwh_edt_rfid_tag"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/cwh_edt_rectangle_height"
+                        android:layout_marginStart="32dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:inputType="textAutoComplete"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:textColor="@color/fragment_edt_text"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/bl_lep_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,13 +93,13 @@
                         android:textColor="@color/fragment_tv_text"
                         android:textSize="@dimen/common_tv_text" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/bwh_auto_complete_lep_number"
+                    <EditText
+                        android:id="@+id/bwh_edt_lep_number"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/bwh_edt_rectangle_height"
                         android:layout_marginStart="32dp"
                         android:layout_weight="4"
-                        android:background="@drawable/rectangle_edt_write_able_field"
+                        android:background="@drawable/rectangle_edt_read_only_field"
                         android:inputType="textCapCharacters"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textColor="@color/fragment_edt_text"
@@ -369,7 +400,6 @@
 
             </LinearLayout>
 
-            <include layout="@layout/common_layout_recyclerview_data_items_rows" />
 
         </LinearLayout>
 
