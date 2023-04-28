@@ -11,6 +11,7 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_BOTHRA_LEP_NUMBER;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_DESTINATION_LOCATION_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER_BOTHRA;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER_BY_RFID_TAG;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LEP_NUMBER_COROMANDEL;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_SOURCE_LOCATION_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN;
@@ -40,6 +41,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface LoadingAdviseApi {
@@ -52,6 +54,9 @@ public interface LoadingAdviseApi {
     //    Loading Advise
     @GET(GET_LEP_NUMBER)
     Call<RfidLepApiResponse> getALlLepNumber(@Header("Authorization") String authToken);
+
+    @GET(GET_LEP_NUMBER_BY_RFID_TAG + "{tag}")
+    Call<RfidLepApiResponse> getRfidDetailsByRfidTag(@Header("Authorization") String authToken, @Path("tag") String tag);
 
     @GET(GET_BOTHRA_LEP_NUMBER)
     Call<TransactionsApiResponse> getALlBothraLepNumber(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransaction, @Query("prevTransactionFlag") String previousTransaction);

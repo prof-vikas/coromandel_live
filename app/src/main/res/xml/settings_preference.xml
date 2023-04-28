@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Reader Settings"
+        app:iconSpaceReserved="false">
+        <EditTextPreference
+            android:defaultValue="250"
+            android:key="rfid_power_level"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Power Level"
+            app:iconSpaceReserved="false"
+            app:summary="Antenna power parameter" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Api Settings"
+        app:iconSpaceReserved="false">
+        <EditTextPreference
+            android:defaultValue="http://"
+            android:key="rfid_api_address"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Api Address"
+            app:iconSpaceReserved="false"
+            app:summary="Api address for sending tag data" />
+    </PreferenceCategory>
+
+   <!-- <PreferenceCategory
+        android:title="Show device info"
+        app:iconSpaceReserved="false">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="isShowInfoEnable"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Show Device info"
+            app:iconSpaceReserved="false"
+            app:summary="Shows connected device information on scanner menu" />
+    </PreferenceCategory>-->
+
+</PreferenceScreen>

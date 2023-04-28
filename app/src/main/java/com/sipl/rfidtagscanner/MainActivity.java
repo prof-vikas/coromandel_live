@@ -28,9 +28,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sipl.rfidtagscanner.fragments.BWHFragment;
-import com.sipl.rfidtagscanner.fragments.CWHFragment;
-import com.sipl.rfidtagscanner.fragments.LoadingAdviseFragment;
+import com.sipl.rfidtagscanner.fragments.ScanFragment;
+import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,15 +65,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //loading user screen based on their roles
         String userRoles = getLoginUserRole();
         Log.i(TAG, "onCreate: userRoles : " + userRoles);
         if (userRoles != null) {
             loadMenuBasedOnRoles(userRoles);
             showSideBarLoginUsername();
-        } else {
-            alert(MainActivity.this, "error", "User Role not undefined ", null, "OK");
         }
+        showSideBarLoginUsername();
 
     }
 
@@ -95,14 +92,12 @@ public class MainActivity extends AppCompatActivity {
     private void getMenuNavigation() {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.logout) {
+            if (id == R.id.menu_item_scan_rfid) {
+                loadFragment(new ScanFragment(), 1);
+            } else if (id == R.id.menu_item_setting) {
+                loadFragment(new SettingsFragment(), 1);
+            } else if (id == R.id.menu_item_logout) {
                 logout();
-            } else if (id == R.id.item_menu_loading_advise) {
-                loadFragment(new LoadingAdviseFragment(), 1);
-            } else if (id == R.id.item_menu_cwh) {
-                loadFragment(new CWHFragment(), 1);
-            } else if (id == R.id.item_menu_bwh) {
-                loadFragment(new BWHFragment(), 1);
             } else {
                 Toast.makeText(MainActivity.this, "click outside of menu", Toast.LENGTH_SHORT).show();
             }
@@ -119,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "title" + title, Toast.LENGTH_SHORT).show();
     }
 
-    private void loadMenuBasedOnRoles(String userRole) {
+  /*  private void loadMenuBasedOnRoles(String userRole) {
         if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_admin);
@@ -140,6 +135,32 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.i(TAG, "No User found : " + userRole);
             }
+        }
+    }*/
+
+    private void loadMenuBasedOnRoles(String userRole) {
+        if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_admin);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_loading_advise);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else if (userRole.equalsIgnoreCase(ROLES_CWH)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_loading_advise);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else if (userRole.equalsIgnoreCase(ROLES_BWH)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_loading_advise);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else {
+            Log.i(TAG, "loadMenuBasedOnRoles: No roles available");
         }
     }
 
@@ -183,6 +204,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         String username = sp.getString("usernameSPK", null);
         return username;
+    }
+
+    public String getLoginToken() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String token = sp.getString("tokenSPK", null);
+        return token;
     }
 
     public String getLoginUserRole() {
@@ -238,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
             error.setVisibility(View.GONE);
             warning.setVisibility(View.GONE);
             success.setVisibility(View.VISIBLE);
-        }else if (dialogType.equalsIgnoreCase("warning")) {
+        } else if (dialogType.equalsIgnoreCase("warning")) {
             error.setVisibility(View.GONE);
             success.setVisibility(View.GONE);
             warning.setVisibility(View.VISIBLE);

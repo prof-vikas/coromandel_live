@@ -116,5 +116,7 @@
 <!--    checkbox-->
     <color name="checkbox_bg">#f6931a</color>
 
+    <color name="primary_orange">#f6931a</color>
+
 
 </resources>
