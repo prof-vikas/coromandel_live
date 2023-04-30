@@ -227,7 +227,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
                                 Log.i(TAG, "onResponse: before share pref");
-                                saveLoadingAdivseDetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
+                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
 
@@ -235,6 +235,9 @@ public class ScanFragment extends Fragment implements MyListener {
                             e.getMessage();
                             return;
                         }
+                    }else {
+                        progressBar.setVisibility(View.GONE);
+                        ((MainActivity) requireActivity()) .alert(requireContext(),"WARNING",response.body().getStatus(),null,"OK");
                     }
                 }
 
@@ -251,7 +254,7 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
-    private void saveLoadingAdivseDetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity) {
+    private void saveLADataSharedPref(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity) {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -268,7 +271,7 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.apply();
     }
 
-    private void saveWareHouseDetials(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight) {
+    private void saveWHDataToSharedPref(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -318,11 +321,11 @@ public class ScanFragment extends Fragment implements MyListener {
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                 String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
-                                saveWareHouseDetials(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null);
+                                saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null);
                                 ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                             } else if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                 String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
-                                saveWareHouseDetials(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight);
+                                saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight);
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
                                 ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
@@ -337,7 +340,7 @@ public class ScanFragment extends Fragment implements MyListener {
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "warning", "No LEP no is available", null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getStatus(), null, "OK");
                     }
                 }
 
@@ -368,7 +371,6 @@ public class ScanFragment extends Fragment implements MyListener {
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, edtRfidTagId.getText().toString());
-
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
@@ -396,7 +398,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                saveLoadingAdivseDetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
+                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
                         } catch (Exception e) {
@@ -405,7 +407,7 @@ public class ScanFragment extends Fragment implements MyListener {
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "warning", "No LEP no is available", null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getStatus(), null, "OK");
                     }
                 }
 

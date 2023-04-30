@@ -24,7 +24,6 @@ import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
@@ -64,12 +63,11 @@ public class LoadingAdviseFragment extends Fragment {
 
     private TextClock tvClock;
     private ProgressBar progressBar;
-    private Button btnSubmit, btnCancel;
     private AutoCompleteTextView autoCompletePinnacleSupervisor, autoCompleteBothraSupervisor;
     private Spinner spinnerDestinationLocation;
     private TextView tvDestinationLocation, tvPinnacleSupervisor, tvBothraSupervisor;
     private EditText edtRfidTagNo, edtLepNo, edtSapGrNo, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtTruckCapacity, edtLoadingSupervisor, edtSourceLocation;
-    private Helper helper = new Helper();
+    private final Helper helper = new Helper();
 
     //    userDetails
     private String loginUserName;
@@ -106,8 +104,8 @@ public class LoadingAdviseFragment extends Fragment {
 
         spinnerDestinationLocation = view.findViewById(R.id.ll_spinner_destination_location);
 
-        btnSubmit = view.findViewById(R.id.btn_loading_advise_submit);
-        btnCancel = view.findViewById(R.id.btn_loading_advise_reset);
+        Button btnSubmit = view.findViewById(R.id.btn_loading_advise_submit);
+        Button btnCancel = view.findViewById(R.id.btn_loading_advise_reset);
 
         edtSourceLocation = view.findViewById(R.id.la_edt_source_location);
         edtRfidTagNo = view.findViewById(R.id.edt_la_rfid_tag_no);
@@ -161,6 +159,7 @@ public class LoadingAdviseFragment extends Fragment {
 
         return view;
     }
+
     private void callOnCreateApi() {
         getAllDestinationLocation();
         getAllPinnacleSupervisor();
@@ -266,7 +265,6 @@ public class LoadingAdviseFragment extends Fragment {
             public void onResponse(Call<DestinationLocationResponseApi> call, Response<DestinationLocationResponseApi> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-//                    alertBuilder(response.errorBody().toString());
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
@@ -521,32 +519,30 @@ public class LoadingAdviseFragment extends Fragment {
     private void UpdateBothraLoadingAdviseDetails(UpdateBothraLoadingAdviseDto
                                                           updateBothraLoadingAdviseDto) {
         progressBar.setVisibility(View.VISIBLE);
-        Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(updateBothraLoadingAdviseDto).toString());
+        Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(updateBothraLoadingAdviseDto));
         Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
-//                    alertBuilder(response.errorBody().toString());
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
 
                 if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
                     resetTextField();
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
-//                    resetTextField();
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
     }
@@ -561,8 +557,7 @@ public class LoadingAdviseFragment extends Fragment {
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
         BothraLoadingSupervisorDto bothraLoadingDto = new BothraLoadingSupervisorDto(selectedBothraSupervisorId);
         PinnacleLoadingSupervisorDto pinnacleLoadingDto = new PinnacleLoadingSupervisorDto(selectedPinnacleSupervisorId);
-        LoadingAdviseRequestDto loadingAdviseRequestDto = new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
-        return loadingAdviseRequestDto;
+        return new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
 
     }
 
@@ -574,8 +569,7 @@ public class LoadingAdviseFragment extends Fragment {
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationLocation);
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
-        UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto = new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, LocalDateTime.now().toString(), BOTHRA_FLAG);
-        return updateBothraLoadingAdviseDto;
+        return new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, LocalDateTime.now().toString(), BOTHRA_FLAG);
     }
 
     private void updateUIBasedOnUser() {
@@ -603,32 +597,31 @@ public class LoadingAdviseFragment extends Fragment {
         String bothraSupervisor = autoCompleteBothraSupervisor.getText().toString();
         String pinnacleSupervisor = autoCompletePinnacleSupervisor.getText().toString();
         if (selectedBothraSupervisorId != null && selectedPinnacleSupervisorId != null) {
-            Log.i(TAG, "chooseMethodToCall: selectedBothraSupervisorId " + selectedBothraSupervisorId + " selectedPinnacleSupervisorId" + selectedPinnacleSupervisorId);
             if (arrPinnacleSupervisor.contains(pinnacleSupervisor) && arrBothraSupervisor.contains(bothraSupervisor)) {
                 if (selectedPinnacleSupervisor.equalsIgnoreCase(pinnacleSupervisor) && selectedBothraSupervisor.equalsIgnoreCase(bothraSupervisor)) {
                     return true;
                 } else {
                     if (!bothraSupervisor.equalsIgnoreCase(selectedBothraSupervisor)) {
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Bothra Supervisor is change", "Please try to select from drop-down..!", "OK");
+                        ((MainActivity) requireActivity()).alert(requireActivity(), "error", "It seems selected Bothra Supervisor is change", "Please try to select from drop-down..!", "OK");
                         return false;
                     } else if (!pinnacleSupervisor.equalsIgnoreCase(selectedPinnacleSupervisor)) {
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Pinnacle Supervisor is change", "Please try to select from drop-down..!", "OK");
+                        ((MainActivity) requireActivity()).alert(requireActivity(), "error", "It seems selected Pinnacle Supervisor is change", "Please try to select from drop-down..!", "OK");
                         return false;
                     } else
                         return false;
                 }
             } else {
                 if (!arrPinnacleSupervisor.contains(pinnacleSupervisor)) {
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", "Selected Pinnacle supervisor is invalid", "Please try to select from drop-down..!", "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", "Selected Pinnacle supervisor is invalid", "Please try to select from drop-down..!", "OK");
                     return false;
                 } else if (!arrBothraSupervisor.contains(bothraSupervisor)) {
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", "Selected Bothra supervisor is invalid", "Please try to select from drop-down..!", "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", "Selected Bothra supervisor is invalid", "Please try to select from drop-down..!", "OK");
                     return false;
                 }
                 return false;
             }
         } else {
-            ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems supervisor is type manually", "Please try to select from drop-down..!", "OK");
+            ((MainActivity) requireActivity()).alert(requireActivity(), "error", "It seems supervisor is type manually", "Please try to select from drop-down..!", "OK");
             return false;
         }
 
@@ -636,7 +629,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void getLoadingAdviseDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
-         this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
         String lepNo = sp.getString("lepNoSPK", null);
         String driverName = sp.getString("driverNameSPK", null);
@@ -651,7 +644,6 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity) {
-        Log.i(TAG, "saveLoginAdviseData: <<Start>>");
         edtRfidTagNo.setText(rfidTag);
         edtLepNo.setText(lepNo);
         edtSapGrNo.setText(sapGrNo);
@@ -662,6 +654,5 @@ public class LoadingAdviseFragment extends Fragment {
         edtVesselName.setText(vesselName);
         edtCommodity.setText(commodity);
         edtTruckCapacity.setText(truckCapacity);
-        Log.i(TAG, "saveLoginAdviseData: <<end>>");
     }
 }
