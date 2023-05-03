@@ -1,7 +1,13 @@
 package com.sipl.rfidtagscanner.utils;
 
 public class ApiConstants {
-    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
+//    Local 90 server
+//    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
+
+
+
+//    Local ip 90 server without wireguard
+    public static final String BASE_URL = "http://192.168.1.202:8080/coromandel-rest-repo/";
 
 //    UAT Linux 90 server
 //    public static final String BASE_URL = "http://10.66.66.90:9080/coromandel-rest-repo/";

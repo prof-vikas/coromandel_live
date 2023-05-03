@@ -11,13 +11,13 @@
         android:layout_height="match_parent">
 
 
-<TextView
-    android:id="@+id/txt_tv"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-   android:textColor="@color/black"
-   android:textSize="20sp"
-   android:background="#dedede"/>
+        <TextView
+            android:id="@+id/txt_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#dedede"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
     </ScrollView>
 
