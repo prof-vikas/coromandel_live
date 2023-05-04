@@ -40,7 +40,6 @@
                     android:layout_marginTop="10dp"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
                     android:layout_marginStart="20dp"
                     android:contentDescription="@string/login_logo_coromandel_content_description"
                     android:src="@drawable/logo_coromandel_on_login_screen" />
@@ -51,6 +50,7 @@
                     android:layout_gravity="center_horizontal"
                     android:text="@string/login_text"
                     android:textColor="#47443B"
+                    android:fontFamily="@font/source_sans_pro_black"
                     android:textSize="@dimen/login_txt_login"
                     android:textStyle="bold" />
 
@@ -74,6 +74,7 @@
                         android:hint="@string/placeholder_username"
                         android:inputType="text"
                         android:maxLength="25"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:paddingLeft="@dimen/login_edt_rectangle_pd_left"
                         android:textSize="@dimen/login_edt_username_txt" />
 
@@ -88,6 +89,7 @@
                         android:hint="@string/placeholder_password"
                         android:inputType="textPassword"
                         android:maxLength="16"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:paddingLeft="@dimen/login_edt_rectangle_pd_left"
                         android:textSize="@dimen/login_edt_password_txt" />
 
@@ -103,23 +105,16 @@
                             android:id="@+id/checkbox_login_remember_me"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:padding="0dp"
+                            android:padding="10dp"
                             android:checked="false"
-                            android:theme="@style/checkBoxStyle"
-                            android:layout_weight="1"/>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="4"
-                            android:layout_height="match_parent"
+                            android:textSize="16sp"
                             android:text="Remember me"
-                            android:paddingLeft="0dp"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
-                            android:paddingRight="10dp"
+                            android:fontFamily="@font/source_sans_pro_black"
                             android:textColor="@color/gray600"
-                            android:textSize="@dimen/login_edt_password_txt"/>
+                            android:theme="@style/checkBoxStyle"
+                            android:layout_weight="5"/>
 
+-->
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
@@ -129,6 +124,7 @@
                         android:background="@drawable/btn_primary_rectangle"
                         android:padding="10sp"
                         android:text="@string/login_btn_login"
+                        android:fontFamily="@font/source_sans_pro_black"
                         android:textAllCaps="true"
                         android:textColor="#fff"
                         android:textSize="@dimen/login_btn_txt" />
@@ -145,6 +141,19 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txt_forget_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="5sp"
+                        android:text="Forget password ?"
+                        android:fontFamily="@font/source_sans_pro_black"
+                        android:textColor="#8A8A8A"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
 
                     <ImageView
                         android:layout_width="120dp"
@@ -165,6 +174,7 @@
                         android:shadowRadius="1"
                         android:textStyle="italic"
                         android:text="@string/login_app_version"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/login_app_version_text"
                         android:textSize="@dimen/login_version_txt" />
 
