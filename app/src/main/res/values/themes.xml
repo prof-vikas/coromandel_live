@@ -32,9 +32,10 @@
     <style name="spinnerDropDownItemStyle">
         <item name="android:paddingLeft">@dimen/common_edt_rectangle_pd_left</item>
         <item name="android:textSize">@dimen/common_edt_text</item>
-        <item name="android:textColor">@color/fragment_edt_text</item>
+        <item name="android:textColor">@color/wh_edt_txt</item>
         <item name="android:gravity">center</item>
         <item name="android:hint">Select dropdown</item>
+        <item name="android:fontFamily">@font/source_sans_pro_semi_bold</item>
         <item name="hintTextColor">@color/fragment_edt_text</item>
     </style>
 

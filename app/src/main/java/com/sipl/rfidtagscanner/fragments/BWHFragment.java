@@ -56,7 +56,7 @@ public class BWHFragment extends Fragment {
     BothraWHDto bothraWHDto;
     List<BothraWHDto> bothraWHDtoList = new ArrayList<>();
     ArrayList<String> arrAutoCompleteLepNo;
-    private TextClock tvClock;
+    private TextClock tvClock, tvEntryTime, tvExitTime;
     private ProgressBar progressBar;
     private TextView tvLepNumber;
     private Spinner spinnerWarehouseNo, spinnerRemark;
@@ -94,7 +94,9 @@ public class BWHFragment extends Fragment {
         spinnerWarehouseNo = view.findViewById(R.id.bwh_spinner_warehouse_no);
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
         tvLepNumber = view.findViewById(R.id.bwh_tv_lep_number);
-        tvClock = view.findViewById(R.id.bwh_tv_clock);
+//        tvClock = view.findViewById(R.id.bwh_tv_clock);
+//        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
+        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
 
         edtRfidTag = view.findViewById(R.id.bwh_edt_rfid_tag);
         edtLepNo = view.findViewById(R.id.bwh_edt_lep_number);
@@ -300,7 +302,6 @@ public class BWHFragment extends Fragment {
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-//                    alertBuilder(response.errorBody().toString());
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
@@ -440,7 +441,11 @@ public class BWHFragment extends Fragment {
 
     private void setTvClock() {
         try {
-            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
+//            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
+//            tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm a");
+//            tvClock.setText("04-05-23 10:40:43 AM");
+//            tvEntryTime.setText("04-05-23 10:40:43 AM");
+            tvExitTime.setFormat24Hour("dd-MM-yy hh:mm a");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -448,7 +453,7 @@ public class BWHFragment extends Fragment {
 
     private void getLoadingAdviseDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-//        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
         String lepNo = sp.getString("lepNoSPK", null);
         String driverName = sp.getString("driverNameSPK", null);

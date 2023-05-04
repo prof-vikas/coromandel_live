@@ -29,6 +29,7 @@
                 android:background="@color/fragment_title_text_bg"
                 android:padding="5dp"
                 android:text="@string/title_loading_advise"
+                android:fontFamily="@font/source_sans_pro_black"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/fragment_title_text_color"
@@ -61,7 +62,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="RFID Tag"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -73,7 +75,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -92,7 +95,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/lep_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -104,7 +108,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:inputType="textCapCharacters"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -122,7 +127,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/sap_gr_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -134,7 +140,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -152,7 +159,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/TruckNumber"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -164,7 +172,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -182,7 +191,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/driverName"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -194,7 +204,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -212,7 +223,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/driver_mobile_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -224,7 +236,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -242,7 +255,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/driver_license_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -255,7 +269,8 @@
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textAllCaps="true"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -273,7 +288,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/vessel_name"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -285,7 +301,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -303,7 +320,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/commodity"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -315,7 +333,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -333,7 +352,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/truck_capacity"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -346,7 +366,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -368,7 +389,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="3"
                         android:text="@string/source_location"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
@@ -380,7 +402,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -400,7 +423,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="3"
                         android:text="@string/destination_location"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -430,7 +454,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/loading_supervisor"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -443,7 +468,8 @@
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -462,7 +488,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/pinnacle_supervisor"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -475,6 +502,8 @@
                         android:background="@drawable/rectangle_edt_write_able_field"
                         android:hint="Search Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
@@ -494,7 +523,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/bothra_supervisor"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -507,6 +537,8 @@
                         android:background="@drawable/rectangle_edt_write_able_field"
                         android:hint="Search Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
@@ -525,7 +557,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/system_date"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -541,7 +574,8 @@
                         android:format12Hour="dd-MM-yy hh:mm:ss a"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                     <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
                 </LinearLayout>
@@ -568,6 +602,7 @@
                         android:layout_weight="2"
                         android:backgroundTint="@color/orange800"
                         android:text="@string/submit"
+                        android:fontFamily="@font/source_sans_pro_black"
                         android:textStyle="bold" />
 
                     <View
@@ -582,6 +617,7 @@
                         android:layout_weight="2"
                         android:backgroundTint="@color/light_black"
                         android:text="@string/cancel"
+                        android:fontFamily="@font/source_sans_pro_black"
                         android:textStyle="bold" />
 
                     <View

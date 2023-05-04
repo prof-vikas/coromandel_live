@@ -56,25 +56,22 @@ import retrofit2.Response;
 
 public class LoadingAdviseFragment extends Fragment {
     private static final String TAG = "TracingError";
-
+    private final Helper helper = new Helper();
     ArrayList<String> arrPinnacleSupervisor;
     ArrayList<String> arrBothraSupervisor;
-
-
+    ArrayList<String> arrBothraStrLocation = new ArrayList<>();
     private TextClock tvClock;
     private ProgressBar progressBar;
     private AutoCompleteTextView autoCompletePinnacleSupervisor, autoCompleteBothraSupervisor;
     private Spinner spinnerDestinationLocation;
     private TextView tvDestinationLocation, tvPinnacleSupervisor, tvBothraSupervisor;
     private EditText edtRfidTagNo, edtLepNo, edtSapGrNo, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtTruckCapacity, edtLoadingSupervisor, edtSourceLocation;
-    private final Helper helper = new Helper();
-
     //    userDetails
     private String loginUserName;
     private String token;
     private String loginUserStorageLocation;
     private String loginUserStorageLocationDesc;
-    private String loginUserPlantCode;
+//    private String loginUserPlantCode;
     private int loginUserId;
 
     //    ArrayAdapter for spinner
@@ -132,13 +129,16 @@ public class LoadingAdviseFragment extends Fragment {
 
         this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
         this.loginUserId = ((MainActivity) requireActivity()).getLoginUserId();
-        this.loginUserPlantCode = ((MainActivity) requireActivity()).getLoginUserPlantCode();
+//        this.loginUserPlantCode = ((MainActivity) requireActivity()).getLoginUserPlantCode();
         this.loginUserStorageLocation = ((MainActivity) requireActivity()).getLoginUserStorageCode();
         this.loginUserStorageLocationDesc = ((MainActivity) requireActivity()).getLoginUserSourceLocationDesc();
         this.token = ((MainActivity) requireActivity()).getLoginToken();
 
         edtLoadingSupervisor.setText(loginUserName);
+
         edtSourceLocation.setText(loginUserStorageLocation + " - " + loginUserStorageLocationDesc);
+
+        getBundleData();
 
         /*
          *  methods need to run on onCreate
@@ -158,6 +158,15 @@ public class LoadingAdviseFragment extends Fragment {
         btnCancel.setOnClickListener(view1 -> resetTextField());
 
         return view;
+    }
+
+    private void getBundleData() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
+            int s = Integer.parseInt(sp.getString("size", null));
+        for (int i = 0; i < s; i++) {
+            String m = sp.getString(String.valueOf(i), null);
+            arrBothraStrLocation.add(m);
+        }
     }
 
     private void callOnCreateApi() {
@@ -221,7 +230,8 @@ public class LoadingAdviseFragment extends Fragment {
             Toast.makeText(getActivity(), "Select Destination Location", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (!loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA)) {
+//        if (!loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA)) {
+        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
 
             if (autoCompleteBothraSupervisor.length() == 0) {
                 autoCompleteBothraSupervisor.setError("This field is required");
@@ -573,7 +583,8 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void updateUIBasedOnUser() {
-        if (loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA)) {
+//        if (loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA)) {
+        if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
             layoutBothraSupervisor.setVisibility(View.GONE);
             layoutPinnacleSupervisor.setVisibility(View.GONE);
         } else {
@@ -584,7 +595,8 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void chooseMethodToCall() {
 
-        if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
+//        if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
+      if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
             UpdateBothraLoadingAdviseDetails(updateData());
         } else {
             if (nullCheckMethod()) {

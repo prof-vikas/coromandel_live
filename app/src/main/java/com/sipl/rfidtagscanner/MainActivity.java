@@ -29,6 +29,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.sipl.rfidtagscanner.fragments.BWHFragment;
 import com.sipl.rfidtagscanner.fragments.CWHFragment;
+import com.sipl.rfidtagscanner.fragments.LoadingAdviseFragment;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
@@ -90,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_item_scan_rfid) {
-                loadFragment(new CWHFragment(), 1);
-            } else if (id == R.id.menu_item_setting) {
                 loadFragment(new BWHFragment(), 1);
+            } else if (id == R.id.menu_item_setting) {
+                loadFragment(new SettingsFragment(), 1);
             } else if (id == R.id.menu_item_logout) {
                 logout();
             } else {

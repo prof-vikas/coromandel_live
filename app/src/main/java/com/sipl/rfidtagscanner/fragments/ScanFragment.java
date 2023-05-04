@@ -2,6 +2,8 @@ package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
+import static com.sipl.rfidtagscanner.utils.Config.EMPTY_WAREHOUSE_NUMBER;
 import static com.sipl.rfidtagscanner.utils.Config.PLANT_BOTHRA;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
@@ -17,12 +19,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -32,14 +37,22 @@ import com.sipl.rfidtagscanner.MainActivity;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
 import com.sipl.rfidtagscanner.RfidHandler;
+import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
+import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
 import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
+import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
+import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.interf.MyListener;
 import com.sipl.rfidtagscanner.interf.RFIDDataModel;
 import com.sipl.rfidtagscanner.interf.RfidUiDataDto;
 import com.zebra.rfid.api3.TagData;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,6 +63,8 @@ public class ScanFragment extends Fragment implements MyListener {
 
     private static final String TAG = "ConnectFragment";
     private String loginUserPlantCode;
+
+    private ArrayList<String> arrDestinationLocation;
     private ProgressBar progressBar;
     private TextView txtDeviceName, txtSerialNo, txtStatus;
     private LinearLayout llShowDeviceInfo;
@@ -70,6 +85,8 @@ public class ScanFragment extends Fragment implements MyListener {
 
     private String loginUserRole;
     private String loginUserToken;
+    private String loginUserStorageLocation;
+
 
 
     public ScanFragment() {
@@ -90,11 +107,14 @@ public class ScanFragment extends Fragment implements MyListener {
         this.loginUserRole = ((MainActivity) getActivity()).getLoginUserRole();
         this.loginUserToken = ((MainActivity) getActivity()).getLoginToken();
         this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
+        this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
 
         rfidHandler = new RfidHandler(requireActivity());
         rfidHandler.InitSDK(this);
+
+        getWareHouseStorage();
 
         isCheckBoxChecked();
 
@@ -194,6 +214,7 @@ public class ScanFragment extends Fragment implements MyListener {
     }
 
     private void getRfidTagDetailCoromandelLA() {
+        Log.i(TAG, "getRfidTagDetailCoromandelLA: ");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<RfidLepApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getRfidTagDetailCoromandelLA("Bearer " + loginUserToken, edtRfidTagId.getText().toString());
@@ -237,7 +258,8 @@ public class ScanFragment extends Fragment implements MyListener {
                         }
                     }else {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) requireActivity()) .alert(requireContext(),"WARNING",response.body().getStatus(),null,"OK");
+                        Log.i(TAG, "onResponse: " + response.raw());
+                        ((MainActivity) requireActivity()) .alert(requireContext(),"WARNING",response.body().getMessage(),null,"OK");
                     }
                 }
 
@@ -340,7 +362,8 @@ public class ScanFragment extends Fragment implements MyListener {
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getStatus(), null, "OK");
+                        Log.i(TAG, "onResponse: " + response.raw());
+                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
                     }
                 }
 
@@ -357,7 +380,12 @@ public class ScanFragment extends Fragment implements MyListener {
 
     private void RfidDetailsLoadingAdvise() {
         if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-            if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
+//            if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
+            for (String s: arrDestinationLocation) {
+                Log.i(TAG, "RfidDetailsLoadingAdvise: " + s);
+            }
+            Log.i(TAG, "RfidDetailsLoadingAdvise: " + loginUserStorageLocation);
+            if (arrDestinationLocation.contains(loginUserStorageLocation)) {
                 getRfidTagDetailBothraLA();
             } else {
                 getRfidTagDetailCoromandelLA();
@@ -368,6 +396,7 @@ public class ScanFragment extends Fragment implements MyListener {
     }
 
     private void getRfidTagDetailBothraLA() {
+        Log.i(TAG, "getRfidTagDetailBothraLA: ");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, edtRfidTagId.getText().toString());
@@ -407,7 +436,8 @@ public class ScanFragment extends Fragment implements MyListener {
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getStatus(), null, "OK");
+                        Log.i(TAG, "onResponse: " + response.raw());
+                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
                     }
                 }
 
@@ -420,6 +450,55 @@ public class ScanFragment extends Fragment implements MyListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean getWareHouseStorage() {
+        Log.i("getWareHouseStorage", "getAllWareHouse: ()");
+        progressBar.setVisibility(View.VISIBLE);
+        Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
+                getAllWareHouse("Bearer " + loginUserToken, "bothra");
+
+        call.enqueue(new Callback<RmgNumberApiResponse>() {
+            @Override
+            public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
+                if (!response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    return;
+                }
+                Log.i("getWareHouseStorage", "onResponse: getAllWareHouse : responseCode : " + response.code());
+                if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    Log.i("getWareHouseStorage", "onResponse: getAllWareHouse " + response.code());
+                    List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
+                   arrDestinationLocation = new ArrayList<>();
+                    try {
+                        if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
+                            return;
+                        }
+                        SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
+                            String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
+                            editor.putString(String.valueOf(i), s).apply();
+                            Log.i("getWareHouseStorage", "onResponse: " + i + "   " + s);
+                            arrDestinationLocation.add(s);
+                        }
+                        editor.putString("size", String.valueOf(arrDestinationLocation.size())).apply();
+
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+            }
+        });
+        return true;
     }
 
 }
