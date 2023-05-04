@@ -119,4 +119,9 @@
     <color name="primary_orange">#f6931a</color>
 
 
+
+    <color name="wh_tv_txt">#252525</color>
+    <color name="wh_edt_txt">#323232</color>
+
+
 </resources>

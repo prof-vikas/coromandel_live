@@ -20,7 +20,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/coromandel_logo"/>
+                android:src="@drawable/header_wave" />
         </LinearLayout>
 
 
@@ -41,14 +41,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:background="@drawable/rounded_border"
-                android:editable="false"
                 android:fontFamily="@font/source_sans_pro_black"
                 android:gravity="center"
                 android:hint="Scan RFID Tag"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
+                android:inputType="text"
+                android:padding="10dp"
                 android:textColor="@color/wareHouseBgColor"
                 android:textSize="14sp" />
         </LinearLayout>

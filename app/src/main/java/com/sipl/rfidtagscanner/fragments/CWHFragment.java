@@ -532,8 +532,9 @@ public class CWHFragment extends Fragment {
 
     private void getLoadingAdviseDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-//        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
+//        this.selectedLepNumberId = Integer.valueOf(rfidTagId);
         String lepNo = sp.getString("lepNoSPK", null);
         String driverName = sp.getString("driverNameSPK", null);
         String truckNo = sp.getString("truckNoSPK", null);

@@ -194,12 +194,12 @@ public class LoginActivity extends AppCompatActivity {
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
         if (username.equals("la") && password.equals("")) {
-            savingLoginUserToSharedPref("6", "Vishwanath8990", ROLES_LAO, "apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0050", "CWC-I Godown", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("6", "Vishwanath8990", ROLES_LAO, "apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0058", "Port Area Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("bla") && password.equals("")) {
-            savingLoginUserToSharedPref("2087", "bothraL", ROLES_LAO, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0006", "Gas Cylinder Shd", "BTVZ", "Bothra-Vizag");
+            savingLoginUserToSharedPref("2087", "bothraL", ROLES_LAO, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "100", "GODOWN1", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -209,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else if (username.equals("bws") && password.equals("")) {
-            savingLoginUserToSharedPref("8", "BSuperv", ROLES_BWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0002", "Chemical Godown", "BTVZ", "Bothra-Vizag");
+            savingLoginUserToSharedPref("8", "akash_bwh", ROLES_BWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -219,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }  else if (username.equals("1") && password.equals("")) {
-            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0002", "Chemical Godown", "BTVZ", "Bothra-Vizag");
+            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0002", "Chemical Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
