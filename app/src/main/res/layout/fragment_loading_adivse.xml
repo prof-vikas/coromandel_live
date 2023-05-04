@@ -44,8 +44,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:orientation="vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
 
                 <LinearLayout
                     android:id="@+id/title_rfid_tag_id"
@@ -68,7 +68,7 @@
                         android:id="@+id/edt_la_rfid_tag_no"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -99,7 +99,7 @@
                         android:id="@+id/la_edt_lep_number"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:inputType="textCapCharacters"
@@ -129,7 +129,7 @@
                         android:id="@+id/edt_la_sap_rg_no"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -159,7 +159,7 @@
                         android:id="@+id/edt_la_truck_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -189,7 +189,7 @@
                         android:id="@+id/edt_la_driver_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -219,7 +219,7 @@
                         android:id="@+id/edt_la_driver_mobile_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -249,7 +249,7 @@
                         android:id="@+id/edt_la_driver_license_no"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -280,7 +280,7 @@
                         android:id="@+id/edt_la_vessel_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -310,7 +310,7 @@
                         android:id="@+id/edt_la_commodity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -341,7 +341,7 @@
                         android:id="@+id/edt_la_quantity"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -375,7 +375,7 @@
                         android:id="@+id/la_edt_source_location"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -408,10 +408,11 @@
                         android:id="@+id/ll_spinner_destination_location"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/reactangle_spinner_select_able_field"
-                        android:paddingLeft="@dimen/common_spinner_rectangle_pd_left"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -437,7 +438,7 @@
                         android:id="@+id/edt_la_loading_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -469,7 +470,7 @@
                         android:id="@+id/ll_auto_pinnacle_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_write_able_field"
                         android:hint="Search Supervisor"
@@ -501,7 +502,7 @@
                         android:id="@+id/ll_auto_bothra_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_write_able_field"
                         android:hint="Search Supervisor"
@@ -527,24 +528,13 @@
                         android:textColor="@color/fragment_tv_text"
                         android:textSize="@dimen/common_tv_text" />
 
-                    <!--                    <EditText-->
-                    <!--                        android:id="@+id/loading_advise_loading_time"-->
-                    <!--                        android:layout_width="0dp"-->
-                    <!--                        android:layout_height="@dimen/la_edt_rectangle_height"-->
-                    <!--                        android:layout_marginStart="32dp"-->
-                    <!--                        android:layout_weight="4"-->
-                    <!--                        android:background="@drawable/rectangle_edt_read_only_field"-->
-                    <!--                        android:enabled="false"-->
-                    <!--                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"-->
-                    <!--                        android:text="09-09-2022 04:55 PM"-->
-                    <!--                        android:textColor="@color/fragment_edt_text"-->
-                    <!--                        android:textSize="@dimen/common_edt_text" />-->
+
 
                     <TextClock
                         android:id="@+id/la_tv_clock"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"

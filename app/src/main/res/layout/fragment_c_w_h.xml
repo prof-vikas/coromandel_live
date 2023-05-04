@@ -37,12 +37,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="30dp"
                 android:orientation="vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
 
                 <LinearLayout
                     android:id="@+id/cwh_title_rfid_tag_id"
@@ -66,8 +67,9 @@
                         android:id="@+id/cwh_edt_rfid_tag"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
+                        android:enabled="false"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:inputType="textAutoComplete"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
@@ -97,10 +99,10 @@
                         android:id="@+id/cwh_edt_lep_number"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/cwh_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
+                        android:enabled="false"
                         android:background="@drawable/rectangle_edt_read_only_field"
-                        android:inputType="textAutoComplete"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textColor="@color/fragment_edt_text"
                         android:textSize="@dimen/common_edt_text" />
@@ -127,7 +129,7 @@
                         android:id="@+id/cwh_edt_driver_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -157,7 +159,7 @@
                         android:id="@+id/cwh_edt_truck_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/cwh_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -190,7 +192,7 @@
                         android:id="@+id/cwh_edt_commodity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -222,7 +224,7 @@
                         android:id="@+id/cwh_edt_gross_weight"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/cwh_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -254,7 +256,7 @@
                         android:id="@+id/cwh_edt_previous_rmg_no"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
@@ -286,10 +288,11 @@
                         android:id="@+id/cwh_spinner_update_rmg_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/cwh_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/reactangle_spinner_select_able_field"
-                        android:padding="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -314,10 +317,11 @@
                         android:id="@+id/cwh_spinner_remark"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/cwh_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/reactangle_spinner_select_able_field"
-                        android:padding="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -344,7 +348,7 @@
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:gravity="center_vertical"
                         android:layout_weight="4"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textColor="@color/fragment_edt_text"
@@ -398,6 +402,19 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom">
+
+                <include layout="@layout/footer"
+                    android:id="@+id/rl_footer"
+                    android:layout_width="fill_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true" />
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -411,15 +428,5 @@
         android:visibility="gone"
         android:layout_centerInParent="true" />
 
-    <RelativeLayout
-        android:id="@+id/rl_footer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-
-        <include layout="@layout/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
 
 </RelativeLayout>

@@ -17,11 +17,15 @@
 
 <!--    common one for all screen-->
     <dimen name="common_ly_margin_bottom">10dp</dimen>
-    <dimen name="common_tv_text">16sp</dimen>
-    <dimen name="common_edt_text">15sp</dimen>
-    <dimen name="common_edt_rectangle_pd_left">10dp</dimen>
-    <dimen name="common_spinner_rectangle_pd_left">3dp</dimen>
+    <dimen name="common_tv_text">15sp</dimen>
+    <dimen name="common_edt_text">14sp</dimen>
+    <dimen name="common_edt_rectangle_pd_left">5dp</dimen>
+    <dimen name="common_spinner_rectangle_pd_left">1dp</dimen>
     <dimen name="common_dropdown_items_txt_size">13dp</dimen>
+
+
+<!--    common margin start for all input box-->
+    <dimen name="common_edt_rectangle_margin_start_left">16dp</dimen>
 
 
 <!--    Loading Advise -->

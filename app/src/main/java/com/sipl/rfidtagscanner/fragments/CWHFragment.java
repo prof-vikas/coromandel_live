@@ -251,7 +251,7 @@ public class CWHFragment extends Fragment {
     private boolean getAllRmgStorage() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
-                getAllCoromandelRmgNo("Bearer " + token, loginUserPlantCode);
+                getAllCoromandelRmgNo("Bearer " + token, "coromandel");
 
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
@@ -450,7 +450,7 @@ public class CWHFragment extends Fragment {
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
@@ -532,7 +532,7 @@ public class CWHFragment extends Fragment {
 
     private void getLoadingAdviseDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+//        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
         String lepNo = sp.getString("lepNoSPK", null);
         String driverName = sp.getString("driverNameSPK", null);

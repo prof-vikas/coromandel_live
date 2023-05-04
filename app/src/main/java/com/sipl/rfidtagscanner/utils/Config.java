@@ -6,6 +6,7 @@ public class Config {
     public static final boolean isRMGTableRequired = false;
     public static final boolean isJWTEnable = false;
     public static final String PLANT_BOTHRA = "BTVZ";
+    public static final String STORAGE_BOTHRA = "BTVZ";
 
     public static final boolean isGetSourceLocationByDescEnable = false;
     public static final boolean isGetPlantLocationByDescEnable = false;

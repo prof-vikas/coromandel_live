@@ -71,8 +71,8 @@ public interface LoadingAdviseApi {
     @GET(GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS + "3/4/{Tag}")
     Call<TransactionsApiResponse> getCoromandelWHDetails(@Header("Authorization") String authToken, @Path("Tag") String tag);
 
-    @GET(GET_ALL_RMG_NUMBER)
-    Call<RmgNumberApiResponse> getAllCoromandelRmgNo(@Header("Authorization") String authToken, @Query("plantCode") String id);
+    @GET(GET_ALL_RMG_NUMBER + "{storageLocation}")
+    Call<RmgNumberApiResponse> getAllCoromandelRmgNo(@Header("Authorization") String authToken, @Path("storageLocation") String storageLocation);
 
     @GET(GET_ALL_REMARKS)
     Call<RemarkApiResponse> getAllCoromandelRemark(@Header("Authorization") String authToken);
@@ -85,8 +85,8 @@ public interface LoadingAdviseApi {
     @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS + "7/8/{Tag}")
     Call<TransactionsApiResponse> getBothraWHDetails(@Header("Authorization") String authToken, @Path("Tag") String tag);
 
-    @GET(GET_ALL_WAREHOUSE_NUMBER)
-    Call<RmgNumberApiResponse> getAllWareHouse(@Header("Authorization") String authToken, @Query("plantCode") String id);
+    @GET(GET_ALL_WAREHOUSE_NUMBER + "{storageLocation}")
+    Call<RmgNumberApiResponse> getAllWareHouse(@Header("Authorization") String authToken,  @Path("storageLocation") String storageLocation);
 
     @GET(GET_ALL_REMARK)
     Call<RemarkApiResponse> getAllBothraRemark(@Header("Authorization") String authToken);

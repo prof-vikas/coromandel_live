@@ -4,6 +4,7 @@
 
     <PreferenceCategory
         android:title="Reader Settings"
+        android:layout="@layout/preferences_category"
         app:iconSpaceReserved="false">
         <EditTextPreference
             android:defaultValue="250"
@@ -16,6 +17,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Api Settings"
+        android:layout="@layout/preferences_category"
         app:iconSpaceReserved="false">
         <EditTextPreference
             android:defaultValue="http://"

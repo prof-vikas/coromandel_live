@@ -177,10 +177,10 @@ public class BWHFragment extends Fragment {
     }
 
     private boolean getWareHouseStorage() {
-        Log.i(TAG, "getAllWareHouse: ()");
+        Log.i("getWareHouseStorage", "getAllWareHouse: ()");
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
-                getAllWareHouse("Bearer " + token, loginUserPlantCode);
+                getAllWareHouse("Bearer " + token, "bothra");
 
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
@@ -448,7 +448,7 @@ public class BWHFragment extends Fragment {
 
     private void getLoadingAdviseDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+//        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
         String lepNo = sp.getString("lepNoSPK", null);
         String driverName = sp.getString("driverNameSPK", null);
