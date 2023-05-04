@@ -12,8 +12,8 @@ public class RetryInterceptor implements Interceptor {
 
     private static final String TAG = "RetryInterceptorError";
 
-    private int maxRetries = 3;
-    private int retryDelayMillis = 1000;
+    private final int maxRetries;
+    private final int retryDelayMillis;
 
     public RetryInterceptor(int maxRetries, int retryDelayMillis) {
         this.maxRetries = maxRetries;
@@ -23,7 +23,7 @@ public class RetryInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        Response response = null;
+        Response response;
         IOException ioException = null;
 
         // retry the request for a maximum of maxRetries times

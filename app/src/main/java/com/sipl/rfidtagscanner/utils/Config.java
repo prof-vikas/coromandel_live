@@ -19,6 +19,10 @@ public class Config {
     public static final String ROLES_ADMIN = "super admin";
 
 
+    public static final String WRONG_CREDENTIALS = "User name or password Mismatch";
+
+
+
     public static final String EMPTY_LEP_NUMBER_LIST = "No lep Number is available";
     public static final String EMPTY_DESTINATION_LOCATION = "No Destination location available";
     public static final String EMPTY_BOTHRA_SUPERVISOR = "No Bothra Supervisor is available";

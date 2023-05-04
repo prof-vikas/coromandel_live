@@ -35,9 +35,7 @@ import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
-import com.sipl.rfidtagscanner.entites.BothraWHDto;
 import com.sipl.rfidtagscanner.utils.CustomToast;
-import com.sipl.rfidtagscanner.utils.Helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,26 +49,18 @@ import retrofit2.Response;
 public class BWHFragment extends Fragment {
 
     private final String TAG = "TracingError";
-    private final Helper helper = new Helper();
     private final CustomToast customToast = new CustomToast();
-    BothraWHDto bothraWHDto;
-    List<BothraWHDto> bothraWHDtoList = new ArrayList<>();
-    ArrayList<String> arrAutoCompleteLepNo;
+
     private TextClock tvClock, tvEntryTime, tvExitTime;
     private ProgressBar progressBar;
-    private TextView tvLepNumber;
     private Spinner spinnerWarehouseNo, spinnerRemark;
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
-    private Button btnSubmit, btnReset;
     private Integer selectedLepNumberId;
     private String selectedWareHouseNumber;
 
     //    userDetails
     private String loginUserName;
     private String token;
-    private String loginUserPlantCode;
-    private String loginUserSourceCode;
-    private String loginUserSourceCodeDesc;
 
     private String selectedRemarks;
     private Integer selectedRemarksId;
@@ -93,7 +83,6 @@ public class BWHFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_b_w_h, container, false);
         spinnerWarehouseNo = view.findViewById(R.id.bwh_spinner_warehouse_no);
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
-        tvLepNumber = view.findViewById(R.id.bwh_tv_lep_number);
 //        tvClock = view.findViewById(R.id.bwh_tv_clock);
 //        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
         tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
@@ -106,15 +95,11 @@ public class BWHFragment extends Fragment {
         edtGrossWeight = view.findViewById(R.id.bwh_edt_gross_weight);
         edtPreviousWareHouseNo = view.findViewById(R.id.bwh_edt_previous_ware_house_no);
         progressBar = view.findViewById(R.id.bwh_progressBar);
-        btnReset = view.findViewById(R.id.bwh_btn_reset);
-        btnSubmit = view.findViewById(R.id.bwh_btn_submit);
+        Button btnReset = view.findViewById(R.id.bwh_btn_reset);
+        Button btnSubmit = view.findViewById(R.id.bwh_btn_submit);
 
-        this.token = ((MainActivity) getActivity()).getLoginToken();
-        this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
-        this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
-        this.loginUserSourceCode = ((MainActivity) getActivity()).getLoginUserStorageCode();
-        this.loginUserSourceCodeDesc = ((MainActivity) getActivity()).getLoginUserSourceLocationDesc();
-
+        this.token = ((MainActivity) requireActivity()).getLoginToken();
+        this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
 
         setTvClock();
         getLoadingAdviseDetails();
@@ -178,7 +163,7 @@ public class BWHFragment extends Fragment {
         return true;
     }
 
-    private boolean getWareHouseStorage() {
+    private void getWareHouseStorage() {
         Log.i("getWareHouseStorage", "getAllWareHouse: ()");
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
@@ -208,27 +193,14 @@ public class BWHFragment extends Fragment {
                         for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
                             String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
                             String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
-//                        int id = functionalLocationMasterDtoList.get(i).getId();
-//                        hashMapUpdateRmgNo.put(s, id);
+
                             String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
                             arrDestinationLocationDesc.add(strLocationDescWithCode);
                             hashMapLocationCode.put(strLocationDescWithCode, s);
                             arrDestinationLocation.add(s);
                         }
-//                    arrDestinationLocation.add("Select Warehouse No");
                         arrDestinationLocationDesc.add("Select Warehouse No");
 
-
-                       /* for (String a : arrDestinationLocationDesc) {
-                            Log.i(TAG, "onResponse: " + a.toLowerCase());
-                        }
-
-                        for (Map.Entry<String, String> entry : hashMapLocationCode.entrySet()) {
-                            String key = entry.getKey();
-                            String value = entry.getValue();
-                            Log.i(TAG, "onResponse: hashMapLocationCode : key : " + key + " --- Value : " + value);
-                        }
-*/
                         updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
@@ -253,10 +225,6 @@ public class BWHFragment extends Fragment {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String selectedRmgCode = adapterView.getSelectedItem().toString();
-                            /*if (hashMapUpdateRmgNo.containsKey(selectedWareHouseNumber)) {
-                                selectedWareHouseNumberId = hashMapUpdateRmgNo.get(selectedWareHouseNumber);
-                                Log.i(TAG, "onItemSelected: selectedBothraSupervisorId " + selectedWareHouseNumberId);
-                            }*/
 
                                 Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
                                 if (hashMapLocationCode.containsKey(selectedRmgCode)) {
@@ -285,15 +253,13 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
-//                alertBuilder(t.getMessage());
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
-        return true;
     }
 
-    private boolean getAllBothraRemark() {
+    private void getAllBothraRemark() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RemarkApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllBothraRemark("Bearer " + token);
@@ -353,11 +319,6 @@ public class BWHFragment extends Fragment {
                                     selectedRemarksId = hashMapRemarks.get(selectedRemarks);
                                     Log.i(TAG, "onItemSelected: Selected Remarks Id " + selectedRemarksId);
                                 }
-                               /* if (selectedRemarks.equalsIgnoreCase("Update RMG No")) {
-                                    spinnerRemark.setEnabled(false);
-                                    spinnerRemark.setClickable(false);
-                                    spinnerRemark.setFocusable(false);
-                                }*/
                             }
 
                             @Override
@@ -372,12 +333,10 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
-//                alertBuilder(t.getMessage());
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
-        return true;
     }
 
     private UpdateWareHouseNoRequestDto setData() {
@@ -401,7 +360,7 @@ public class BWHFragment extends Fragment {
     }
 
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
-        Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto).toString());
+        Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
         progressBar.setVisibility(View.VISIBLE);
         Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
@@ -410,29 +369,23 @@ public class BWHFragment extends Fragment {
                 if (!response.isSuccessful()) {
 //                    alertBuilder(response.errorBody().toString());
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
                 Log.i(TAG, "onResponse: code" + response.code() + "status : " + response.body().getStatus());
-             /*   if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
-                    resetFields();
-                }*/
 
                 if (response.body().getStatus().equalsIgnoreCase("OK")) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
                     resetFields();
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
                     resetFields();
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 t.printStackTrace();
             }

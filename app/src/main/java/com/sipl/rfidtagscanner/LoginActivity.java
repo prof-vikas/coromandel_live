@@ -4,6 +4,7 @@ import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
+import static com.sipl.rfidtagscanner.utils.Config.WRONG_CREDENTIALS;
 import static com.sipl.rfidtagscanner.utils.Config.isJWTEnable;
 
 import android.app.Dialog;
@@ -14,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
-import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.sipl.rfidtagscanner.dto.request.JwtRequest;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
@@ -35,25 +34,21 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "TestingArea2";
-    Button btnLogin;
     private ProgressBar progressBar;
     private EditText edtUsername, edtPassword;
-    private MaterialCheckBox checkBoxRememberMe;
     private TextView txtErrorMessage;
-    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnLogin = findViewById(R.id.btn_login);
+        Button btnLogin = findViewById(R.id.btn_login);
         edtUsername = findViewById(R.id.edt_username);
         edtPassword = findViewById(R.id.edt_password);
         txtErrorMessage = findViewById(R.id.txt_error_message);
-        navigationView = findViewById(R.id.navigationView);
         progressBar = findViewById(R.id.login_progressBar);
-        checkBoxRememberMe = findViewById(R.id.checkbox_login_remember_me);
+        MaterialCheckBox checkBoxRememberMe = findViewById(R.id.checkbox_login_remember_me);
 
         isCheckBoxChecked();
         btnLogin.setOnClickListener(view -> {
@@ -62,18 +57,15 @@ public class LoginActivity extends AppCompatActivity {
 //            }
         });
 
-        checkBoxRememberMe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (compoundButton.isChecked()) {
-                    SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("remember", "true").apply();
-                } else if (!compoundButton.isChecked()) {
-                    SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("remember", "false").apply();
-                }
+        checkBoxRememberMe.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (compoundButton.isChecked()) {
+                SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("remember", "true").apply();
+            } else if (!compoundButton.isChecked()) {
+                SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("remember", "false").apply();
             }
         });
     }
@@ -115,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void processLogin() {
-        if (isJWTEnable == false) {
+        if (!isJWTEnable) {
             hardCodeLogin();
         } else {
             progressBar.setVisibility(View.VISIBLE);
@@ -123,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = edtPassword.getText().toString().trim();
             JwtRequest jwtRequest = new JwtRequest(username, password);
             Call<JwtAuthResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().login(jwtRequest);
-            Log.i(TAG, new Gson().toJson(jwtRequest).toString());
+            Log.i(TAG, new Gson().toJson(jwtRequest));
             call.enqueue(new Callback<JwtAuthResponse>() {
                 @Override
                 public void onResponse(Call<JwtAuthResponse> call, Response<JwtAuthResponse> response) {
@@ -142,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                         String userPlantLocation = response.body().getUser().getPlantMaster().getPlantCode();
                         String userPlantLocationDesc = response.body().getUser().getPlantMaster().getPlantDesc();
                         Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : " + userSourceLocation + " - " + userSourceLocationDesc + " userPlantLocation : " + userPlantLocation + " - " + userPlantLocationDesc);
-                        if (token != null && role != null && username != null && userID != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
+                        if (token != null && role != null && username != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
                             savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc);
                         } else {
                             alert(LoginActivity.this, "error", "Something went wrong with this user credentials", "Try login with other user credentials", "OK");
@@ -176,7 +168,6 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("userPlantLocationSPK", userPlantLocation).apply();
         editor.putString("userPlantLocationDescSPK", userPlantLocationDesc).apply();
         editor.putString("userLoginStatus", "login").apply();
-        editor.commit();
         editor.apply();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
@@ -213,19 +204,19 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }else if (username.equals("2") && password.equals("")) {
+        } else if (username.equals("2") && password.equals("")) {
             savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }  else if (username.equals("1") && password.equals("")) {
+        } else if (username.equals("1") && password.equals("")) {
             savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0002", "Chemical Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }else {
+        } else {
             progressBar.setVisibility(View.GONE);
-            txtErrorMessage.setText("User name or password Mismatch");
+            txtErrorMessage.setText(WRONG_CREDENTIALS);
         }
     }
 
@@ -255,12 +246,7 @@ public class LoginActivity extends AppCompatActivity {
         dialogTitleTxt.setText(dialogTitle);
         dialogMessageTxt.setText(dialogMessage);
         btn.setText(dialogBtnText);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btn.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
 }
