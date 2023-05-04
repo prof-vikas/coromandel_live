@@ -29,12 +29,14 @@
                 android:background="@color/fragment_title_text_bg"
                 android:padding="5dp"
                 android:text="@string/title_loading_advise"
+                android:fontFamily="@font/source_sans_pro_black"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/fragment_title_text_color"
                 android:textSize="@dimen/la_title_text"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/cardView" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,15 +45,47 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:orientation="vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
+
+                <LinearLayout
+                    android:id="@+id/title_rfid_tag_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/la_ly_pd_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="RFID Tag"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/edt_la_rfid_tag_no"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/title_lep_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -61,20 +95,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/lep_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/la_auto_complete_lep_number"
+                    <EditText
+                        android:id="@+id/la_edt_lep_number"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
-                        android:background="@drawable/rectangle_edt_write_able_field"
+                        android:background="@drawable/rectangle_edt_read_only_field"
                         android:inputType="textCapCharacters"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:hint="Search Lep Number"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -82,8 +117,8 @@
                     android:id="@+id/title_sap_gr_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -92,19 +127,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/sap_gr_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/edt_la_sap_rg_no"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -112,8 +149,8 @@
                     android:id="@+id/title_truck_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -122,19 +159,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/TruckNumber"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/edt_la_truck_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -142,8 +181,8 @@
                     android:id="@+id/title_driver_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -152,19 +191,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/driverName"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/edt_la_driver_name"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -172,8 +213,8 @@
                     android:id="@+id/title_driver_mobile_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -182,19 +223,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/driver_mobile_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/edt_la_driver_mobile_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -202,8 +245,8 @@
                     android:id="@+id/title_driver_license_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -212,20 +255,22 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/driver_license_no"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/edt_la_driver_license_no"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textAllCaps="true"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -233,8 +278,8 @@
                     android:id="@+id/title_vessel_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -243,19 +288,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/vessel_name"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/edt_la_vessel_name"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -263,8 +310,8 @@
                     android:id="@+id/title_commodity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -273,19 +320,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/commodity"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/edt_la_commodity"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -293,8 +342,8 @@
                     android:id="@+id/title_quantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -303,7 +352,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/truck_capacity"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -311,12 +361,13 @@
                         android:id="@+id/edt_la_quantity"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -338,19 +389,21 @@
                         android:layout_gravity="center"
                         android:layout_weight="3"
                         android:text="@string/source_location"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
                         android:id="@+id/la_edt_source_location"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -358,8 +411,8 @@
                     android:id="@+id/loading_advise_destination_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -370,7 +423,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="3"
                         android:text="@string/destination_location"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
@@ -378,10 +432,11 @@
                         android:id="@+id/ll_spinner_destination_location"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/reactangle_spinner_select_able_field"
-                        android:paddingLeft="@dimen/common_spinner_rectangle_pd_left"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -389,8 +444,8 @@
                     android:id="@+id/title_loading_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -399,20 +454,22 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/loading_supervisor"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
                     <EditText
                         android:id="@+id/edt_la_loading_supervisor"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -420,8 +477,8 @@
                     android:id="@+id/title_pinnacle_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -431,19 +488,22 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/pinnacle_supervisor"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
                     <AutoCompleteTextView
                         android:id="@+id/ll_auto_pinnacle_supervisor"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
-                        android:hint="Search Supervisor"
                         android:background="@drawable/rectangle_edt_write_able_field"
+                        android:hint="Search Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
@@ -452,8 +512,8 @@
                     android:id="@+id/title_bothra_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -463,19 +523,22 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/bothra_supervisor"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
 
                     <AutoCompleteTextView
                         android:id="@+id/ll_auto_bothra_supervisor"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="32dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
-                        android:hint="Search Supervisor"
                         android:background="@drawable/rectangle_edt_write_able_field"
+                        android:hint="Search Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
@@ -484,8 +547,8 @@
                     android:id="@+id/title_date_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
                     android:paddingBottom="@dimen/la_ly_pd_bottom"
                     android:weightSum="7">
 
@@ -494,35 +557,26 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:text="@string/system_date"
-                        android:textColor="@color/fragment_tv_text"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
-<!--                    <EditText-->
-<!--                        android:id="@+id/loading_advise_loading_time"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="@dimen/la_edt_rectangle_height"-->
-<!--                        android:layout_marginStart="32dp"-->
-<!--                        android:layout_weight="4"-->
-<!--                        android:background="@drawable/rectangle_edt_read_only_field"-->
-<!--                        android:enabled="false"-->
-<!--                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"-->
-<!--                        android:text="09-09-2022 04:55 PM"-->
-<!--                        android:textColor="@color/fragment_edt_text"-->
-<!--                        android:textSize="@dimen/common_edt_text" />-->
+
 
                     <TextClock
                         android:id="@+id/la_tv_clock"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:gravity="center_vertical"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
-                        android:layout_marginStart="32dp"
-                        android:enabled="false"
-                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textColor="@color/fragment_edt_text"
                         android:background="@drawable/rectangle_edt_read_only_field"
-                        android:textSize="@dimen/common_edt_text"
-                        android:format12Hour="dd-MM-yy hh:mm:ss a"/>
+                        android:enabled="false"
+                        android:format12Hour="dd-MM-yy hh:mm:ss a"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
+                        android:textSize="@dimen/common_edt_text" />
                     <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
                 </LinearLayout>
 
@@ -548,6 +602,7 @@
                         android:layout_weight="2"
                         android:backgroundTint="@color/orange800"
                         android:text="@string/submit"
+                        android:fontFamily="@font/source_sans_pro_black"
                         android:textStyle="bold" />
 
                     <View
@@ -562,6 +617,7 @@
                         android:layout_weight="2"
                         android:backgroundTint="@color/light_black"
                         android:text="@string/cancel"
+                        android:fontFamily="@font/source_sans_pro_black"
                         android:textStyle="bold" />
 
                     <View
@@ -572,8 +628,6 @@
 
 
             </LinearLayout>
-
-            <include layout="@layout/common_layout_recyclerview_data_items_rows" />
 
             <include layout="@layout/footer"
                 android:layout_width="match_parent"

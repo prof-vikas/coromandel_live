@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">RFId Tag Scanner</string>
+    <string name="app_names"></string>
 
     <!--    title bar-->
     <string name="title_bothra">Bothra WH Supervisor</string>
@@ -50,7 +51,6 @@
     <string name="placeholder_confirm_password">Confirm password</string>
     <string name="placeholder_username">Username</string>
     <string name="placeholder_password">Password</string>
-    <string name="login_app_version">Version 1.0.0</string>
     <string name="login_btn_login">Login</string>
     <string name="login_btn_update_password">Update password</string>
 
@@ -63,7 +63,7 @@
     <string name="loading_supervisor">Loading "\n"Supervisor</string>
     <string name="pinnacle_supervisor">Pinnacle Supervisor</string>
     <string name="bothra_supervisor">Bothra Supervisor</string>
-    <string name="cancel">Reset</string>
+    <string name="cancel">Cancel</string>
     <string name="title_coromandel2">Coromandel WH Supervisor</string>
     <string name="Previous_rmg_no">Previous RMG No</string>
     <string name="source_location">Source "\n"Location</string>
@@ -74,4 +74,5 @@
     <string name="update_wh_no">Warehouse No</string>
 
 
+    <string name="login_app_version">Version 1.0.1</string>
 </resources>

@@ -21,14 +21,14 @@ public class TransactionsDto {
     private WeighmentTypeDto weighmentTypeMaster;
     private RemarksDto remarkMaster;
     private String loadingTime;
-    private BigDecimal grossWeight;
+    private Integer grossWeight;
     private String grossWeightTime;
     private Integer grossWtPrintCount;
     private BigDecimal tareWeight;
     private Integer tareWtPrintCount;
     private BigDecimal netWeight;
     private String netWeightTime;
-    private BigDecimal sourceGrossWeight;
+    private Integer sourceGrossWeight;
     private String sourceGrossWeightTime;
     private Integer sourceGrossWtPrintCount;
     private BigDecimal sourceTareWeight;
@@ -45,7 +45,8 @@ public class TransactionsDto {
     private Integer rStat;
     private AuditEntity auditEntity;
 
-    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, BigDecimal grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, BigDecimal sourceGrossWeight, String sourceGrossWeightTime, Integer sourceGrossWtPrintCount, BigDecimal sourceTareWeight, Integer sourceTareWtPrintCount, BigDecimal sourceNetWeight, String sourceNetWeightTime, String weighBridgeNo, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity) {
+
+    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, Integer grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, Integer sourceGrossWeight, String sourceGrossWeightTime, Integer sourceGrossWtPrintCount, BigDecimal sourceTareWeight, Integer sourceTareWtPrintCount, BigDecimal sourceNetWeight, String sourceNetWeightTime, String weighBridgeNo, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity) {
         this.id = id;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.coromandelLoadingSupervisor = coromandelLoadingSupervisor;
@@ -215,11 +216,11 @@ public class TransactionsDto {
         this.loadingTime = loadingTime;
     }
 
-    public BigDecimal getGrossWeight() {
+    public Integer getGrossWeight() {
         return grossWeight;
     }
 
-    public void setGrossWeight(BigDecimal grossWeight) {
+    public void setGrossWeight(Integer grossWeight) {
         this.grossWeight = grossWeight;
     }
 
@@ -271,11 +272,11 @@ public class TransactionsDto {
         this.netWeightTime = netWeightTime;
     }
 
-    public BigDecimal getSourceGrossWeight() {
+    public Integer getSourceGrossWeight() {
         return sourceGrossWeight;
     }
 
-    public void setSourceGrossWeight(BigDecimal sourceGrossWeight) {
+    public void setSourceGrossWeight(Integer sourceGrossWeight) {
         this.sourceGrossWeight = sourceGrossWeight;
     }
 

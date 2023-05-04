@@ -1,12 +1,9 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.sipl.rfidtagscanner.utils.Config.EMPTY_LEP_NUMBER_LIST;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_WAREHOUSE_NUMBER;
-import static com.sipl.rfidtagscanner.utils.Config.isRMGTableRequired;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,45 +12,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.sipl.rfidtagscanner.MainActivity;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
-import com.sipl.rfidtagscanner.adapter.RmgDataAdapter;
-import com.sipl.rfidtagscanner.adapter.TripsDataAdapter;
 import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
-import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
+import com.sipl.rfidtagscanner.entites.BothraWHDto;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 import com.sipl.rfidtagscanner.utils.Helper;
-import com.sipl.rfidtagscanner.utils.RecyclerviewHardcodedData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,17 +53,15 @@ public class BWHFragment extends Fragment {
     private final String TAG = "TracingError";
     private final Helper helper = new Helper();
     private final CustomToast customToast = new CustomToast();
+    BothraWHDto bothraWHDto;
+    List<BothraWHDto> bothraWHDtoList = new ArrayList<>();
     ArrayList<String> arrAutoCompleteLepNo;
-    private TextClock tvClock;
+    private TextClock tvClock, tvEntryTime, tvExitTime;
     private ProgressBar progressBar;
     private TextView tvLepNumber;
-    private AutoCompleteTextView autoCompleteLepNo;
     private Spinner spinnerWarehouseNo, spinnerRemark;
-    private EditText edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
-    private RecyclerView recyclerViewRmgNo, recyclerViewTrip;
-    private LinearLayout mainRecyclerViewLayout;
+    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
     private Button btnSubmit, btnReset;
-    private String selectedLepNumber;
     private Integer selectedLepNumberId;
     private String selectedWareHouseNumber;
 
@@ -83,12 +69,13 @@ public class BWHFragment extends Fragment {
     private String loginUserName;
     private String token;
     private String loginUserPlantCode;
+    private String loginUserSourceCode;
+    private String loginUserSourceCodeDesc;
 
     private String selectedRemarks;
     private Integer selectedRemarksId;
     private ArrayAdapter<String> remarkAdapter;
     private ArrayAdapter<String> updateWareHouseNoAdapter;
-    private ArrayAdapter<String> arrayAdapterForLepNumber;
     private String previousWarehouseCode;
 
     public BWHFragment() {
@@ -107,8 +94,12 @@ public class BWHFragment extends Fragment {
         spinnerWarehouseNo = view.findViewById(R.id.bwh_spinner_warehouse_no);
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
         tvLepNumber = view.findViewById(R.id.bwh_tv_lep_number);
-        tvClock = view.findViewById(R.id.bwh_tv_clock);
-        autoCompleteLepNo = view.findViewById(R.id.bwh_auto_complete_lep_number);
+//        tvClock = view.findViewById(R.id.bwh_tv_clock);
+//        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
+        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
+
+        edtRfidTag = view.findViewById(R.id.bwh_edt_rfid_tag);
+        edtLepNo = view.findViewById(R.id.bwh_edt_lep_number);
         edtDriverName = view.findViewById(R.id.bwh_edt_driver_name);
         edtTruckNumber = view.findViewById(R.id.bwh_edt_truck_no);
         edtCommodity = view.findViewById(R.id.bwh_edt_commodity);
@@ -117,29 +108,21 @@ public class BWHFragment extends Fragment {
         progressBar = view.findViewById(R.id.bwh_progressBar);
         btnReset = view.findViewById(R.id.bwh_btn_reset);
         btnSubmit = view.findViewById(R.id.bwh_btn_submit);
-        mainRecyclerViewLayout = view.findViewById(R.id.main_recycler_view_layoutout);
 
-        helper.multiColorStringForTv(tvLepNumber, "LEP Number", " *");
-        this.token = getToken();
+        this.token = ((MainActivity) getActivity()).getLoginToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
         this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
+        this.loginUserSourceCode = ((MainActivity) getActivity()).getLoginUserStorageCode();
+        this.loginUserSourceCodeDesc = ((MainActivity) getActivity()).getLoginUserSourceLocationDesc();
+
 
         setTvClock();
+        getLoadingAdviseDetails();
         callOnCreateApi();
 
         btnSubmit.setOnClickListener(view12 -> {
             if (validateLoadingAdviseForm()) {
-                String lepNo = autoCompleteLepNo.getText().toString();
-                if (arrAutoCompleteLepNo.contains(lepNo)) {
-                    if (validateLepNoChange()) {
-                        updateWareHouseNo(setData());
-                    } else {
-                        ((MainActivity)getActivity()).alert(getActivity(),"error","It seems selected Lep number is change","Please try to select from Lep Number drop-down..!","OK");
-                    }
-                } else {
-                    ((MainActivity)getActivity()).alert(getActivity(),"error","Selected Lep Number is invalid","Please select Lep number from drop-down..!","OK");
-                    return;
-                }
+                updateWareHouseNo(setData());
             }
 
         });
@@ -149,47 +132,25 @@ public class BWHFragment extends Fragment {
     }
 
     private void resetFields() {
-        autoCompleteLepNo.setText(null);
-        edtDriverName.setText(null);
-        edtTruckNumber.setText(null);
-        edtCommodity.setText(null);
-        edtGrossWeight.setText(null);
-        edtPreviousWareHouseNo.setText(null);
-
-        if (updateWareHouseNoAdapter == null || remarkAdapter == null) {
-            callOnCreateApi();
-        } else {
-            spinnerWarehouseNo.setSelection(updateWareHouseNoAdapter.getCount());
-            spinnerRemark.setSelection(remarkAdapter.getCount());
-        }
-
-        if (arrayAdapterForLepNumber != null) {
-            arrayAdapterForLepNumber.clear();
-        }
-        getALlLepNumberBothra();
-        removeErrorMessage();
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
     }
 
-    private void removeErrorMessage() {
-        autoCompleteLepNo.setError(null);
-        edtTruckNumber.setError(null);
-        edtDriverName.setError(null);
-        edtCommodity.setError(null);
-        edtGrossWeight.setError(null);
-        edtPreviousWareHouseNo.setError(null);
-    }
 
     private void callOnCreateApi() {
-        getALlLepNumberBothra();
-        getAllWareHouse();
+        getWareHouseStorage();
         getAllBothraRemark();
     }
 
     private boolean validateLoadingAdviseForm() {
-        if (autoCompleteLepNo.length() == 0) {
-            autoCompleteLepNo.setError("This field is required");
+        if (edtRfidTag.length() == 0) {
+            edtRfidTag.setError("This field is required");
             return false;
         }
+        if (edtLepNo.length() == 0) {
+            edtLepNo.setError("This field is required");
+            return false;
+        }
+
         if (edtTruckNumber.length() == 0) {
             edtTruckNumber.setError("This field is required");
             return false;
@@ -214,153 +175,21 @@ public class BWHFragment extends Fragment {
             Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
             return false;
         }
-        removeErrorMessage();
         return true;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle
-            savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (isRMGTableRequired == true) {
-            mainRecyclerViewLayout.setVisibility(View.VISIBLE);
-            recyclerViewRmgNo = getActivity().findViewById(R.id.recycler_view_rmg_no);
-            recyclerViewTrip = getActivity().findViewById(R.id.recycler_view_trips);
-            setRecyclerView();
-        }
-    }
-
-    private String getToken() {
-        SharedPreferences sp = getActivity().getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String userToken = sp.getString("tokenSPK", null);
-        return userToken;
-    }
-
-    private void setRecyclerView() {
-        recyclerViewRmgNo.setHasFixedSize(false);
-        recyclerViewTrip.setHasFixedSize(false);
-        RecyclerviewHardcodedData recyclerviewHardcodedData = new RecyclerviewHardcodedData();
-
-        RecyclerView.LayoutManager rmgNoLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerViewRmgNo.setLayoutManager(rmgNoLayoutManager);
-
-        RecyclerView.LayoutManager tripLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerViewTrip.setLayoutManager(tripLayoutManager);
-
-        RmgDataAdapter rmgDataAdapter = new RmgDataAdapter((Context)
-                getActivity(), recyclerviewHardcodedData.initRmgData());
-        recyclerViewRmgNo.setAdapter(rmgDataAdapter);
-
-        TripsDataAdapter tripRmgDataAdapter = new TripsDataAdapter((Context)
-                getActivity(), recyclerviewHardcodedData.initTripData());
-        recyclerViewTrip.setAdapter(tripRmgDataAdapter);
-    }
-
-    private boolean getALlLepNumberBothra() {
-        progressBar.setVisibility(View.VISIBLE);
-        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberBothra("Bearer " + token);
-        call.enqueue(new Callback<TransactionsApiResponse>() {
-            @Override
-            public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-
-                if (!response.isSuccessful()) {
-//                    alertBuilder(response.errorBody().toString());
-                  progressBar.setVisibility(View.GONE);
-                    ((MainActivity)getActivity()).alert(getActivity(),"error",response.errorBody().toString(),null,"OK");
-                    return;
-                }
-                Log.i(TAG, "onResponse: getALlLepNumberBothra : responseCode : " + response.code());
-                if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    List<TransactionsDto> transactionsDtoList = response.body().getTransactionsDtos();
-                    HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
-                    HashMap<String, String> hashMapForPreviousWareHouse = new HashMap<>();
-                    arrAutoCompleteLepNo = new ArrayList<>();
-                    try {
-                        if (transactionsDtoList == null || transactionsDtoList.isEmpty()) {
-                            autoCompleteLepNo.setHint("No Lep number available");
-                            customToast.toastMessage(getActivity(), EMPTY_LEP_NUMBER_LIST, 0);
-                            return;
-                        } else {
-                            autoCompleteLepNo.setHint("Search Lep Number");
-                        }
-
-                        String strTruckNo = null, srtPreviousWareHouseDesc = null, strDriverName = null, grossWeight = null, strCommodity = null;
-                        String strPreviousWareHouseNo = null;
-                        for (int i = 0; i < transactionsDtoList.size(); i++) {
-                            String strLepNumber = transactionsDtoList.get(i).getRfidLepIssueModel().getLepNumber();
-                            int id = transactionsDtoList.get(i).getRfidLepIssueModel().getId();
-                            hashMapLepNumber.put(strLepNumber, id);
-                            strDriverName = transactionsDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName();
-                            strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                            strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-
-                            if (transactionsDtoList.get(i).getSourceNetWeight() != null) {
-                                Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getSourceNetWeight());
-                                grossWeight = String.valueOf(transactionsDtoList.get(i).getSourceNetWeight());
-                            } else {
-                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
-                                Log.i(TAG, "onResponse:else transactionsDtoList.get(i).getGrossWeight() : " + transactionsDtoList.get(i).getGrossWeight());
-                            }
-                            strPreviousWareHouseNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
-                            srtPreviousWareHouseDesc = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                            arrAutoCompleteLepNo.add(strLepNumber);
-                        }
-
-                        arrayAdapterForLepNumber = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrAutoCompleteLepNo);
-                        autoCompleteLepNo.setAdapter(arrayAdapterForLepNumber);
-                        String finalStrTruckNo = strTruckNo;
-                        String finalStrDriverName = strDriverName;
-                        String finalStrCommodity = strCommodity;
-                        String finalGrossWeight = grossWeight;
-                        String finalStrPreviousWareHouse = strPreviousWareHouseNo;
-                        String finalStrPreviousWareHouseDesc = srtPreviousWareHouseDesc;
-                        autoCompleteLepNo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                selectedLepNumber = arrayAdapterForLepNumber.getItem(i);
-                                if (hashMapLepNumber.containsKey(selectedLepNumber)) {
-                                    selectedLepNumberId = hashMapLepNumber.get(selectedLepNumber);
-                                }
-                                previousWarehouseCode = finalStrPreviousWareHouse;
-
-                                if (arrAutoCompleteLepNo.contains(selectedLepNumber)) {
-                                    edtTruckNumber.setText(finalStrTruckNo);
-                                    edtDriverName.setText(finalStrDriverName);
-                                    edtCommodity.setText(finalStrCommodity);
-                                    edtGrossWeight.setText(finalGrossWeight);
-                                    edtPreviousWareHouseNo.setText(finalStrPreviousWareHouse + " - " + finalStrPreviousWareHouseDesc);
-                                }
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.getMessage();
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-//                alertBuilder(t.getMessage());
-                ((MainActivity)getActivity()).alert(getActivity(),"error",t.getMessage(),null,"OK");
-            }
-        });
-        return true;
-    }
-
-    private boolean getAllWareHouse() {
-        Log.i(TAG, "getAllWareHouse: ()");
+    private boolean getWareHouseStorage() {
+        Log.i("getWareHouseStorage", "getAllWareHouse: ()");
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
-                getAllWareHouse("Bearer " + token, loginUserPlantCode);
+                getAllWareHouse("Bearer " + token, "bothra");
 
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity)getActivity()).alert(getActivity(),"error",response.errorBody().toString(),null,"OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllWareHouse : responseCode : " + response.code());
@@ -388,7 +217,9 @@ public class BWHFragment extends Fragment {
                         }
 //                    arrDestinationLocation.add("Select Warehouse No");
                         arrDestinationLocationDesc.add("Select Warehouse No");
-                        for (String a : arrDestinationLocationDesc) {
+
+
+                       /* for (String a : arrDestinationLocationDesc) {
                             Log.i(TAG, "onResponse: " + a.toLowerCase());
                         }
 
@@ -397,7 +228,7 @@ public class BWHFragment extends Fragment {
                             String value = entry.getValue();
                             Log.i(TAG, "onResponse: hashMapLocationCode : key : " + key + " --- Value : " + value);
                         }
-
+*/
                         updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
@@ -435,7 +266,7 @@ public class BWHFragment extends Fragment {
                                 if (!selectedRmgCode.equalsIgnoreCase("Select Warehouse No")) {
                                     spinnerRemark.setEnabled(true);
                                     spinnerRemark.setClickable(true);
-                                }else {
+                                } else {
                                     spinnerRemark.setEnabled(false);
                                     spinnerRemark.setClickable(false);
                                     spinnerRemark.setFocusable(false);
@@ -471,7 +302,6 @@ public class BWHFragment extends Fragment {
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-//                    alertBuilder(response.errorBody().toString());
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
@@ -582,10 +412,20 @@ public class BWHFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
-                Log.i(TAG, "onResponse: code" + response.code());
-                if (response.isSuccessful()) {
+                Log.i(TAG, "onResponse: code" + response.code() + "status : " + response.body().getStatus());
+             /*   if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    resetFields();
+                }*/
+
+                if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    resetFields();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
                     resetFields();
                 }
             }
@@ -601,29 +441,39 @@ public class BWHFragment extends Fragment {
 
     private void setTvClock() {
         try {
-            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
+//            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
+//            tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm a");
+//            tvClock.setText("04-05-23 10:40:43 AM");
+//            tvEntryTime.setText("04-05-23 10:40:43 AM");
+            tvExitTime.setFormat24Hour("dd-MM-yy hh:mm a");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private boolean validateLepNoChange() {
-        String lepNo = autoCompleteLepNo.getText().toString();
-        if (selectedLepNumber.equalsIgnoreCase(lepNo)) {
-            return true;
-        } else return false;
+    private void getLoadingAdviseDetails() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+        String rfidTagId = sp.getString("rfidTagSPK", null);
+        String lepNo = sp.getString("lepNoSPK", null);
+        String driverName = sp.getString("driverNameSPK", null);
+        String truckNo = sp.getString("truckNoSPK", null);
+        String commodity = sp.getString("commoditySPK", null);
+        String sourceGrossWeight = sp.getString("sourceGrossWeightSPK", null);
+        String previousRmgNo = sp.getString("previousRmgNoSPK", null);
+        this.previousWarehouseCode = previousRmgNo;
+        String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
+
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc);
     }
 
-  /*  private void alertBuilder(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(alertMessage)
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }*/
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc) {
+        edtRfidTag.setText(rfidTag);
+        edtLepNo.setText(lepNo);
+        edtTruckNumber.setText(truckNo);
+        edtDriverName.setText(driverName);
+        edtCommodity.setText(commodity);
+        edtGrossWeight.setText(sourceGrossWeight);
+        edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
+    }
 }

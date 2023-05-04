@@ -4,5 +4,5 @@
     <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_baseline_logout_24"
-        android:title="@string/menu_logout" />
+        android:title="Logout" />
 </menu>

@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner;
 
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -29,6 +30,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.sipl.rfidtagscanner.fragments.BWHFragment;
 import com.sipl.rfidtagscanner.fragments.CWHFragment;
 import com.sipl.rfidtagscanner.fragments.LoadingAdviseFragment;
+import com.sipl.rfidtagscanner.fragments.ScanFragment;
+import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     Toolbar toolbar;
 
-    LinearLayout headerLayoutPlant, headerLayoutStorage, plant_linearLayout;
-    TextView toolbarTitle, login_username, txtPlantCode, txtStorageLocation, txtHeaderPlantCode, txtHeaderStorageLocation;
+    LinearLayout headerLayoutPlant, headerLayoutStorage;
+    TextView toolbarTitle, login_username, txtHeaderPlantCode, txtHeaderStorageLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerlayout);
         navigationView = findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);
-        txtPlantCode = findViewById(R.id.txt_plant_code);
-        txtStorageLocation = findViewById(R.id.txt_storage_location);
-        plant_linearLayout = findViewById(R.id.plant_linearLayout);
 
         //Setting custom toolbar and navigation bar and drawer
         setSupportActionBar(toolbar);
@@ -57,31 +57,29 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        //loading user screen based on their roles
+
         String userRoles = getLoginUserRole();
         Log.i(TAG, "onCreate: userRoles : " + userRoles);
         if (userRoles != null) {
             loadMenuBasedOnRoles(userRoles);
             showSideBarLoginUsername();
-        } else {
-            alert(MainActivity.this, "error", "User Role not undefined ", null, "OK");
         }
+        showSideBarLoginUsername();
 
-//        show plant details to header bar
-        if (isPlantDetailsRequiredInSideNav == false) {
-            plant_linearLayout.setVisibility(View.VISIBLE);
-            txtPlantCode.setText(getLoginUserPlantCode());
-            txtStorageLocation.setText(getLoginUserStorageCode());
-        }
     }
 
     public void loadFragment(Fragment fragment, int flag) {
+        Log.i(TAG, "loadFragment: in load fragment method()");
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (flag == 0) {
+            Log.i(TAG, "loadFragment: in if <<start>>");
             ft.add(R.id.main_container, fragment);
+            Log.i(TAG, "loadFragment: in if <<end>>");
         } else {
+            Log.i(TAG, "loadFragment: in else <<Start>>");
             ft.replace(R.id.main_container, fragment);
+            Log.i(TAG, "loadFragment: in else <<end>>");
         }
         ft.commit();
     }
@@ -92,7 +90,11 @@ public class MainActivity extends AppCompatActivity {
     private void getMenuNavigation() {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.logout) {
+            if (id == R.id.menu_item_scan_rfid) {
+                loadFragment(new BWHFragment(), 1);
+            } else if (id == R.id.menu_item_setting) {
+                loadFragment(new SettingsFragment(), 1);
+            } else if (id == R.id.menu_item_logout) {
                 logout();
             } else {
                 Toast.makeText(MainActivity.this, "click outside of menu", Toast.LENGTH_SHORT).show();
@@ -110,20 +112,53 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "title" + title, Toast.LENGTH_SHORT).show();
     }
 
-    private void loadMenuBasedOnRoles(String userRole) {
-        navigationView.getMenu().clear();
-        navigationView.inflateMenu(R.menu.menu_logout);
-        getMenuNavigation();
-        if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+  /*  private void loadMenuBasedOnRoles(String userRole) {
+        if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_admin);
+            getMenuNavigation();
             loadFragment(new LoadingAdviseFragment(), 1);
-        }
-        if (userRole.equalsIgnoreCase(ROLES_CWH)) {
-            loadFragment(new CWHFragment(), 1);
-        }
-        if (userRole.equalsIgnoreCase(ROLES_BWH)) {
-            loadFragment(new BWHFragment(), 1);
         } else {
-            Log.i(TAG, "No User found : " + userRole);
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_logout);
+            getMenuNavigation();
+            if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+                loadFragment(new LoadingAdviseFragment(), 1);
+            }
+            if (userRole.equalsIgnoreCase(ROLES_CWH)) {
+                loadFragment(new CWHFragment(), 1);
+            }
+            if (userRole.equalsIgnoreCase(ROLES_BWH)) {
+                loadFragment(new BWHFragment(), 1);
+            } else {
+                Log.i(TAG, "No User found : " + userRole);
+            }
+        }
+    }*/
+
+    private void loadMenuBasedOnRoles(String userRole) {
+        if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_admin);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_loading_advise);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else if (userRole.equalsIgnoreCase(ROLES_CWH)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_loading_advise);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else if (userRole.equalsIgnoreCase(ROLES_BWH)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.menu_loading_advise);
+            getMenuNavigation();
+            loadFragment(new ScanFragment(), 1);
+        } else {
+            Log.i(TAG, "loadMenuBasedOnRoles: No roles available");
         }
     }
 
@@ -167,6 +202,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         String username = sp.getString("usernameSPK", null);
         return username;
+    }
+
+    public String getLoginToken() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String token = sp.getString("tokenSPK", null);
+        return token;
     }
 
     public String getLoginUserRole() {
@@ -213,16 +254,22 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         TextView error = dialog.findViewById(R.id.dialog_type_error);
         TextView success = dialog.findViewById(R.id.dialog_type_success);
+        TextView warning = dialog.findViewById(R.id.dialog_type_warning);
         if (dialogType.equalsIgnoreCase("error")) {
             error.setVisibility(View.VISIBLE);
             success.setVisibility(View.GONE);
+            warning.setVisibility(View.GONE);
         } else if (dialogType.equalsIgnoreCase("success")) {
             error.setVisibility(View.GONE);
+            warning.setVisibility(View.GONE);
             success.setVisibility(View.VISIBLE);
+        } else if (dialogType.equalsIgnoreCase("warning")) {
+            error.setVisibility(View.GONE);
+            success.setVisibility(View.GONE);
+            warning.setVisibility(View.VISIBLE);
         } else {
             Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
         }
-
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
         if (dialogMessage == null) {
             dialogMessageTxt.setVisibility(View.GONE);

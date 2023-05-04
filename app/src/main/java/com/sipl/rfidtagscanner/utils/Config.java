@@ -6,6 +6,7 @@ public class Config {
     public static final boolean isRMGTableRequired = false;
     public static final boolean isJWTEnable = false;
     public static final String PLANT_BOTHRA = "BTVZ";
+    public static final String STORAGE_BOTHRA = "BTVZ";
 
     public static final boolean isGetSourceLocationByDescEnable = false;
     public static final boolean isGetPlantLocationByDescEnable = false;
@@ -15,6 +16,7 @@ public class Config {
     public static final String ROLES_BWH = "Bothra Warehouse Supervisor\r\n";
     public static final String ROLES_CWH = "Coromandel Warehouse Supervisor\r\n";
     public static final String ROLES_LAO = "Loading Advise Operator";
+    public static final String ROLES_ADMIN = "super admin";
 
 
     public static final String EMPTY_LEP_NUMBER_LIST = "No lep Number is available";

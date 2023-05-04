@@ -49,6 +49,7 @@
 <!--    Title tool bar-->
     <color name="titletoolbar">#BCD0FD</color>
     <color name="titleBg">#FFFFFF</color>
+    <color name="refresh_btn">#f6931a</color>
 
 <!--    Login Screen-->
     <color name="stroke_login_btn">#f6931a</color>
@@ -60,8 +61,10 @@
     <color name="header_color_username">#000</color>
     <color name="header_color_welcome">#f6931a</color>
     <color name="headerBg">#dedede</color>
-    <color name="drawer_icons">#575757</color>
-    <color name="drawer_text">#575757</color>
+ <!--   <color name="drawer_icons">#575757</color>
+    <color name="drawer_text">#575757</color>-->
+    <color name="drawer_icons">#000</color>
+    <color name="drawer_text">#505050</color>
     <color name="drawer_bg">#ffffff</color>
 
 <!--    FrameLayoutBG-->
@@ -112,6 +115,13 @@
 
 <!--    checkbox-->
     <color name="checkbox_bg">#f6931a</color>
+
+    <color name="primary_orange">#f6931a</color>
+
+
+
+    <color name="wh_tv_txt">#252525</color>
+    <color name="wh_edt_txt">#323232</color>
 
 
 </resources>

@@ -1,12 +1,9 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.sipl.rfidtagscanner.utils.Config.EMPTY_LEP_NUMBER_LIST;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_RMG_NUMBER;
-import static com.sipl.rfidtagscanner.utils.Config.isRMGTableRequired;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,32 +12,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.sipl.rfidtagscanner.MainActivity;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
-import com.sipl.rfidtagscanner.adapter.RmgDataAdapter;
-import com.sipl.rfidtagscanner.adapter.TripsDataAdapter;
 import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
-import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
@@ -48,7 +36,6 @@ import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 import com.sipl.rfidtagscanner.utils.Helper;
-import com.sipl.rfidtagscanner.utils.RecyclerviewHardcodedData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,19 +49,14 @@ import retrofit2.Response;
 public class CWHFragment extends Fragment {
 
     private final String TAG = "BothraAdvicePage";
-    ArrayAdapter<String> updateRmgNoAdapter;
-    ArrayAdapter<String> arrayAdapterForLepNumber;
-    ArrayList<String> arrAutoCompleteLepNo;
-    ArrayAdapter<String> remarksAdapter;
-    EditText edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
-    TextView tvLepNumber;
+
+    private ArrayAdapter<String> updateRmgNoAdapter;
+    private ArrayAdapter<String> remarksAdapter;
+
+    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
     private CustomToast customToast = new CustomToast();
-    private Helper helper = new Helper();
     private ProgressBar progressBar;
-    private LinearLayout mainRecyclerViewLayout;
-    private RecyclerView recyclerViewRmgNo, recyclerViewTrip;
     private Spinner spinnerUpdateRmgNo, spinnerRemark;
-    private AutoCompleteTextView autoCompleteLepNo;
     private TextClock tvClock;
     private Button btnSubmit, btnReset;
 
@@ -88,7 +70,6 @@ public class CWHFragment extends Fragment {
 
     private String selectedRmgNo;
 
-    private String selectedLepNumber;
     private Integer selectedLepNumberId;
 
     private String previousRmgNoId;
@@ -99,62 +80,47 @@ public class CWHFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_c_w_h, container, false);
         spinnerRemark = view.findViewById(R.id.cwh_spinner_remark);
         spinnerUpdateRmgNo = view.findViewById(R.id.cwh_spinner_update_rmg_no);
-        autoCompleteLepNo = view.findViewById(R.id.cwh_auto_complete_lep_number);
+
+        edtRfidTag = view.findViewById(R.id.cwh_edt_rfid_tag);
+        edtLepNo = view.findViewById(R.id.cwh_edt_lep_number);
         edtDriverName = view.findViewById(R.id.cwh_edt_driver_name);
         edtTruckNumber = view.findViewById(R.id.cwh_edt_truck_no);
         edtCommodity = view.findViewById(R.id.cwh_edt_commodity);
         edtGrossWeight = view.findViewById(R.id.cwh_edt_gross_weight);
         edtPreviousRmgNo = view.findViewById(R.id.cwh_edt_previous_rmg_no);
-        tvLepNumber = view.findViewById(R.id.cwh_lep_number_tv);
         btnReset = view.findViewById(R.id.cwh_btn_reset);
         btnSubmit = view.findViewById(R.id.cwh_btn_submit);
         progressBar = view.findViewById(R.id.cwh_progressBar);
-        mainRecyclerViewLayout = view.findViewById(R.id.main_recycler_view_layoutout);
         tvClock = view.findViewById(R.id.cwh_tv_clock);
 
-        helper.multiColorStringForTv(tvLepNumber, "LEP Number", " *");
-        this.token = getToken();
+        this.token = ((MainActivity) getActivity()).getLoginToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
         this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
 
         currentTime();
+        getLoadingAdviseDetails();
         callOnCreateApi();
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validateLoadingAdviseForm()) {
-                    String lepNo = autoCompleteLepNo.getText().toString();
-                    if (arrAutoCompleteLepNo.contains(lepNo)) {
-                        if (validateLepNoChange()) {
-                            updateRmgNo(setData());
-                        } else {
-//                            alertBuilder("Selected LepNumber is change \nPlease try to select from Lep Number drop-down");
-                            ((MainActivity) getActivity()).alert(getActivity(), "error", "It seems selected Lep number is change", "Please try to select from Lep Number drop-down..!", "OK");
-                        }
-                    } else {
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", "Selected Lep Number is invalid", "Please select Lep number from drop-down..!", "OK");
-//                        alertBuilder("Selected Lep Number is invalid \nPlease select from drop-down ");
-                        return;
-                    }
-                }
+        btnSubmit.setOnClickListener(view12 -> {
+            if (validateLoadingAdviseForm()) {
+                updateRmgNo(setData());
             }
         });
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resetFields();
-            }
-        });
+        btnReset.setOnClickListener(view1 -> resetFields());
 
         return view;
     }
 
     private boolean validateLoadingAdviseForm() {
-        if (autoCompleteLepNo.length() == 0) {
-            autoCompleteLepNo.setError("This field is required");
+        if (edtRfidTag.length() == 0) {
+            edtRfidTag.setError("This field is required");
             return false;
         }
+        if (edtLepNo.length() == 0) {
+            edtLepNo.setError("This field is required");
+            return false;
+        }
+
         if (edtTruckNumber.length() == 0) {
             edtTruckNumber.setError("This field is required");
             return false;
@@ -179,68 +145,18 @@ public class CWHFragment extends Fragment {
             Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
             return false;
         }
-        removeErrorMessage();
         return true;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle
-            savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (isRMGTableRequired == true) {
-            mainRecyclerViewLayout.setVisibility(View.VISIBLE);
-            recyclerViewRmgNo = getActivity().findViewById(R.id.recycler_view_rmg_no);
-            recyclerViewTrip = getActivity().findViewById(R.id.recycler_view_trips);
-            setRecyclerView();
-        }
-    }
-
     private void resetFields() {
-        autoCompleteLepNo.setText(null);
-        edtDriverName.setText(null);
-        edtTruckNumber.setText(null);
-        edtCommodity.setText(null);
-        edtGrossWeight.setText(null);
-        edtPreviousRmgNo.setText(null);
-        if (updateRmgNoAdapter == null || remarksAdapter == null) {
-            callOnCreateApi();
-        } else {
-            spinnerUpdateRmgNo.setSelection(updateRmgNoAdapter.getCount());
-            spinnerRemark.setSelection(remarksAdapter.getCount());
-        }
-        if (arrayAdapterForLepNumber != null) {
-            arrayAdapterForLepNumber.clear();
-        }
-        getAllLepNo();
-        removeErrorMessage();
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
     }
 
-    private void setRecyclerView() {
-        recyclerViewRmgNo.setHasFixedSize(false);
-        recyclerViewTrip.setHasFixedSize(false);
-        RecyclerviewHardcodedData recyclerviewHardcodedData = new RecyclerviewHardcodedData();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerViewRmgNo.setLayoutManager(layoutManager);
-        RecyclerView.LayoutManager tripLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerViewTrip.setLayoutManager(tripLayoutManager);
-        RmgDataAdapter rmgDataAdapter = new RmgDataAdapter((Context)
-                getActivity(), recyclerviewHardcodedData.initRmgData());
-        recyclerViewRmgNo.setAdapter(rmgDataAdapter);
-        TripsDataAdapter tripRmgDataAdapter = new TripsDataAdapter((Context)
-                getActivity(), recyclerviewHardcodedData.initTripData());
-        recyclerViewTrip.setAdapter(tripRmgDataAdapter);
-    }
 
-    private String getToken() {
-        SharedPreferences sp = getActivity().getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String userToken = sp.getString("tokenSPK", null);
-        return userToken;
-    }
-
-    private boolean getAllLepNo() {
+/*    private boolean getAllLepNo() {
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getALlLepNumberWithFlag("Bearer " + token);
+            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + token, "4", "3");
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
@@ -259,6 +175,9 @@ public class CWHFragment extends Fragment {
                         HashMap<String, String> hashMapForPreviousRmgNo = new HashMap<>();
                         arrAutoCompleteLepNo = new ArrayList<>();
 
+
+                        String strTruckNo = null, srtPreviousRmgNoDesc = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
+
                         try {
                             if (transactionsDtoList == null || transactionsDtoList.isEmpty()) {
                                 autoCompleteLepNo.setHint("No Lep number available");
@@ -267,52 +186,45 @@ public class CWHFragment extends Fragment {
                             } else {
                                 autoCompleteLepNo.setHint("Search Lep Number");
                             }
-                            String strTruckNo = null, srtPreviousRmgNoDesc = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
+
                             for (int i = 0; i < transactionsDtoList.size(); i++) {
                                 String strLepNumber = transactionsDtoList.get(i).getRfidLepIssueModel().getLepNumber();
                                 int id = transactionsDtoList.get(i).getRfidLepIssueModel().getId();
                                 strDriverName = transactionsDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-//                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
-                                if (transactionsDtoList.get(i).getSourceNetWeight() != null) {
-                                    Log.i(TAG, "onResponse: if transactionsDtoList.get(i).getBothraNetWeight() : " + transactionsDtoList.get(i).getSourceNetWeight());
-                                    grossWeight = String.valueOf(transactionsDtoList.get(i).getSourceNetWeight());
-                                } else {
-                                    grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
-                                    Log.i(TAG, "onResponse:else transactionsDtoList.get(i).getGrossWeight() : " + transactionsDtoList.get(i).getGrossWeight());
-                                }
-
+                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
                                 strPreviousRmgNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 srtPreviousRmgNoDesc = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationDesc();
 
+                                coromandelWHDto = new CoromandelWHDto(strLepNumber, strTruckNo, strDriverName, strCommodity, grossWeight, strPreviousRmgNo, srtPreviousRmgNoDesc);
+                                coromandelWHDtoList.add(coromandelWHDto);
                                 arrAutoCompleteLepNo.add(strLepNumber);
                                 hashMapLepNumber.put(strLepNumber, id);
                             }
 
                             arrayAdapterForLepNumber = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrAutoCompleteLepNo);
                             autoCompleteLepNo.setAdapter(arrayAdapterForLepNumber);
-                            String finalStrTruckNo = strTruckNo;
-                            String finalStrDriverName = strDriverName;
-                            String finalStrCommodity = strCommodity;
-                            String finalGrossWeight = grossWeight;
-                            String finalStrPreviousRmgNo = strPreviousRmgNo;
-                            String finalStrPreviousRmgNoDesc = srtPreviousRmgNoDesc.toLowerCase();
                             autoCompleteLepNo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                     selectedLepNumber = arrayAdapterForLepNumber.getItem(i);
-                                    previousRmgNoId = finalStrPreviousRmgNo;
+//                                    previousRmgNoId = finalStrPreviousRmgNo;
                                     if (hashMapLepNumber.containsKey(selectedLepNumber)) {
                                         selectedLepNumberId = hashMapLepNumber.get(selectedLepNumber);
                                     }
 
                                     if (arrAutoCompleteLepNo.contains(selectedLepNumber)) {
-                                        edtTruckNumber.setText(finalStrTruckNo);
-                                        edtDriverName.setText(finalStrDriverName);
-                                        edtCommodity.setText(finalStrCommodity);
-                                        edtGrossWeight.setText(finalGrossWeight);
-                                        edtPreviousRmgNo.setText(finalStrPreviousRmgNo + " - " + finalStrPreviousRmgNoDesc);
+                                        for (CoromandelWHDto d : coromandelWHDtoList) {
+                                            if (d.getLepNo().equalsIgnoreCase(selectedLepNumber)) {
+                                                edtTruckNumber.setText(d.getTruckNo());
+                                                edtDriverName.setText(d.getDriverName());
+                                                edtCommodity.setText(d.getCommodity());
+                                                edtGrossWeight.setText(d.getGrossWeight());
+                                                edtPreviousRmgNo.setText(d.getPreviousRMGNo() + " - " + d.getPreviousRMGNoDesc().toLowerCase());
+                                                previousRmgNoId = d.getPreviousRMGNo();
+                                            }
+                                        }
                                     }
                                 }
                             });
@@ -327,19 +239,19 @@ public class CWHFragment extends Fragment {
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
 //                    alertBuilder(t.getMessage());
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
-    }
+    }*/
 
-    private boolean getAllUpdateRmgNo() {
+    private boolean getAllRmgStorage() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
-                getAllCoromandelRmgNo("Bearer " + token, loginUserPlantCode);
+                getAllCoromandelRmgNo("Bearer " + token, "coromandel");
 
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
@@ -347,7 +259,6 @@ public class CWHFragment extends Fragment {
 
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-//                    alertBuilder(response.errorBody().toString());
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
@@ -374,9 +285,21 @@ public class CWHFragment extends Fragment {
                         }
 //                        arrDestinationLocation.add("Update RMG No");
                         arrDestinationLocationDesc.add("Update RMG No");
-                        for (String a : arrDestinationLocationDesc) {
+                        /*for (String a : arrDestinationLocationDesc) {
                             Log.i(TAG, "onResponse: " + a.toLowerCase());
+                        }*/
+/*
+
+                        String userSourceLocation = loginUserSourceCode;
+                        String userSourceLocationDesc = loginUserSourceCodeDesc;
+                        String userSourceDesc = userSourceLocation + " - " + userSourceLocationDesc;
+                        Log.i(TAG, "onResponse: userSourceDesc : " + userSourceDesc);
+                        if (arrDestinationLocationDesc.contains(userSourceDesc)) {
+                            Log.i(TAG, "onResponse: in array testing" + arrDestinationLocationDesc.size());
+                            arrDestinationLocationDesc.remove(userSourceDesc);
                         }
+                            Log.i(TAG, "onResponse: in array testing" + arrDestinationLocationDesc.size());
+*/
 
                         updateRmgNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
@@ -441,7 +364,7 @@ public class CWHFragment extends Fragment {
         return true;
     }
 
-    private boolean getAllRemark() {
+    private boolean getRemarks() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RemarkApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllCoromandelRemark("Bearer " + token);
@@ -527,7 +450,7 @@ public class CWHFragment extends Fragment {
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
 //                alertBuilder(t.getMessage());
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
@@ -547,10 +470,20 @@ public class CWHFragment extends Fragment {
                 }
 
                 Log.i(TAG, "onResponse: code" + response.code());
-                if (response.isSuccessful()) {
+               /* if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
 //                    alertBuilder(response.body().getMessage());
+                    resetFields();
+                }*/
+
+                if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    resetFields();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
                     resetFields();
                 }
             }
@@ -580,16 +513,9 @@ public class CWHFragment extends Fragment {
             }
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
-        UpdateRmgRequestDto updateRmgRequestDto = new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
-        return updateRmgRequestDto;
+        return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
     }
 
-    private boolean validateLepNoChange() {
-        String lepNo = autoCompleteLepNo.getText().toString();
-        if (selectedLepNumber.equalsIgnoreCase(lepNo)) {
-            return true;
-        } else return false;
-    }
 
     private void currentTime() {
         try {
@@ -600,30 +526,36 @@ public class CWHFragment extends Fragment {
     }
 
     private void callOnCreateApi() {
-        getAllLepNo();
-        getAllUpdateRmgNo();
-        getAllRemark();
+        getAllRmgStorage();
+        getRemarks();
     }
 
-    private void removeErrorMessage() {
-        autoCompleteLepNo.setError(null);
-        edtTruckNumber.setError(null);
-        edtDriverName.setError(null);
-        edtCommodity.setError(null);
-        edtGrossWeight.setError(null);
-        edtPreviousRmgNo.setError(null);
+    private void getLoadingAdviseDetails() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+        String rfidTagId = sp.getString("rfidTagSPK", null);
+//        this.selectedLepNumberId = Integer.valueOf(rfidTagId);
+        String lepNo = sp.getString("lepNoSPK", null);
+        String driverName = sp.getString("driverNameSPK", null);
+        String truckNo = sp.getString("truckNoSPK", null);
+        String commodity = sp.getString("commoditySPK", null);
+        String grossWeight = sp.getString("GrossWeightSPK", null);
+        String previousRmgNo = sp.getString("previousRmgNoSPK", null);
+        this.previousRmgNoId = previousRmgNo;
+        String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
+
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc);
     }
 
-  /*  private void alertBuilder(String alertMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(alertMessage)
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }*/
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String grossWeight, String previousRmgNo, String PreviousRmgNoDesc) {
+        Log.i(TAG, "saveLoginAdviseData: <<Start>>");
+        edtRfidTag.setText(rfidTag);
+        edtLepNo.setText(lepNo);
+        edtTruckNumber.setText(truckNo);
+        edtDriverName.setText(driverName);
+        edtCommodity.setText(commodity);
+        edtGrossWeight.setText(grossWeight);
+        edtPreviousRmgNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
+        Log.i(TAG, "saveLoginAdviseData: <<end>>");
+    }
 }

@@ -47,6 +47,21 @@
             android:textSize="24sp"
             android:textStyle="bold"></TextView>
 
+        <TextView
+            android:id="@+id/dialog_type_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/alert_exclamation"
+            android:text="Warning"
+            android:visibility="gone"
+            android:fontFamily="@font/source_sans_pro_black"
+            android:drawablePadding="10dp"
+            android:textAlignment="center"
+            android:textColor="#FF9800"
+            android:textSize="24sp"
+            android:textStyle="bold"></TextView>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"/>
