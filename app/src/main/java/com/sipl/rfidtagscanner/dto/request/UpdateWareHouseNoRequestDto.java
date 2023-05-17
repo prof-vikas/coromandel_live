@@ -14,15 +14,18 @@ public class UpdateWareHouseNoRequestDto {
     private RemarksDto remarkMaster;
     private Integer transactionFlag;
 //    private String unloadingTime;
+    private String vehicleOutTime;
+    private String vehicleInTime;
 
-
-    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag) {
+    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag, String vehicleOutTime, String vehicleInTime) {
         this.auditEntity = auditEntity;
         this.priviousWarehouse = priviousWarehouse;
         this.warehouse = warehouse;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.remarkMaster = remarkMaster;
         this.transactionFlag = transactionFlag;
+        this.vehicleOutTime = vehicleOutTime;
+        this.vehicleInTime = vehicleInTime;
     }
 
     public AuditEntity getAuditEntity() {
@@ -57,11 +60,11 @@ public class UpdateWareHouseNoRequestDto {
         this.rfidLepIssueModel = rfidLepIssueModel;
     }
 
-    public RemarksDto getWhSupervisorRemark() {
+    public RemarksDto getRemarkMaster() {
         return remarkMaster;
     }
 
-    public void setWhSupervisorRemark(RemarksDto remarkMaster) {
+    public void setRemarkMaster(RemarksDto remarkMaster) {
         this.remarkMaster = remarkMaster;
     }
 
@@ -71,5 +74,21 @@ public class UpdateWareHouseNoRequestDto {
 
     public void setTransactionFlag(Integer transactionFlag) {
         this.transactionFlag = transactionFlag;
+    }
+
+    public String getVehicleOutTime() {
+        return vehicleOutTime;
+    }
+
+    public void setVehicleOutTime(String vehicleOutTime) {
+        this.vehicleOutTime = vehicleOutTime;
+    }
+
+    public String getVehicleInTime() {
+        return vehicleInTime;
+    }
+
+    public void setVehicleInTime(String vehicleInTime) {
+        this.vehicleInTime = vehicleInTime;
     }
 }

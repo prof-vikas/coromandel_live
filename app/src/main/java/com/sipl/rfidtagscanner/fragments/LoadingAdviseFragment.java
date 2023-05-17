@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_BOTHRA_SUPERVISOR;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_DESTINATION_LOCATION;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_PINNACLE_SUPERVISOR;
-import static com.sipl.rfidtagscanner.utils.Config.PLANT_BOTHRA;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -71,7 +70,7 @@ public class LoadingAdviseFragment extends Fragment {
     private String token;
     private String loginUserStorageLocation;
     private String loginUserStorageLocationDesc;
-//    private String loginUserPlantCode;
+    //    private String loginUserPlantCode;
     private int loginUserId;
 
     //    ArrayAdapter for spinner
@@ -162,7 +161,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void getBundleData() {
         SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
-            int s = Integer.parseInt(sp.getString("size", null));
+        int s = Integer.parseInt(sp.getString("size", null));
         for (int i = 0; i < s; i++) {
             String m = sp.getString(String.valueOf(i), null);
             arrBothraStrLocation.add(m);
@@ -247,7 +246,7 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void resetTextField() {
-        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(0), 1);
     }
 
 
@@ -596,7 +595,7 @@ public class LoadingAdviseFragment extends Fragment {
     private void chooseMethodToCall() {
 
 //        if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
-      if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
+        if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
             UpdateBothraLoadingAdviseDetails(updateData());
         } else {
             if (nullCheckMethod()) {

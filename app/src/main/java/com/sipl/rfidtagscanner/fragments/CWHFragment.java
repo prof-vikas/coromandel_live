@@ -63,7 +63,7 @@ public class CWHFragment extends Fragment {
     //    userDetails
     private String loginUserName;
     private String token;
-    private String loginUserPlantCode;
+//    private String loginUserPlantCode;
 
     private String selectedRemarks;
     private Integer selectedRemarksId;
@@ -95,7 +95,6 @@ public class CWHFragment extends Fragment {
 
         this.token = ((MainActivity) getActivity()).getLoginToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
-        this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
 
         currentTime();
         getLoadingAdviseDetails();
@@ -149,104 +148,8 @@ public class CWHFragment extends Fragment {
     }
 
     private void resetFields() {
-        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(0), 1);
     }
-
-
-/*    private boolean getAllLepNo() {
-        progressBar.setVisibility(View.VISIBLE);
-        try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + token, "4", "3");
-            call.enqueue(new Callback<TransactionsApiResponse>() {
-                @Override
-                public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-
-                    if (!response.isSuccessful()) {
-//                        alertBuilder(response.errorBody().toString());
-                        progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
-                        return;
-                    }
-                    if (response.isSuccessful()) {
-                        progressBar.setVisibility(View.GONE);
-                        Log.i(TAG, "getAllLepNo : response.isSuccessful() : " + response.isSuccessful() + " responseCode : " + response.code() + " responseRaw : " + response.raw());
-                        List<TransactionsDto> transactionsDtoList = response.body().getTransactionsDtos();
-                        HashMap<String, Integer> hashMapLepNumber = new HashMap<>();
-                        HashMap<String, String> hashMapForPreviousRmgNo = new HashMap<>();
-                        arrAutoCompleteLepNo = new ArrayList<>();
-
-
-                        String strTruckNo = null, srtPreviousRmgNoDesc = null, strDriverName = null, grossWeight = null, strCommodity = null, strPreviousRmgNo = null;
-
-                        try {
-                            if (transactionsDtoList == null || transactionsDtoList.isEmpty()) {
-                                autoCompleteLepNo.setHint("No Lep number available");
-                                Toast.makeText(getActivity(), EMPTY_LEP_NUMBER_LIST, Toast.LENGTH_SHORT).show();
-                                return;
-                            } else {
-                                autoCompleteLepNo.setHint("Search Lep Number");
-                            }
-
-                            for (int i = 0; i < transactionsDtoList.size(); i++) {
-                                String strLepNumber = transactionsDtoList.get(i).getRfidLepIssueModel().getLepNumber();
-                                int id = transactionsDtoList.get(i).getRfidLepIssueModel().getId();
-                                strDriverName = transactionsDtoList.get(i).getRfidLepIssueModel().getDriverMaster().getDriverName();
-                                strTruckNo = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                                strCommodity = transactionsDtoList.get(i).getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                                grossWeight = String.valueOf(transactionsDtoList.get(i).getGrossWeight());
-                                strPreviousRmgNo = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationCode();
-                                srtPreviousRmgNoDesc = transactionsDtoList.get(i).getFunctionalLocationDestinationMaster().getStrLocationDesc();
-
-                                coromandelWHDto = new CoromandelWHDto(strLepNumber, strTruckNo, strDriverName, strCommodity, grossWeight, strPreviousRmgNo, srtPreviousRmgNoDesc);
-                                coromandelWHDtoList.add(coromandelWHDto);
-                                arrAutoCompleteLepNo.add(strLepNumber);
-                                hashMapLepNumber.put(strLepNumber, id);
-                            }
-
-                            arrayAdapterForLepNumber = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrAutoCompleteLepNo);
-                            autoCompleteLepNo.setAdapter(arrayAdapterForLepNumber);
-                            autoCompleteLepNo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                    selectedLepNumber = arrayAdapterForLepNumber.getItem(i);
-//                                    previousRmgNoId = finalStrPreviousRmgNo;
-                                    if (hashMapLepNumber.containsKey(selectedLepNumber)) {
-                                        selectedLepNumberId = hashMapLepNumber.get(selectedLepNumber);
-                                    }
-
-                                    if (arrAutoCompleteLepNo.contains(selectedLepNumber)) {
-                                        for (CoromandelWHDto d : coromandelWHDtoList) {
-                                            if (d.getLepNo().equalsIgnoreCase(selectedLepNumber)) {
-                                                edtTruckNumber.setText(d.getTruckNo());
-                                                edtDriverName.setText(d.getDriverName());
-                                                edtCommodity.setText(d.getCommodity());
-                                                edtGrossWeight.setText(d.getGrossWeight());
-                                                edtPreviousRmgNo.setText(d.getPreviousRMGNo() + " - " + d.getPreviousRMGNoDesc().toLowerCase());
-                                                previousRmgNoId = d.getPreviousRMGNo();
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.getMessage();
-                            return;
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-//                    alertBuilder(t.getMessage());
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return true;
-    }*/
 
     private boolean getAllRmgStorage() {
         progressBar.setVisibility(View.VISIBLE);
@@ -270,6 +173,9 @@ public class CWHFragment extends Fragment {
                     List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
                     ArrayList<String> arrDestinationLocation = new ArrayList<>();
                     ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
+                    SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+                    String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
+                    String removedPreviousRmgCode = previousRmgNoId + " - " + PreviousRmgNoDesc;
                     try {
                         if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
                             customToast.toastMessage(getActivity(), EMPTY_RMG_NUMBER, 0);
@@ -283,23 +189,11 @@ public class CWHFragment extends Fragment {
                             arrDestinationLocationDesc.add(strLocationDescWithCode);
                             hashMapLocationCode.put(strLocationDescWithCode, s);
                         }
-//                        arrDestinationLocation.add("Update RMG No");
-                        arrDestinationLocationDesc.add("Update RMG No");
-                        /*for (String a : arrDestinationLocationDesc) {
-                            Log.i(TAG, "onResponse: " + a.toLowerCase());
-                        }*/
-/*
-
-                        String userSourceLocation = loginUserSourceCode;
-                        String userSourceLocationDesc = loginUserSourceCodeDesc;
-                        String userSourceDesc = userSourceLocation + " - " + userSourceLocationDesc;
-                        Log.i(TAG, "onResponse: userSourceDesc : " + userSourceDesc);
-                        if (arrDestinationLocationDesc.contains(userSourceDesc)) {
-                            Log.i(TAG, "onResponse: in array testing" + arrDestinationLocationDesc.size());
-                            arrDestinationLocationDesc.remove(userSourceDesc);
+                        if (arrDestinationLocationDesc.contains(removedPreviousRmgCode)){
+                            arrDestinationLocationDesc.remove(removedPreviousRmgCode);
                         }
-                            Log.i(TAG, "onResponse: in array testing" + arrDestinationLocationDesc.size());
-*/
+                        arrDestinationLocationDesc.add("Update RMG No");
+
 
                         updateRmgNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
@@ -466,7 +360,6 @@ public class CWHFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
-//                    alertBuilder(response.errorBody().toString());
                 }
 
                 Log.i(TAG, "onResponse: code" + response.code());

@@ -5,15 +5,17 @@
         android:id="@+id/menu_item_loading_advise"
         android:icon="@drawable/menu_logo_warehouse"
         android:title="Loading Advise" />
+
+    <item
+        android:id="@+id/menu_item_coromandel_warehouse"
+        android:icon="@drawable/menu_logo_warehouse"
+        android:title="Coromandel WareHouse" />
+
     <item
         android:id="@+id/menu_item_bothra_warehouse"
         android:icon="@drawable/menu_logo_warehouse"
-        android:title="Warehouse Supervisor" />
+        android:title="Bothra WareHouse" />
 
-    <item
-        android:id="@+id/menu_item_scan_rfid"
-        android:icon="@drawable/menu_logo_truck"
-        android:title="Scan RFID Tag" />
     <item
         android:id="@+id/menu_item_setting"
         android:icon="@drawable/menu_logo_truck"

@@ -13,6 +13,7 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_COROMANDEL_LOADING_
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_DESTINATION_LOCATION_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN_WITHOUT_JWT;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_BOTHRA_LOADING_ADVISE;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_RMG_NO;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_WAREHOUSE_NUMBER;
@@ -31,6 +32,7 @@ import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
+import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -47,13 +49,16 @@ public interface LoadingAdviseApi {
     @POST(LOGIN)
     Call<JwtAuthResponse> login(@Body JwtRequest jwtRequest);
 
+    @GET(LOGIN_WITHOUT_JWT + "/{userId}" + "/{password}")
+    Call<UserValidateResponseDto> loginWithOutJwt(@Path("userId") String userId, @Path("password") String password);
+
 
     //    Loading Advise
     @GET(GET_COROMANDEL_LOADING_ADVISE_DETAILS + "{tag}")
     Call<RfidLepApiResponse> getRfidTagDetailCoromandelLA(@Header("Authorization") String authToken, @Path("tag") String tag);
 
-    @GET(GET_BOTHRA_LOADING_ADVISE_DETAILS + "11/12/{Tag}")
-    Call<TransactionsApiResponse> getRfidTagDetailBothraLA(@Header("Authorization") String authToken, @Path("Tag") String tag);
+    @GET(GET_BOTHRA_LOADING_ADVISE_DETAILS)
+    Call<TransactionsApiResponse> getRfidTagDetailBothraLA(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
 
     @GET(GET_DESTINATION_LOCATION_DETAILS)
     Call<DestinationLocationResponseApi> getAllDestinationLocation(@Header("Authorization") String authToken);
@@ -68,8 +73,8 @@ public interface LoadingAdviseApi {
     Call<LoadingAdvisePostApiResponse> addRfidLepIssue(@Header("Authorization") String authToken, @Body LoadingAdviseRequestDto loadingAdviseRequestDto);
 
     //Coromandel
-    @GET(GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS + "3/4/{Tag}")
-    Call<TransactionsApiResponse> getCoromandelWHDetails(@Header("Authorization") String authToken, @Path("Tag") String tag);
+    @GET(GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS )
+    Call<TransactionsApiResponse> getCoromandelWHDetails(@Header("Authorization") String authToken,  @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
 
     @GET(GET_ALL_RMG_NUMBER + "{storageLocation}")
     Call<RmgNumberApiResponse> getAllCoromandelRmgNo(@Header("Authorization") String authToken, @Path("storageLocation") String storageLocation);
@@ -82,8 +87,11 @@ public interface LoadingAdviseApi {
 
 
     //Bothra
-    @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS + "7/8/{Tag}")
-    Call<TransactionsApiResponse> getBothraWHDetails(@Header("Authorization") String authToken, @Path("Tag") String tag);
+    @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS )
+    Call<TransactionsApiResponse> getBothraWHDetails(@Header("Authorization") String authToken,  @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
+
+    @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS )
+    Call<TransactionsApiResponse> getBothraWHDetailsForExit(@Header("Authorization") String authToken,  @Query("currentTransactionFlag") String currentTransactionFlag, @Query("tagNumber") String tagNumber);
 
     @GET(GET_ALL_WAREHOUSE_NUMBER + "{storageLocation}")
     Call<RmgNumberApiResponse> getAllWareHouse(@Header("Authorization") String authToken,  @Path("storageLocation") String storageLocation);

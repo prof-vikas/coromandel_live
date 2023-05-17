@@ -1,6 +1,6 @@
 package com.sipl.rfidtagscanner;
 
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -27,7 +27,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sipl.rfidtagscanner.fragments.BWHFragment;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
@@ -73,16 +72,60 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    public void loadFragment2(Fragment fragment, int flag, String screen) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (flag == 0) {
+            ft.add(R.id.main_container, fragment);
+        } else {
+            ft.replace(R.id.main_container, fragment);
+        }
+        ft.commit();
+    }
+
     /*
      * Method where side bar navigation menu get loaded
      * */
+/*    private void getMenuNavigation() {
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menu_item_scan_rfid) {
+                loadFragment(new ScanFragment(), 1);
+            } else if (id == R.id.menu_item_loading_advise) {
+                loadFragment(new ScanFragment(),1);
+            } else if (id == R.id.menu_item_bothra_warehouse) {
+                loadFragment(new ScanFragment(),1);
+            } else if (id == R.id.menu_item_coromandel_warehouse) {
+                loadFragment(new ScanFragment(),1);
+            } else if (id == R.id.menu_item_setting) {
+                loadFragment(new SettingsFragment(), 1);
+            } else if (id == R.id.menu_item_logout) {
+                logout();
+            } else {
+                Toast.makeText(MainActivity.this, "click outside of menu", Toast.LENGTH_SHORT).show();
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+    }*/
+
     private void getMenuNavigation() {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_item_scan_rfid) {
-                loadFragment(new BWHFragment(), 1);
+                Log.i(TAG, "getMenuNavigation: menu_item_scan_rfid" + id );
+                loadFragment2(new ScanFragment(id), 1,null);
+            } else if (id == R.id.menu_item_loading_advise) {
+                Log.i(TAG, "getMenuNavigation: menu_item_loading_advise" + id );
+                loadFragment2(new ScanFragment(id), 1,"loadingAdvise");
+            } else if (id == R.id.menu_item_bothra_warehouse) {
+                Log.i(TAG, "getMenuNavigation: menu_item_bothra_warehouse" + id );
+                loadFragment2(new ScanFragment(id), 1,"bothra");
+            } else if (id == R.id.menu_item_coromandel_warehouse) {
+                Log.i(TAG, "getMenuNavigation: menu_item_coromandel_warehouse" + id );
+                loadFragment2(new ScanFragment(id), 1,"coromandel");
             } else if (id == R.id.menu_item_setting) {
-                loadFragment(new SettingsFragment(), 1);
+                loadFragment2(new SettingsFragment(), 1,null);
             } else if (id == R.id.menu_item_logout) {
                 logout();
             } else {
@@ -94,28 +137,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMenuBasedOnRoles(String userRole) {
-        if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
+        if (userRole.equalsIgnoreCase(ROLES_ADMIN_SUPER)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_admin);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else if (userRole.equalsIgnoreCase(ROLES_LAO)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else if (userRole.equalsIgnoreCase(ROLES_CWH)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else if (userRole.equalsIgnoreCase(ROLES_BWH)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else {
             Log.i(TAG, "loadMenuBasedOnRoles: No roles available");
+            return;
         }
     }
 

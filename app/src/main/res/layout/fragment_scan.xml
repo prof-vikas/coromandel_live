@@ -18,65 +18,75 @@
             android:layout_height="100dp">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:src="@drawable/header_wave" />
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:weightSum="5">
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="100dp"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/sf_edt_rfid_tag"
-                android:layout_width="0dp"
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:background="@drawable/rounded_border"
-                android:fontFamily="@font/source_sans_pro_black"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="20dp"
                 android:gravity="center"
-                android:hint="Scan RFID Tag"
-                android:inputType="text"
+                android:orientation="horizontal"
                 android:padding="10dp"
-                android:textColor="@color/wareHouseBgColor"
-                android:textSize="14sp" />
-        </LinearLayout>
+                android:weightSum="5">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5dp"
-            android:weightSum="5">
+                <EditText
+                    android:id="@+id/sf_edt_rfid_tag"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:background="@drawable/rounded_border"
+                    android:fontFamily="@font/source_sans_pro_black"
+                    android:gravity="center"
+                    android:hint="Scan RFID Tag"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:textColor="@color/wareHouseBgColor"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/sf_btn_verify"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:background="@drawable/rounded_verify_btn"
-                android:fontFamily="@font/source_sans_pro_black"
-                android:text="Verify"
-                android:textAllCaps="true"
-                android:textColor="@color/white" />
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:weightSum="5">
 
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/sf_btn_verify"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/rounded_verify_btn"
+                    android:fontFamily="@font/source_sans_pro_black"
+                    android:text="Verify"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white" />
+
+
+            </LinearLayout>
         </LinearLayout>
 
 
+
+<!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -173,7 +183,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2.6"
                     android:fontFamily="@font/source_sans_pro_black"
-                    android:text="---"
+                    android:text="-&#45;&#45;"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 
@@ -211,18 +221,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2.6"
                     android:fontFamily="@font/source_sans_pro_black"
-                    android:text="---"
+                    android:text="-&#45;&#45;"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 
             </LinearLayout>
 
 
-        </LinearLayout>
+        </LinearLayout>-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

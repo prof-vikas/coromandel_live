@@ -12,7 +12,7 @@ public class RetrofitController {
     private static RetrofitController instance = null;
     private final LoadingAdviseApi loadingAdviseApi;
     OkHttpClient client = new OkHttpClient.Builder()
-            .addInterceptor(new RetryInterceptor(3, 1000))
+            .addInterceptor(new RetryInterceptor(1, 1000))
             .build();
 
 
