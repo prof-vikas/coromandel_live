@@ -3,7 +3,6 @@ package com.sipl.rfidtagscanner.utils;
 public class Config {
 
     //    view constants
-    public static final boolean isRMGTableRequired = false;
     public static final boolean isJWTEnable = false;
     public static final String PLANT_BOTHRA = "BTVZ";
     public static final String STORAGE_BOTHRA = "BTVZ";
@@ -13,10 +12,15 @@ public class Config {
     public static final boolean isPlantDetailsRequiredInSideNav = true;
 
     //    Roles Constants
-    public static final String ROLES_BWH = "Bothra Warehouse Supervisor\r\n";
-    public static final String ROLES_CWH = "Coromandel Warehouse Supervisor\r\n";
-    public static final String ROLES_LAO = "Loading Advise Operator";
-    public static final String ROLES_ADMIN = "super admin";
+    public static final String ROLES_BWH = "Bothra CIL Security Guard";
+    public static final String ROLES_CWH = "Factory Warehouse Operator";
+    public static final String ROLES_LAO = "LoadingAdvise Operator";
+    public static final String ROLES_ADMIN_PLANT = "Plant Admin";
+    public static final String ROLES_ADMIN_SUPER = "Super Admin";
+
+
+    public static final String WRONG_CREDENTIALS = "User name or password Mismatch";
+
 
 
     public static final String EMPTY_LEP_NUMBER_LIST = "No lep Number is available";

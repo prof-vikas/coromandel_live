@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 public class SplashActivity extends AppCompatActivity {
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

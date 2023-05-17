@@ -1,6 +1,6 @@
 package com.sipl.rfidtagscanner;
 
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -27,21 +27,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sipl.rfidtagscanner.fragments.BWHFragment;
-import com.sipl.rfidtagscanner.fragments.CWHFragment;
-import com.sipl.rfidtagscanner.fragments.LoadingAdviseFragment;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "TestingArea";
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Toolbar toolbar;
-
-    LinearLayout headerLayoutPlant, headerLayoutStorage;
-    TextView toolbarTitle, login_username, txtHeaderPlantCode, txtHeaderStorageLocation;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         drawerLayout = findViewById(R.id.drawerlayout);
         navigationView = findViewById(R.id.navigationView);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         //Setting custom toolbar and navigation bar and drawer
         setSupportActionBar(toolbar);
@@ -69,17 +62,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadFragment(Fragment fragment, int flag) {
-        Log.i(TAG, "loadFragment: in load fragment method()");
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (flag == 0) {
-            Log.i(TAG, "loadFragment: in if <<start>>");
             ft.add(R.id.main_container, fragment);
-            Log.i(TAG, "loadFragment: in if <<end>>");
         } else {
-            Log.i(TAG, "loadFragment: in else <<Start>>");
             ft.replace(R.id.main_container, fragment);
-            Log.i(TAG, "loadFragment: in else <<end>>");
+        }
+        ft.commit();
+    }
+
+    public void loadFragment2(Fragment fragment, int flag, String screen) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (flag == 0) {
+            ft.add(R.id.main_container, fragment);
+        } else {
+            ft.replace(R.id.main_container, fragment);
         }
         ft.commit();
     }
@@ -87,11 +86,17 @@ public class MainActivity extends AppCompatActivity {
     /*
      * Method where side bar navigation menu get loaded
      * */
-    private void getMenuNavigation() {
+/*    private void getMenuNavigation() {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_item_scan_rfid) {
-                loadFragment(new BWHFragment(), 1);
+                loadFragment(new ScanFragment(), 1);
+            } else if (id == R.id.menu_item_loading_advise) {
+                loadFragment(new ScanFragment(),1);
+            } else if (id == R.id.menu_item_bothra_warehouse) {
+                loadFragment(new ScanFragment(),1);
+            } else if (id == R.id.menu_item_coromandel_warehouse) {
+                loadFragment(new ScanFragment(),1);
             } else if (id == R.id.menu_item_setting) {
                 loadFragment(new SettingsFragment(), 1);
             } else if (id == R.id.menu_item_logout) {
@@ -102,63 +107,59 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
-    }
-
-    /*
-     * Method to add custom header title (In our case we are not using)
-     * */
-    public void setActionBarTitle(String title) {
-        toolbarTitle.setText(title);
-        Toast.makeText(this, "title" + title, Toast.LENGTH_SHORT).show();
-    }
-
-  /*  private void loadMenuBasedOnRoles(String userRole) {
-        if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.menu_admin);
-            getMenuNavigation();
-            loadFragment(new LoadingAdviseFragment(), 1);
-        } else {
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.menu_logout);
-            getMenuNavigation();
-            if (userRole.equalsIgnoreCase(ROLES_LAO)) {
-                loadFragment(new LoadingAdviseFragment(), 1);
-            }
-            if (userRole.equalsIgnoreCase(ROLES_CWH)) {
-                loadFragment(new CWHFragment(), 1);
-            }
-            if (userRole.equalsIgnoreCase(ROLES_BWH)) {
-                loadFragment(new BWHFragment(), 1);
-            } else {
-                Log.i(TAG, "No User found : " + userRole);
-            }
-        }
     }*/
 
+    private void getMenuNavigation() {
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menu_item_scan_rfid) {
+                Log.i(TAG, "getMenuNavigation: menu_item_scan_rfid" + id );
+                loadFragment2(new ScanFragment(id), 1,null);
+            } else if (id == R.id.menu_item_loading_advise) {
+                Log.i(TAG, "getMenuNavigation: menu_item_loading_advise" + id );
+                loadFragment2(new ScanFragment(id), 1,"loadingAdvise");
+            } else if (id == R.id.menu_item_bothra_warehouse) {
+                Log.i(TAG, "getMenuNavigation: menu_item_bothra_warehouse" + id );
+                loadFragment2(new ScanFragment(id), 1,"bothra");
+            } else if (id == R.id.menu_item_coromandel_warehouse) {
+                Log.i(TAG, "getMenuNavigation: menu_item_coromandel_warehouse" + id );
+                loadFragment2(new ScanFragment(id), 1,"coromandel");
+            } else if (id == R.id.menu_item_setting) {
+                loadFragment2(new SettingsFragment(), 1,null);
+            } else if (id == R.id.menu_item_logout) {
+                logout();
+            } else {
+                Toast.makeText(MainActivity.this, "click outside of menu", Toast.LENGTH_SHORT).show();
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+    }
+
     private void loadMenuBasedOnRoles(String userRole) {
-        if (userRole.equalsIgnoreCase(ROLES_ADMIN)) {
+        if (userRole.equalsIgnoreCase(ROLES_ADMIN_SUPER)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_admin);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else if (userRole.equalsIgnoreCase(ROLES_LAO)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else if (userRole.equalsIgnoreCase(ROLES_CWH)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else if (userRole.equalsIgnoreCase(ROLES_BWH)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new ScanFragment(0), 1);
         } else {
             Log.i(TAG, "loadMenuBasedOnRoles: No roles available");
+            return;
         }
     }
 
@@ -167,16 +168,18 @@ public class MainActivity extends AppCompatActivity {
      * */
     public void showSideBarLoginUsername() {
         View headerView = navigationView.getHeaderView(0);
-        login_username = headerView.findViewById(R.id.login_username);
-        txtHeaderStorageLocation = headerView.findViewById(R.id.login_Storage_Location);
-        txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
-        headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
-        headerLayoutStorage = headerView.findViewById(R.id.ll_header_source_code);
+        TextView login_username = headerView.findViewById(R.id.login_username);
+        TextView txtHeaderStorageLocation = headerView.findViewById(R.id.login_Storage_Location);
+        TextView txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
+        LinearLayout headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
+        LinearLayout headerLayoutStorage = headerView.findViewById(R.id.ll_header_source_code);
         login_username.setText(getLoginUsername());
-        txtHeaderStorageLocation.setText(getLoginUserStorageCode() + " - " + getLoginUserSourceLocationDesc());
-        txtHeaderPlantCode.setText(getLoginUserPlantCode() + " - " + getLoginUserPlantLocationDesc());
+        String loginUserStorageLocation = getLoginUserStorageCode() + " - " + getLoginUserSourceLocationDesc();
+        txtHeaderStorageLocation.setText(loginUserStorageLocation);
+        String loginUserPlantCode = getLoginUserPlantCode() + " - " + getLoginUserPlantLocationDesc();
+        txtHeaderPlantCode.setText(loginUserPlantCode);
 
-        if (isPlantDetailsRequiredInSideNav == true) {
+        if (isPlantDetailsRequiredInSideNav) {
             headerLayoutPlant.setVisibility(View.VISIBLE);
             headerLayoutStorage.setVisibility(View.VISIBLE);
         }
@@ -200,50 +203,42 @@ public class MainActivity extends AppCompatActivity {
 
     public String getLoginUsername() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String username = sp.getString("usernameSPK", null);
-        return username;
+        return sp.getString("usernameSPK", null);
     }
 
     public String getLoginToken() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String token = sp.getString("tokenSPK", null);
-        return token;
+        return sp.getString("tokenSPK", null);
     }
 
     public String getLoginUserRole() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String userRole = sp.getString("roleSPK", null);
-        return userRole;
+        return sp.getString("roleSPK", null);
     }
 
     public String getLoginUserStorageCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String loginUserStorageLocation = sp.getString("UserSourceLocationSPK", null);
-        return loginUserStorageLocation;
+        return sp.getString("UserSourceLocationSPK", null);
     }
 
     public String getLoginUserPlantCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String loginUserPlantCode = sp.getString("userPlantLocationSPK", null);
-        return loginUserPlantCode;
+        return sp.getString("userPlantLocationSPK", null);
     }
 
     public int getLoginUserId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        int loginUserId = Integer.parseInt(sp.getString("userIDSPK", null));
-        return loginUserId;
+        return Integer.parseInt(sp.getString("userIDSPK", null));
     }
 
     public String getLoginUserPlantLocationDesc() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String loginUserPlantLocationDesc = sp.getString("userPlantLocationDescSPK", null);
-        return loginUserPlantLocationDesc;
+        return sp.getString("userPlantLocationDescSPK", null);
     }
 
     public String getLoginUserSourceLocationDesc() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        String loginSourceKLocationDesc = sp.getString("UserSourceLocationDescSPK", null);
-        return loginSourceKLocationDesc;
+        return sp.getString("UserSourceLocationDescSPK", null);
     }
 
     public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
@@ -279,12 +274,7 @@ public class MainActivity extends AppCompatActivity {
         dialogTitleTxt.setText(dialogTitle);
         dialogMessageTxt.setText(dialogMessage);
         btn.setText(dialogBtnText);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btn.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
 }

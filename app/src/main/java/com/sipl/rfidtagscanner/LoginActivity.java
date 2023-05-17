@@ -1,9 +1,10 @@
 package com.sipl.rfidtagscanner;
 
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
+import static com.sipl.rfidtagscanner.utils.Config.WRONG_CREDENTIALS;
 import static com.sipl.rfidtagscanner.utils.Config.isJWTEnable;
 
 import android.app.Dialog;
@@ -14,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,10 +22,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
-import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.sipl.rfidtagscanner.dto.request.JwtRequest;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
+import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,25 +35,21 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "TestingArea2";
-    Button btnLogin;
     private ProgressBar progressBar;
     private EditText edtUsername, edtPassword;
-    private MaterialCheckBox checkBoxRememberMe;
     private TextView txtErrorMessage;
-    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnLogin = findViewById(R.id.btn_login);
+        Button btnLogin = findViewById(R.id.btn_login);
         edtUsername = findViewById(R.id.edt_username);
         edtPassword = findViewById(R.id.edt_password);
         txtErrorMessage = findViewById(R.id.txt_error_message);
-        navigationView = findViewById(R.id.navigationView);
         progressBar = findViewById(R.id.login_progressBar);
-        checkBoxRememberMe = findViewById(R.id.checkbox_login_remember_me);
+        MaterialCheckBox checkBoxRememberMe = findViewById(R.id.checkbox_login_remember_me);
 
         isCheckBoxChecked();
         btnLogin.setOnClickListener(view -> {
@@ -62,18 +58,15 @@ public class LoginActivity extends AppCompatActivity {
 //            }
         });
 
-        checkBoxRememberMe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (compoundButton.isChecked()) {
-                    SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("remember", "true").apply();
-                } else if (!compoundButton.isChecked()) {
-                    SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("remember", "false").apply();
-                }
+        checkBoxRememberMe.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (compoundButton.isChecked()) {
+                SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("remember", "true").apply();
+            } else if (!compoundButton.isChecked()) {
+                SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("remember", "false").apply();
             }
         });
     }
@@ -115,22 +108,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void processLogin() {
-        if (isJWTEnable == false) {
-            hardCodeLogin();
+        String username = edtUsername.getText().toString().trim();
+        String password = edtPassword.getText().toString().trim();
+        if (!isJWTEnable) {
+//            hardCodeLogin(username, password);
+            validateUser();
         } else {
             progressBar.setVisibility(View.VISIBLE);
-            String username = edtUsername.getText().toString().trim();
-            String password = edtPassword.getText().toString().trim();
             JwtRequest jwtRequest = new JwtRequest(username, password);
             Call<JwtAuthResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().login(jwtRequest);
-            Log.i(TAG, new Gson().toJson(jwtRequest).toString());
+            Log.i(TAG, new Gson().toJson(jwtRequest));
             call.enqueue(new Callback<JwtAuthResponse>() {
                 @Override
                 public void onResponse(Call<JwtAuthResponse> call, Response<JwtAuthResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
+                        Log.i(TAG, "onResponse: " + response.raw());
                         alert(LoginActivity.this, "error", response.errorBody().toString(), null, "OK");
                     }
+                    Log.i(TAG, "onResponse: " + response.raw());
                     if (response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
                         String token = response.body().getToken();
@@ -142,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                         String userPlantLocation = response.body().getUser().getPlantMaster().getPlantCode();
                         String userPlantLocationDesc = response.body().getUser().getPlantMaster().getPlantDesc();
                         Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : " + userSourceLocation + " - " + userSourceLocationDesc + " userPlantLocation : " + userPlantLocation + " - " + userPlantLocationDesc);
-                        if (token != null && role != null && username != null && userID != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
+                        if (token != null && role != null && username != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
                             savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc);
                         } else {
                             alert(LoginActivity.this, "error", "Something went wrong with this user credentials", "Try login with other user credentials", "OK");
@@ -158,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<JwtAuthResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
+                    t.printStackTrace();
                     alert(LoginActivity.this, "error", t.getMessage(), null, "OK");
                 }
             });
@@ -176,7 +173,6 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("userPlantLocationSPK", userPlantLocation).apply();
         editor.putString("userPlantLocationDescSPK", userPlantLocationDesc).apply();
         editor.putString("userLoginStatus", "login").apply();
-        editor.commit();
         editor.apply();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
@@ -189,43 +185,41 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void hardCodeLogin() {
+    private void hardCodeLogin(String username, String password) {
         progressBar.setVisibility(View.VISIBLE);
-        String username = edtUsername.getText().toString().trim();
-        String password = edtPassword.getText().toString().trim();
         if (username.equals("la") && password.equals("")) {
-            savingLoginUserToSharedPref("6", "Vishwanath8990", ROLES_LAO, "apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0058", "Port Area Godown", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("2110", "CLoadingAdvise", ROLES_LAO, "apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0058", "Port Area Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("bla") && password.equals("")) {
-            savingLoginUserToSharedPref("2087", "bothraL", ROLES_LAO, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "100", "GODOWN1", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("2111", "BLoadingAdvise", ROLES_LAO, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "100", "GODOWN1", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("cws") && password.equals("")) {
-            savingLoginUserToSharedPref("7", "CSuperv", ROLES_CWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("2113", "CWH@098", ROLES_CWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("bws") && password.equals("")) {
-            savingLoginUserToSharedPref("8", "akash_bwh", ROLES_BWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("2215", "BWH@098", ROLES_BWH, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }else if (username.equals("2") && password.equals("")) {
-            savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
+        } else if (username.equals("2") && password.equals("")) {
+            savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN_SUPER, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }  else if (username.equals("1") && password.equals("")) {
-            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0002", "Chemical Godown", "CFVZ", "Corormandel-Vizag");
+        } else if (username.equals("1") && password.equals("")) {
+            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN_SUPER, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }else {
+        } else {
             progressBar.setVisibility(View.GONE);
-            txtErrorMessage.setText("User name or password Mismatch");
+            txtErrorMessage.setText(WRONG_CREDENTIALS);
         }
     }
 
@@ -255,12 +249,56 @@ public class LoginActivity extends AppCompatActivity {
         dialogTitleTxt.setText(dialogTitle);
         dialogMessageTxt.setText(dialogMessage);
         btn.setText(dialogBtnText);
-        btn.setOnClickListener(new View.OnClickListener() {
+        btn.setOnClickListener(view -> dialog.dismiss());
+        dialog.show();
+    }
+
+    private void validateUser() {
+        progressBar.setVisibility(View.VISIBLE);
+        Call<UserValidateResponseDto> call = RetrofitController.getInstance().getLoadingAdviseApi().loginWithOutJwt(edtUsername.getText().toString().trim(), edtPassword.getText().toString().trim());
+        call.enqueue(new Callback<UserValidateResponseDto>() {
             @Override
-            public void onClick(View view) {
-                dialog.dismiss();
+            public void onResponse(Call<UserValidateResponseDto> call, Response<UserValidateResponseDto> response) {
+                if (!response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    alert(LoginActivity.this, "ERROR", response.errorBody().toString(), null, "OK");
+                }
+                if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                        String token = "emlfkemdflkeneknekjdfnekjgcnekjgen";
+                        String userID = response.body().getUserDto().getUserId();
+                        String id = String.valueOf(response.body().getUserDto().getId());
+                        String userRole = response.body().getUserDto().getRole().getName();
+                        String sourceLocationCode = response.body().getUserDto().getStorageLocation().getStrLocationCode();
+                        String sourceLocationCodeDesc = response.body().getUserDto().getStorageLocation().getStrLocationDesc();
+                        String plantLocationCode = response.body().getUserDto().getPlantMaster().getPlantCode();
+                        String plantLocationCodeDesc = response.body().getUserDto().getPlantMaster().getPlantDesc();
+                        Log.i(TAG, "onResponse: " + response.raw());
+                        if (userRole.equalsIgnoreCase(ROLES_LAO)) {
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
+                        } else if (userRole.equalsIgnoreCase(ROLES_CWH)) {
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
+                        } else if (userRole.equalsIgnoreCase(ROLES_BWH)) {
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
+                        } else {
+                            alert(LoginActivity.this, "ERROR", "User role not allowed", null, "OK");
+                            return;
+                        }
+
+                    } else {
+                        alert(LoginActivity.this, "ERROR", response.body().getMessage(), null, "OK");
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserValidateResponseDto> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                alert(LoginActivity.this, "ERROR", t.getMessage().toString(), null, "OK");
+                t.printStackTrace();
             }
         });
-        dialog.show();
     }
 }

@@ -3,10 +3,10 @@
     <string name="app_names"></string>
 
     <!--    title bar-->
-    <string name="title_bothra">Bothra WH Supervisor</string>
-    <string name="title_coromandel">Coromandel WH Supervisor</string>
+    <string name="title_bothra">Bothra Warehouse </string>
+    <string name="title_coromandel">Coromandel Warehouse</string>
     <string name="title_loading_advise">Loading Advise</string>
-    <string name="title_bothra_loading_advise">Bothra Loading Advise</string>
+    <string name="title_bothra_loading_advise">Loading Advise</string>
     <!--    <string name="title1">Bothra WH Supervisor</string>-->
 
 

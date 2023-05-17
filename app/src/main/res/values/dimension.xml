@@ -5,13 +5,13 @@
 
 <!--    Login Screen-->
     <dimen name="logo_coromandel_login_width">200dp</dimen>
-    <dimen name="logo_coromandel_login_height">100dp</dimen>
+    <dimen name="logo_coromandel_login_height">90dp</dimen>
     <dimen name="layout_login_padding">20dp</dimen>
     <dimen name="login_txt_login">20sp</dimen>
     <dimen name="login_edt_username_txt">16sp</dimen>
     <dimen name="login_edt_password_txt">16sp</dimen>
     <dimen name="login_btn_txt">16sp</dimen>
-    <dimen name="login_version_txt">10sp</dimen>
+    <dimen name="login_version_txt">12sp</dimen>
     <dimen name="login_edt_rectangle_pd_left">20dp</dimen>
 
 

@@ -14,13 +14,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
@@ -35,10 +35,9 @@ import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
-import com.sipl.rfidtagscanner.entites.BothraWHDto;
 import com.sipl.rfidtagscanner.utils.CustomToast;
-import com.sipl.rfidtagscanner.utils.Helper;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,26 +50,21 @@ import retrofit2.Response;
 public class BWHFragment extends Fragment {
 
     private final String TAG = "TracingError";
-    private final Helper helper = new Helper();
     private final CustomToast customToast = new CustomToast();
-    BothraWHDto bothraWHDto;
-    List<BothraWHDto> bothraWHDtoList = new ArrayList<>();
-    ArrayList<String> arrAutoCompleteLepNo;
+
     private TextClock tvClock, tvEntryTime, tvExitTime;
+    private EditText edtEntryTime;
+    private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvExitTimeLayout;
     private ProgressBar progressBar;
-    private TextView tvLepNumber;
     private Spinner spinnerWarehouseNo, spinnerRemark;
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
-    private Button btnSubmit, btnReset;
     private Integer selectedLepNumberId;
     private String selectedWareHouseNumber;
+    private Boolean isSelectedWareHouseNumberHaveWb;
 
     //    userDetails
     private String loginUserName;
     private String token;
-    private String loginUserPlantCode;
-    private String loginUserSourceCode;
-    private String loginUserSourceCodeDesc;
 
     private String selectedRemarks;
     private Integer selectedRemarksId;
@@ -82,21 +76,19 @@ public class BWHFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        ((MainActivity) getActivity()).setActionBarTitle(getResources().getString(R.string.title_bothra));
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_b_w_h, container, false);
         spinnerWarehouseNo = view.findViewById(R.id.bwh_spinner_warehouse_no);
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
-        tvLepNumber = view.findViewById(R.id.bwh_tv_lep_number);
-//        tvClock = view.findViewById(R.id.bwh_tv_clock);
-//        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
+        tvClock = view.findViewById(R.id.bwh_tv_clock);
+        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
         tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
+        edtEntryTime = view.findViewById(R.id.edt_entry_time2);
+        tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
+        tvEntryTimeEdtLayout = view.findViewById(R.id.title_entry_time2);
+        tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
+        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
 
         edtRfidTag = view.findViewById(R.id.bwh_edt_rfid_tag);
         edtLepNo = view.findViewById(R.id.bwh_edt_lep_number);
@@ -106,25 +98,21 @@ public class BWHFragment extends Fragment {
         edtGrossWeight = view.findViewById(R.id.bwh_edt_gross_weight);
         edtPreviousWareHouseNo = view.findViewById(R.id.bwh_edt_previous_ware_house_no);
         progressBar = view.findViewById(R.id.bwh_progressBar);
-        btnReset = view.findViewById(R.id.bwh_btn_reset);
-        btnSubmit = view.findViewById(R.id.bwh_btn_submit);
+        Button btnReset = view.findViewById(R.id.bwh_btn_reset);
+        Button btnSubmit = view.findViewById(R.id.bwh_btn_submit);
 
-        this.token = ((MainActivity) getActivity()).getLoginToken();
-        this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
-        this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
-        this.loginUserSourceCode = ((MainActivity) getActivity()).getLoginUserStorageCode();
-        this.loginUserSourceCodeDesc = ((MainActivity) getActivity()).getLoginUserSourceLocationDesc();
-
+        this.token = ((MainActivity) requireActivity()).getLoginToken();
+        this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
 
         setTvClock();
         getLoadingAdviseDetails();
+        updateUIBaseOnWareHouseLocation();
         callOnCreateApi();
 
         btnSubmit.setOnClickListener(view12 -> {
             if (validateLoadingAdviseForm()) {
                 updateWareHouseNo(setData());
             }
-
         });
 
         btnReset.setOnClickListener(view1 -> resetFields());
@@ -132,9 +120,8 @@ public class BWHFragment extends Fragment {
     }
 
     private void resetFields() {
-        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(0), 1);
     }
-
 
     private void callOnCreateApi() {
         getWareHouseStorage();
@@ -178,7 +165,7 @@ public class BWHFragment extends Fragment {
         return true;
     }
 
-    private boolean getWareHouseStorage() {
+    private void getWareHouseStorage() {
         Log.i("getWareHouseStorage", "getAllWareHouse: ()");
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
@@ -197,7 +184,11 @@ public class BWHFragment extends Fragment {
                     Log.i(TAG, "onResponse: getAllWareHouse " + response.code());
                     List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
                     HashMap<String, String> hashMapLocationCode = new HashMap<>();
-                    HashMap<String, Integer> hashMapUpdateRmgNo = new HashMap<>();
+                    SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+                    String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
+                    String PreviousRMGRemoved = previousWarehouseCode + " - " + PreviousRmgNoDesc.toLowerCase();
+
+                    HashMap<String, Boolean> hashMapForWeighBridgeAvalibility = new HashMap<>();
                     ArrayList<String> arrDestinationLocation = new ArrayList<>();
                     ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
                     try {
@@ -208,27 +199,20 @@ public class BWHFragment extends Fragment {
                         for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
                             String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
                             String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
-//                        int id = functionalLocationMasterDtoList.get(i).getId();
-//                        hashMapUpdateRmgNo.put(s, id);
+                            Boolean isWeighBrige = functionalLocationMasterDtoList.get(i).getWbAvailable();
+
                             String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
                             arrDestinationLocationDesc.add(strLocationDescWithCode);
                             hashMapLocationCode.put(strLocationDescWithCode, s);
+                            hashMapForWeighBridgeAvalibility.put(strLocationDescWithCode, isWeighBrige);
                             arrDestinationLocation.add(s);
                         }
-//                    arrDestinationLocation.add("Select Warehouse No");
+                        if (arrDestinationLocationDesc.contains(PreviousRMGRemoved)) {
+                            arrDestinationLocationDesc.remove(PreviousRMGRemoved);
+                        }
+
                         arrDestinationLocationDesc.add("Select Warehouse No");
 
-
-                       /* for (String a : arrDestinationLocationDesc) {
-                            Log.i(TAG, "onResponse: " + a.toLowerCase());
-                        }
-
-                        for (Map.Entry<String, String> entry : hashMapLocationCode.entrySet()) {
-                            String key = entry.getKey();
-                            String value = entry.getValue();
-                            Log.i(TAG, "onResponse: hashMapLocationCode : key : " + key + " --- Value : " + value);
-                        }
-*/
                         updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
@@ -253,15 +237,15 @@ public class BWHFragment extends Fragment {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String selectedRmgCode = adapterView.getSelectedItem().toString();
-                            /*if (hashMapUpdateRmgNo.containsKey(selectedWareHouseNumber)) {
-                                selectedWareHouseNumberId = hashMapUpdateRmgNo.get(selectedWareHouseNumber);
-                                Log.i(TAG, "onItemSelected: selectedBothraSupervisorId " + selectedWareHouseNumberId);
-                            }*/
 
                                 Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
                                 if (hashMapLocationCode.containsKey(selectedRmgCode)) {
                                     selectedWareHouseNumber = hashMapLocationCode.get(selectedRmgCode);
                                     Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedWareHouseNumber);
+                                }
+                                if (hashMapForWeighBridgeAvalibility.containsKey(selectedRmgCode)) {
+                                    isSelectedWareHouseNumberHaveWb = hashMapForWeighBridgeAvalibility.get(selectedRmgCode);
+                                    Log.i(TAG, "onItemSelected: selectedRmgNo : " + isSelectedWareHouseNumberHaveWb);
                                 }
                                 if (!selectedRmgCode.equalsIgnoreCase("Select Warehouse No")) {
                                     spinnerRemark.setEnabled(true);
@@ -285,15 +269,13 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
-//                alertBuilder(t.getMessage());
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
-        return true;
     }
 
-    private boolean getAllBothraRemark() {
+    private void getAllBothraRemark() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RemarkApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllBothraRemark("Bearer " + token);
@@ -353,11 +335,6 @@ public class BWHFragment extends Fragment {
                                     selectedRemarksId = hashMapRemarks.get(selectedRemarks);
                                     Log.i(TAG, "onItemSelected: Selected Remarks Id " + selectedRemarksId);
                                 }
-                               /* if (selectedRemarks.equalsIgnoreCase("Update RMG No")) {
-                                    spinnerRemark.setEnabled(false);
-                                    spinnerRemark.setClickable(false);
-                                    spinnerRemark.setFocusable(false);
-                                }*/
                             }
 
                             @Override
@@ -372,67 +349,74 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
-//                alertBuilder(t.getMessage());
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
-        return true;
     }
 
     private UpdateWareHouseNoRequestDto setData() {
+        UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto;
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        String weighbridgeAvailable = sp.getString("isWeighbridgeAvailableSPK", null);
+        Boolean isWeighbridgeAvailable = Boolean.valueOf(weighbridgeAvailable);
+        int callFrom = sp.getInt("callFromSPK", 0);
+
         StorageLocationDto selectedWareHouseNo = null;
         RemarksDto remarksDto = null;
         Integer FLAG = 8;
-        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
-        StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousWarehouseCode);
+        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, String.valueOf(LocalDateTime.now()));
+        StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousWarehouseCode, isWeighbridgeAvailable);
         if (selectedWareHouseNumber != null) {
-            Log.i(TAG, "setData: " + selectedWareHouseNumber);
+            Log.i(TAG, "setData: " + selectedWareHouseNumber + isSelectedWareHouseNumberHaveWb);
             if (!selectedWareHouseNumber.equals("Select Warehouse No")) {
-                selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber);
+                selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber, isSelectedWareHouseNumberHaveWb);
             }
             if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
-        UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
+        if (weighbridgeAvailable.equalsIgnoreCase("true")) {
+            updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null);
+        } else {
+            if (callFrom == 1) {
+                updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, String.valueOf(LocalDateTime.now()));
+            } else {
+                updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, String.valueOf(LocalDateTime.now()), null);
+            }
+        }
         return updateWareHouseNoRequestDto;
+
     }
 
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
-        Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto).toString());
+        Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
         progressBar.setVisibility(View.VISIBLE);
         Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
-//                    alertBuilder(response.errorBody().toString());
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
                 Log.i(TAG, "onResponse: code" + response.code() + "status : " + response.body().getStatus());
-             /*   if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
-                    resetFields();
-                }*/
 
                 if (response.body().getStatus().equalsIgnoreCase("OK")) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
                     resetFields();
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
-                    resetFields();
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
+//                    resetFields();
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-//                alertBuilder(t.getMessage());
+                progressBar.setVisibility(View.GONE);
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 t.printStackTrace();
             }
@@ -441,10 +425,8 @@ public class BWHFragment extends Fragment {
 
     private void setTvClock() {
         try {
-//            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
-//            tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm a");
-//            tvClock.setText("04-05-23 10:40:43 AM");
-//            tvEntryTime.setText("04-05-23 10:40:43 AM");
+            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
+            tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm a");
             tvExitTime.setFormat24Hour("dd-MM-yy hh:mm a");
         } catch (Exception e) {
             e.printStackTrace();
@@ -475,5 +457,25 @@ public class BWHFragment extends Fragment {
         edtCommodity.setText(commodity);
         edtGrossWeight.setText(sourceGrossWeight);
         edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
+    }
+
+    private void updateUIBaseOnWareHouseLocation() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        String isWeighbridgeAvailable = sp.getString("isWeighbridgeAvailableSPK", null);
+        String vehicleInTime = sp.getString("vehicleInTimeSPK", null);
+        int callFrom = sp.getInt("callFromSPK", 0);
+        if (isWeighbridgeAvailable != null) {
+            if (isWeighbridgeAvailable.equalsIgnoreCase("false") && callFrom == 1) {
+                tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
+            } else if (isWeighbridgeAvailable.equalsIgnoreCase("false") && callFrom == 2) {
+                tvEntryTimeClocKLayout.setVisibility(View.GONE);
+                tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
+                edtEntryTime.setText(vehicleInTime);
+                tvLoadingTimeLayout.setVisibility(View.VISIBLE);
+                tvExitTimeLayout.setVisibility(View.VISIBLE);
+            }
+        } else {
+            Log.i(TAG, "updateUIBaseOnWareHouseLocation: weidgeBride is true");
+        }
     }
 }

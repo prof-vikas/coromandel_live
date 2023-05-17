@@ -67,7 +67,7 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
             ReaderDevice readerDevice = getAvailableReaders();
             if (readerDevice != null) {
                 reader = readerDevice.getRFIDReader();
-                scanFragment.onTextUpdated(readerDevice.getName(), readerDevice.getSerialNumber(), "Connected");
+//                scanFragment.onTextUpdated(readerDevice.getName(), readerDevice.getSerialNumber(), "Connected");
                 Log.i(TAG, "updateAvailableReaders: " + readerDevice.getSerialNumber() + readerDevice.getSerialNumber());
             }
         } catch (Exception e) {
@@ -104,7 +104,7 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
         isConnected = false;
         if (readerDevice.getName().equals(reader.getHostName())) disconnect();
         updateStatus();
-        scanFragment.onTextUpdated("---", "---", "Disconnected");
+//        scanFragment.onTextUpdated("---", "---", "Disconnected");
     }
 
     private synchronized String connectDevice() {
@@ -180,7 +180,7 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
             if (reader != null) {
                 reader.Events.removeEventsListener(eventHandler);
                 reader.disconnect();
-                scanFragment.onTextUpdated("---", "---", "Disconnected");
+//                scanFragment.onTextUpdated("---", "---", "Disconnected");
             }
         } catch (Exception e) {
             e.printStackTrace();
