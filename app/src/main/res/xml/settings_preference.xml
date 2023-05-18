@@ -15,7 +15,7 @@
             app:iconSpaceReserved="false"
             app:summary="Antenna power parameter" />
     </PreferenceCategory>
-    <PreferenceCategory
+  <!--  <PreferenceCategory
         android:title="Api Settings"
         android:layout="@layout/preferences_category"
         app:iconSpaceReserved="false">
@@ -27,7 +27,7 @@
             android:title="Api Address"
             app:iconSpaceReserved="false"
             app:summary="Api address for sending tag data" />
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 
    <!-- <PreferenceCategory
         android:title="Show device info"
