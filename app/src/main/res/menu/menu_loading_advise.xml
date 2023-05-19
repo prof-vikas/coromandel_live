@@ -7,7 +7,7 @@
         android:title="Scan RFID Tag" />
     <item
         android:id="@+id/menu_item_setting"
-        android:icon="@drawable/menu_logo_truck"
+        android:icon="@drawable/baseline_settings_24"
         android:title="Setting" />
 
     <item

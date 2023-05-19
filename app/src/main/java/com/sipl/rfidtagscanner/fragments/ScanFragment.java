@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,9 +102,17 @@ public class ScanFragment extends Fragment {
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
-
-        rfidHandler = new RfidHandler(requireActivity());
-        rfidHandler.InitSDK(this);
+        Boolean value = isRFIDHandleEnable();
+        Log.i(TAG, "onCreateView: " + value);
+        if (value){
+            Log.i(TAG, "onCreateView:  handle device");
+            edtRfidTagId.setEnabled(false);
+            rfidHandler = new RfidHandler(requireActivity());
+            rfidHandler.InitSDK(this);
+        }else{
+            edtRfidTagId.setEnabled(true);
+            Log.i(TAG, "onCreateView: no handle device");
+        }
 
         getWareHouseStorage();
 
@@ -161,21 +170,31 @@ public class ScanFragment extends Fragment {
         }
     }*/
 
+
     @Override
     public void onPause() {
+        if (isRFIDHandleEnable()){
+
         rfidHandler.onPause();
+        }
         super.onPause();
     }
 
     @Override
     public void onResume() {
+        if (isRFIDHandleEnable()){
+
         rfidHandler.onResume();
+        }
         super.onResume();
     }
 
     @Override
     public void onDestroy() {
+        if (isRFIDHandleEnable()){
+
         rfidHandler.onDestroy();
+        }
         super.onDestroy();
     }
 
@@ -642,4 +661,12 @@ public class ScanFragment extends Fragment {
         return true;
     }
 
+    public boolean isRFIDHandleEnable() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        if (sharedPreferences.contains("enable_rfid_handle")) {
+            Boolean value = sharedPreferences.getBoolean("enable_rfid_handle", false);
+            return value;
+        }
+        return false;
+    }
 }

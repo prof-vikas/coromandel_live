@@ -15,7 +15,7 @@
             app:iconSpaceReserved="false"
             app:summary="Antenna power parameter" />
     </PreferenceCategory>
-    <PreferenceCategory
+<!--    <PreferenceCategory
         android:title="Api Settings"
         android:layout="@layout/preferences_category"
         app:iconSpaceReserved="false">
@@ -27,6 +27,22 @@
             android:title="Api Address"
             app:iconSpaceReserved="false"
             app:summary="Api address for sending tag data" />
+    </PreferenceCategory>-->
+
+
+    <PreferenceCategory
+        android:title="RFID Handle "
+        android:layout="@layout/preferences_category"
+        app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:key="enable_rfid_handle"
+            android:title="Enable RFID Handle"
+            android:summary="Summary of the switch preference"
+            android:defaultValue="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            app:iconSpaceReserved="false"
+            app:summary="" />
     </PreferenceCategory>
 
    <!-- <PreferenceCategory
