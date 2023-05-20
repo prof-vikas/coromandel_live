@@ -2,5 +2,5 @@ package com.sipl.rfidtagscanner.interf;
 
 public interface MyListener {
 
-    void onTextUpdated(String name, String serialNo, String status);
+     void onNotConnectedTpHandle(String name, Boolean status);
 }

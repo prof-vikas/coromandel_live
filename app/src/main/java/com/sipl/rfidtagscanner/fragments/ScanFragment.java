@@ -39,6 +39,7 @@ import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
+import com.sipl.rfidtagscanner.interf.MyListener;
 import com.sipl.rfidtagscanner.interf.RFIDDataModel;
 import com.sipl.rfidtagscanner.interf.RfidUiDataDto;
 import com.zebra.rfid.api3.TagData;
@@ -52,16 +53,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ScanFragment extends Fragment {
+public class ScanFragment extends Fragment implements MyListener {
 
     private static final String TAG = "ConnectFragment";
-    private final int viewId;
-    Integer bothraWareHouseGetTag = 0;
-    private String loginUserPlantCode;
+    private int viewId;
     private ArrayList<String> arrDestinationLocation;
     private ProgressBar progressBar;
-    private TextView txtDeviceName, txtSerialNo, txtStatus;
-    private LinearLayout llShowDeviceInfo;
     private EditText edtRfidTagId;
     private final Observer<RfidUiDataDto> currentRFIDObserver = rfidUiDataDto -> {
         if (rfidUiDataDto.isReaderConnected()) {
@@ -79,9 +76,14 @@ public class ScanFragment extends Fragment {
     private String loginUserRole;
     private String loginUserToken;
     private String loginUserStorageLocation;
+    private TextView errorHandle;
+    private LinearLayout error_layout;
 
     public ScanFragment(int viewId1) {
         this.viewId = viewId1;
+    }
+
+    public ScanFragment() {
     }
 
 
@@ -89,55 +91,34 @@ public class ScanFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scan, container, false);
-/*        txtDeviceName = view.findViewById(R.id.sf_txt_device_name);
-        txtSerialNo = view.findViewById(R.id.sf_txt_serial_no);
-        txtStatus = view.findViewById(R.id.sf_txt_status);*/
         edtRfidTagId = view.findViewById(R.id.sf_edt_rfid_tag);
-/*        llShowDeviceInfo = view.findViewById(R.id.rf_ll_show_device_info);
-        chkShowDeviceInfo = view.findViewById(R.id.chk_rf_show_device_details);*/
+        errorHandle = view.findViewById(R.id.sf_error);
+        error_layout = view.findViewById(R.id.error_layout);
         progressBar = view.findViewById(R.id.login_progressBar);
         this.loginUserRole = ((MainActivity) getActivity()).getLoginUserRole();
         this.loginUserToken = ((MainActivity) getActivity()).getLoginToken();
-        this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
+//        this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
         Boolean value = isRFIDHandleEnable();
         Log.i(TAG, "onCreateView: " + value);
-        if (value){
+        if (value) {
             Log.i(TAG, "onCreateView:  handle device");
             edtRfidTagId.setEnabled(false);
             rfidHandler = new RfidHandler(requireActivity());
             rfidHandler.InitSDK(this);
-        }else{
+        } else {
             edtRfidTagId.setEnabled(true);
             Log.i(TAG, "onCreateView: no handle device");
         }
-
         getWareHouseStorage();
-
-//        isCheckBoxChecked();
-
 
         btnVerify.setOnClickListener(view1 -> {
             vibrate();
             RfidDetailsLoadingAdvise();
         });
 
-/*        chkShowDeviceInfo.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (compoundButton.isChecked()) {
-                Log.i(TAG, "onCreateView: " + compoundButton.isChecked());
-                llShowDeviceInfo.setVisibility(View.VISIBLE);
-                SharedPreferences sp = requireActivity().getSharedPreferences("showDeviceInfo", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("remember", "true").apply();
-            } else {
-                llShowDeviceInfo.setVisibility(View.GONE);
-                SharedPreferences sp = requireActivity().getSharedPreferences("showDeviceInfo", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("remember", "false").apply();
-            }
-        });*/
         RFIDDataModel.getInstance().getRFIDStatus().observe(getViewLifecycleOwner(), currentRFIDObserver);
         return view;
     }
@@ -155,63 +136,29 @@ public class ScanFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-/*    public void isCheckBoxChecked() {
-        SharedPreferences sp = requireActivity().getSharedPreferences("showDeviceInfo", MODE_PRIVATE);
-        String checkBox = sp.getString("remember", "false");
-        Log.i(TAG, "isCheckBoxChecked: " + checkBox);
-        if (checkBox.equalsIgnoreCase("false")) {
-            llShowDeviceInfo.setVisibility(View.GONE);
-            chkShowDeviceInfo.setChecked(false);
-
-        } else {
-            llShowDeviceInfo.setVisibility(View.VISIBLE);
-            chkShowDeviceInfo.setChecked(true);
-
-        }
-    }*/
-
-
     @Override
     public void onPause() {
-        if (isRFIDHandleEnable()){
-
-        rfidHandler.onPause();
+        if (isRFIDHandleEnable()) {
+            rfidHandler.onPause();
         }
         super.onPause();
     }
 
     @Override
     public void onResume() {
-        if (isRFIDHandleEnable()){
-
-        rfidHandler.onResume();
+        if (isRFIDHandleEnable()) {
+            rfidHandler.onResume();
         }
         super.onResume();
     }
 
     @Override
     public void onDestroy() {
-        if (isRFIDHandleEnable()){
-
-        rfidHandler.onDestroy();
+        if (isRFIDHandleEnable()) {
+            rfidHandler.onDestroy();
         }
         super.onDestroy();
     }
-
-/*    @Override
-    public void onTextUpdated(String name, String serialNo, String status) {
-        try {
-            if (serialNo != null && name != null && status != null) {
-                txtSerialNo.setText(serialNo);
-                txtDeviceName.setText(name);
-                txtStatus.setText(status);
-            } else {
-                Log.i(TAG, "setData: data is null");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "setdData: ", e);
-        }
-    }*/
 
     public void updateButtonStatus(boolean triggerStatus) {
         requireActivity().runOnUiThread(() -> {
@@ -360,13 +307,22 @@ public class ScanFragment extends Fragment {
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
                                 String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
+                                String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
+
+
 //                                Boolean isWeighBridgeAvailble = transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable();
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
-                                    saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null);
-                                    ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
+                                    if (destinationLocationByUIcode != null) {
+                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null);
+                                        ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
+                                    } else {
+                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null);
+                                        ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
+                                    }
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
                                     Intent id = new Intent(requireActivity(), LoginActivity.class);
@@ -410,51 +366,55 @@ public class ScanFragment extends Fragment {
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-//                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
-                        bothraWareHouseGetTag = 0;
                         return;
                     }
                     Log.i(TAG, "onResponse: response.raw : " + response.raw());
-                    if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
-                        progressBar.setVisibility(View.GONE);
-                        vibrate();
-                        TransactionsDto transactionsDto = response.body().getTransactionsDto();
-                        try {
-                            String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
-                            String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
-                            String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
-                            String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
-                            String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                            String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                            String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
-                            String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                            String isWeighBridgeAvailble = String.valueOf(transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable());
-                            Log.i(TAG, "onResponse: response data ge fet successfully");
-                            if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
-                                String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
-                                saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null);
-                                bothraWareHouseGetTag = 200;
-                                Log.i(TAG, "onResponse: before load fragment method");
-                                ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
-                            } else {
-                                Log.i(TAG, "onResponse: in else roles other than ROLES_BWS : " + ROLES_BWH);
-                                bothraWareHouseGetTag = 0;
-                                ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
-                                Intent id = new Intent(requireActivity(), LoginActivity.class);
-                                startActivity(id);
-                                requireActivity().finish();
-                            }
+                    if (response.isSuccessful()) {
+                        if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
+                            progressBar.setVisibility(View.GONE);
+                            vibrate();
+                            TransactionsDto transactionsDto = response.body().getTransactionsDto();
+                            try {
+                                String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
+                                String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
+                                String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
+                                String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
+                                String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
+                                String isWeighBridgeAvailble = String.valueOf(transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable());
+                                String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                String destinationLocationByUIWEighbridgedesc = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
 
-                        } catch (Exception e) {
-                            e.getMessage();
-                            return;
+                                Log.i(TAG, "onResponse: response data ge fet successfully");
+                                if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
+                                    String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
+                                    if (destinationLocationByUIcode != null) {
+                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null);
+                                    } else {
+                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null);
+                                    }
+                                    Log.i(TAG, "onResponse: before load fragment method");
+                                    ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
+                                } else {
+                                    Log.i(TAG, "onResponse: in else roles other than ROLES_BWS : " + ROLES_BWH);
+                                    ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
+                                    Intent id = new Intent(requireActivity(), LoginActivity.class);
+                                    startActivity(id);
+                                    requireActivity().finish();
+                                }
+
+                            } catch (Exception e) {
+                                e.getMessage();
+                                return;
+                            }
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            Log.i(TAG, "onResponse: in else bothra2 url");
+                            getBothraWareHouseDetails2();
                         }
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        bothraWareHouseGetTag = 0;
-                        Log.i(TAG, "onResponse: in else bothra2 url");
-                        getBothraWareHouseDetails2();
-//                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
                     }
                 }
 
@@ -499,6 +459,10 @@ public class ScanFragment extends Fragment {
                             String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                             String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                             String isWeighBridgeAvailble = String.valueOf(transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable());
+                            String strWareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                            String strWareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                            String strWbAvailable = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
+
 
                             String strEntryTime = transactionsDto.getVehicleInTime();
                             LocalDateTime aLDT = LocalDateTime.parse(strEntryTime);
@@ -508,8 +472,11 @@ public class ScanFragment extends Fragment {
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                 String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
-                                saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 2, entryTime);
-                                bothraWareHouseGetTag = 200;
+                                if (strWareHouseCode != null) {
+                                    saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, strWareHouseCode, strWareHouseCodeDesc, sourceGrossWeight, strWbAvailable, 1, entryTime);
+                                } else {
+                                    saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, entryTime);
+                                }
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
                                 ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
@@ -524,7 +491,6 @@ public class ScanFragment extends Fragment {
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        bothraWareHouseGetTag = 0;
                         Log.i(TAG, "onResponse: " + response.raw());
                         ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
                     }
@@ -669,4 +635,22 @@ public class ScanFragment extends Fragment {
         }
         return false;
     }
+
+    @Override
+    public void onNotConnectedTpHandle(String name, Boolean status) {
+        SettingsFragment s = new SettingsFragment();
+        if (!status) {
+
+            s.updateSwitchPreferenceValue(false);
+            String text = "Error : Rfid Handle is not connected";
+            errorHandle.setText(text);
+            error_layout.setVisibility(View.VISIBLE);
+            ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", name, "Try re attaching the handle", "OK");
+        } else {
+            error_layout.setVisibility(View.GONE);
+            s.updateSwitchPreferenceValue(true);
+        }
+
+    }
+
 }

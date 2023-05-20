@@ -111,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
         if (!isJWTEnable) {
-//            hardCodeLogin(username, password);
             validateUser();
         } else {
             progressBar.setVisibility(View.VISIBLE);
@@ -285,7 +284,6 @@ public class LoginActivity extends AppCompatActivity {
                             alert(LoginActivity.this, "ERROR", "User role not allowed", null, "OK");
                             return;
                         }
-
                     } else {
                         alert(LoginActivity.this, "ERROR", response.body().getMessage(), null, "OK");
                         return;

@@ -50,22 +50,21 @@ import retrofit2.Response;
 public class BWHFragment extends Fragment {
 
     private final String TAG = "TracingError";
-    private final CustomToast customToast = new CustomToast();
 
+    private final CustomToast customToast = new CustomToast();
     private TextClock tvClock, tvEntryTime, tvExitTime;
     private EditText edtEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvExitTimeLayout;
     private ProgressBar progressBar;
     private Spinner spinnerWarehouseNo, spinnerRemark;
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
-    private Integer selectedLepNumberId;
-    private String selectedWareHouseNumber;
-    private Boolean isSelectedWareHouseNumberHaveWb;
+    private Integer selectedLepNoId;
+    private String selectedWhNo;
+    private Boolean isSelectedWhHasWB;
 
     //    userDetails
     private String loginUserName;
     private String token;
-
     private String selectedRemarks;
     private Integer selectedRemarksId;
     private ArrayAdapter<String> remarkAdapter;
@@ -110,7 +109,7 @@ public class BWHFragment extends Fragment {
         callOnCreateApi();
 
         btnSubmit.setOnClickListener(view12 -> {
-            if (validateLoadingAdviseForm()) {
+            if (validateLoadingData()) {
                 updateWareHouseNo(setData());
             }
         });
@@ -124,11 +123,11 @@ public class BWHFragment extends Fragment {
     }
 
     private void callOnCreateApi() {
-        getWareHouseStorage();
-        getAllBothraRemark();
+        getWareHouseLocation();
+        getAllRemarks();
     }
 
-    private boolean validateLoadingAdviseForm() {
+    private boolean validateLoadingData() {
         if (edtRfidTag.length() == 0) {
             edtRfidTag.setError("This field is required");
             return false;
@@ -165,46 +164,42 @@ public class BWHFragment extends Fragment {
         return true;
     }
 
-    private void getWareHouseStorage() {
-        Log.i("getWareHouseStorage", "getAllWareHouse: ()");
+    private void getWareHouseLocation() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllWareHouse("Bearer " + token, "bothra");
-
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
+                Log.i(TAG, "onResponse: getAllWareHouse : responseCode : " + response.code());
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
-                Log.i(TAG, "onResponse: getAllWareHouse : responseCode : " + response.code());
                 if (response.isSuccessful()) {
-                    Log.i(TAG, "onResponse: getAllWareHouse " + response.code());
-                    List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
+                    List<StorageLocationDto> listWareHouse = response.body().getStorageLocationDtos();
                     HashMap<String, String> hashMapLocationCode = new HashMap<>();
                     SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
                     String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
                     String PreviousRMGRemoved = previousWarehouseCode + " - " + PreviousRmgNoDesc.toLowerCase();
-
-                    HashMap<String, Boolean> hashMapForWeighBridgeAvalibility = new HashMap<>();
+                    HashMap<String, Boolean> HmForWBAvailability = new HashMap<>();
                     ArrayList<String> arrDestinationLocation = new ArrayList<>();
                     ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
                     try {
-                        if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
+                        if (listWareHouse == null || listWareHouse.isEmpty()) {
                             customToast.toastMessage(getActivity(), EMPTY_WAREHOUSE_NUMBER, 0);
                             return;
                         }
-                        for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
-                            String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
-                            String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
-                            Boolean isWeighBrige = functionalLocationMasterDtoList.get(i).getWbAvailable();
+                        for (int i = 0; i < listWareHouse.size(); i++) {
+                            String s = listWareHouse.get(i).getStrLocationCode();
+                            String strLocationDesc = listWareHouse.get(i).getStrLocationDesc();
+                            Boolean isWeighBrige = listWareHouse.get(i).getWbAvailable();
 
                             String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
                             arrDestinationLocationDesc.add(strLocationDescWithCode);
                             hashMapLocationCode.put(strLocationDescWithCode, s);
-                            hashMapForWeighBridgeAvalibility.put(strLocationDescWithCode, isWeighBrige);
+                            HmForWBAvailability.put(strLocationDescWithCode, isWeighBrige);
                             arrDestinationLocation.add(s);
                         }
                         if (arrDestinationLocationDesc.contains(PreviousRMGRemoved)) {
@@ -238,14 +233,11 @@ public class BWHFragment extends Fragment {
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String selectedRmgCode = adapterView.getSelectedItem().toString();
 
-                                Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
                                 if (hashMapLocationCode.containsKey(selectedRmgCode)) {
-                                    selectedWareHouseNumber = hashMapLocationCode.get(selectedRmgCode);
-                                    Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedWareHouseNumber);
+                                    selectedWhNo = hashMapLocationCode.get(selectedRmgCode);
                                 }
-                                if (hashMapForWeighBridgeAvalibility.containsKey(selectedRmgCode)) {
-                                    isSelectedWareHouseNumberHaveWb = hashMapForWeighBridgeAvalibility.get(selectedRmgCode);
-                                    Log.i(TAG, "onItemSelected: selectedRmgNo : " + isSelectedWareHouseNumberHaveWb);
+                                if (HmForWBAvailability.containsKey(selectedRmgCode)) {
+                                    isSelectedWhHasWB = HmForWBAvailability.get(selectedRmgCode);
                                 }
                                 if (!selectedRmgCode.equalsIgnoreCase("Select Warehouse No")) {
                                     spinnerRemark.setEnabled(true);
@@ -275,7 +267,7 @@ public class BWHFragment extends Fragment {
         });
     }
 
-    private void getAllBothraRemark() {
+    private void getAllRemarks() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RemarkApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
                 getAllBothraRemark("Bearer " + token);
@@ -367,16 +359,16 @@ public class BWHFragment extends Fragment {
         Integer FLAG = 8;
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, String.valueOf(LocalDateTime.now()));
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousWarehouseCode, isWeighbridgeAvailable);
-        if (selectedWareHouseNumber != null) {
-            Log.i(TAG, "setData: " + selectedWareHouseNumber + isSelectedWareHouseNumberHaveWb);
-            if (!selectedWareHouseNumber.equals("Select Warehouse No")) {
-                selectedWareHouseNo = new StorageLocationDto(selectedWareHouseNumber, isSelectedWareHouseNumberHaveWb);
+        if (selectedWhNo != null) {
+            Log.i(TAG, "setData: " + selectedWhNo + isSelectedWhHasWB);
+            if (!selectedWhNo.equals("Select Warehouse No")) {
+                selectedWareHouseNo = new StorageLocationDto(selectedWhNo, isSelectedWhHasWB);
             }
             if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
         }
-        RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
+        RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNoId);
         if (weighbridgeAvailable.equalsIgnoreCase("true")) {
             updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null);
         } else {
@@ -435,7 +427,7 @@ public class BWHFragment extends Fragment {
 
     private void getLoadingAdviseDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-        this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
+        this.selectedLepNoId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
         String lepNo = sp.getString("lepNoSPK", null);
         String driverName = sp.getString("driverNameSPK", null);
