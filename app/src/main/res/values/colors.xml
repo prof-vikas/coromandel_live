@@ -25,7 +25,7 @@
     <color name="blue">#4BB6E8</color>
 
 <!--    fragment background Color-->
-    <color name="wareHouseBgColor">#A9D7EC</color>
+    <color name="wareHouseBgColor">#000A0E</color>
     <color name="loading_advise_fragment_bg">#FFF8BA</color>
     <color name="ware_house_fragment_bg">#BAE4F6</color>
     <color name="ware_house_fragment_text">#3F51B5</color>

@@ -72,9 +72,14 @@ public interface LoadingAdviseApi {
     @POST(ADD_RFID_LEP_ISSUE)
     Call<LoadingAdvisePostApiResponse> addRfidLepIssue(@Header("Authorization") String authToken, @Body LoadingAdviseRequestDto loadingAdviseRequestDto);
 
+    //  BothraLoadingAdvise
+    @PUT(UPDATE_BOTHRA_LOADING_ADVISE)
+    Call<TransactionsApiResponse> updateBothraLoadingAdvise(@Header("Authorization") String authToken, @Body UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto);
+
+
     //Coromandel
-    @GET(GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS )
-    Call<TransactionsApiResponse> getCoromandelWHDetails(@Header("Authorization") String authToken,  @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
+    @GET(GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS)
+    Call<TransactionsApiResponse> getCoromandelWHDetails(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
 
     @GET(GET_ALL_RMG_NUMBER + "{storageLocation}")
     Call<RmgNumberApiResponse> getAllCoromandelRmgNo(@Header("Authorization") String authToken, @Path("storageLocation") String storageLocation);
@@ -87,14 +92,14 @@ public interface LoadingAdviseApi {
 
 
     //Bothra
-    @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS )
-    Call<TransactionsApiResponse> getBothraWHDetails(@Header("Authorization") String authToken,  @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
+    @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS)
+    Call<TransactionsApiResponse> getBothraWHDetails(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
 
-    @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS )
-    Call<TransactionsApiResponse> getBothraWHDetailsForExit(@Header("Authorization") String authToken,  @Query("currentTransactionFlag") String currentTransactionFlag, @Query("tagNumber") String tagNumber);
+    @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS)
+    Call<TransactionsApiResponse> getBothraWHDetailsForExit(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("tagNumber") String tagNumber);
 
     @GET(GET_ALL_WAREHOUSE_NUMBER + "{storageLocation}")
-    Call<RmgNumberApiResponse> getAllWareHouse(@Header("Authorization") String authToken,  @Path("storageLocation") String storageLocation);
+    Call<RmgNumberApiResponse> getAllWareHouse(@Header("Authorization") String authToken, @Path("storageLocation") String storageLocation);
 
     @GET(GET_ALL_REMARK)
     Call<RemarkApiResponse> getAllBothraRemark(@Header("Authorization") String authToken);
@@ -102,10 +107,6 @@ public interface LoadingAdviseApi {
     @PUT(UPDATE_WAREHOUSE_NUMBER)
     Call<TransactionsApiResponse> updateWareHouse(@Header("Authorization") String authToken, @Body UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto);
 
-
-    //    BothraLoadingAdvise
-    @PUT(UPDATE_BOTHRA_LOADING_ADVISE)
-    Call<TransactionsApiResponse> updateBothraLoadingAdvise(@Header("Authorization") String authToken, @Body UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto);
 }
 
 

@@ -81,6 +81,8 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
             ArrayList<ReaderDevice> readersArrayList = readers.GetAvailableRFIDReaderList();
             if (readersArrayList.size() > 0) {
                 return readersArrayList.get(0);
+            }else {
+                Log.i(TAG, "getAvailableReaders: no reader is avaiable " + readersArrayList.size());
             }
             return null;
         } catch (InvalidUsageException e) {
@@ -213,6 +215,10 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
     public boolean isReaderConnected() {
         isReaderConnected = getAvailableReaders() != null;
         Log.d(TAG, (isReaderConnected ? "Connected" : "Not Connected"));
+        String s =isReaderConnected ? "RFID handle device is connected" : "RFID handle device is not connected";
+        if (!isReaderConnected){
+           scanFragment.onNotConnectedTpHandle(s,isReaderConnected);
+        }
         updateStatus();
         return isReaderConnected;
     }

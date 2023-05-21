@@ -3,21 +3,16 @@ package com.sipl.rfidtagscanner.utils;
 public class ApiConstants {
 //    Local 90 server
 //    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
+
+
 //    Apache
     public static final String BASE_URL = "http://10.210.213.4/coromandel-rest-repo/";
-//
+
 
 //    Tomcat
 //    public static final String BASE_URL = "http://10.210.213.5:8080/coromandel-rest-repo/";
-//    public static final String BASE_URL = "http://10.66.66.21:8082/coromandel-rest-repo/";
 
 
-
-//    Local ip 90 server without wireguard
-//    public static final String BASE_URL = "http://192.168.1.202:8080/coromandel-rest-repo/";
-
-//    UAT Linux 90 server
-//    public static final String BASE_URL = "http://10.66.66.90:9080/coromandel-rest-repo/";
 
     // login
     public static final String LOGIN = BASE_URL + "api/v1/auth/login/";
@@ -28,15 +23,11 @@ public class ApiConstants {
     public static final String GET_BOTHRA_LOADING_ADVISE_DETAILS = BASE_URL + "transactions/getTransactionFromFlagAndTagNumber";
 
     // Bothra loading advise
-    public static final String UPDATE_BOTHRA_LOADING_ADVISE = BASE_URL + "transactions/updateLoadingTransactions/";
-
-
-
-
     public static final String GET_DESTINATION_LOCATION_DETAILS = BASE_URL + "storageLocation/getAllStorageLocation/";
     public static final String GET_ALL_PINNACLE_SUPERVISOR = BASE_URL + "pinnacle/getAllPinnacleDetails/";
     public static final String GET_ALL_BOTHRA_SUPERVISOR = BASE_URL + "bothra/getAllBothraDetails/";
     public static final String ADD_RFID_LEP_ISSUE = BASE_URL + "transactions/addLoadingTransactions/";
+    public static final String UPDATE_BOTHRA_LOADING_ADVISE = BASE_URL + "transactions/updateLoadingTransactions/";
 
     //    Coromandel
     public static final String GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS = BASE_URL + "transactions/getTransactionFromFlagAndTagNumber";
