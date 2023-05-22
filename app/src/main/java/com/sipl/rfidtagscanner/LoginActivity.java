@@ -1,6 +1,7 @@
 package com.sipl.rfidtagscanner;
 
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -207,12 +208,12 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else if (username.equals("2") && password.equals("")) {
-            savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN_SUPER, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN_PLANT, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("1") && password.equals("")) {
-            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN_SUPER, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN_PLANT, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -280,9 +281,12 @@ public class LoginActivity extends AppCompatActivity {
                             savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
                         } else if (userRole.equalsIgnoreCase(ROLES_BWH)) {
                             savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
-                        } else {
+                        } else if(userRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)){
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
+                        }else{
                             alert(LoginActivity.this, "ERROR", "User role not allowed", null, "OK");
                             return;
+
                         }
                     } else {
                         alert(LoginActivity.this, "ERROR", response.body().getMessage(), null, "OK");

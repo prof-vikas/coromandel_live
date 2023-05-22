@@ -1,7 +1,7 @@
 package com.sipl.rfidtagscanner;
 
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
 import android.app.Dialog;
@@ -69,9 +69,17 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    private void setScreenData(String screenData){
+        SharedPreferences sp = getSharedPreferences("adminScreen", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("screen", screenData).apply();
+    }
+
     public void loadFragment2(Fragment fragment, int flag, String screen) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
+        Log.i(TAG, "loadFragment2: screen : " + screen);
+        setScreenData(screen);
         if (flag == 0) {
             ft.add(R.id.main_container, fragment);
         } else {
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "getMenuNavigation: menu_item_coromandel_warehouse" + id);
                 loadFragment2(new ScanFragment(id), 1, "coromandel");
             } else if (id == R.id.menu_item_setting) {
-                loadFragment2(new SettingsFragment(), 1, null);
+                loadFragment2(new SettingsFragment(), 1, "settingAdmin");
             } else if (id == R.id.menu_item_logout) {
                 logout();
             } else {
@@ -111,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMenuBasedOnRoles(String userRole) {
-        if (userRole.equalsIgnoreCase(ROLES_ADMIN_SUPER) || userRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) {
+        if (userRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) || userRole.equalsIgnoreCase(ROLES_ADMIN_SUPER)) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_admin);
             getMenuNavigation();

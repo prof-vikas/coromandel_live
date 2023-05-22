@@ -2,7 +2,7 @@ package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -71,13 +70,13 @@ public class ScanFragment extends Fragment implements MyListener {
             }
         }
     };
-    private CheckBox chkShowDeviceInfo;
     private RfidHandler rfidHandler;
     private String loginUserRole;
     private String loginUserToken;
     private String loginUserStorageLocation;
     private TextView errorHandle;
     private LinearLayout error_layout;
+    private String admin_String = null;
 
     public ScanFragment(int viewId1) {
         this.viewId = viewId1;
@@ -98,6 +97,8 @@ public class ScanFragment extends Fragment implements MyListener {
         this.loginUserRole = ((MainActivity) getActivity()).getLoginUserRole();
         this.loginUserToken = ((MainActivity) getActivity()).getLoginToken();
 //        this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
+        this.admin_String = getScreenDetails();
+        Log.i(TAG, "onCreateView: admin_String : " + admin_String);
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
@@ -278,11 +279,11 @@ public class ScanFragment extends Fragment implements MyListener {
         Log.i(TAG, "getWareHouseDetails: (Start)");
         progressBar.setVisibility(View.VISIBLE);
         try {
-            if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_SUPER) && viewId == 2131296611)) {
-                Log.i(TAG, "getWareHouseDetails: in bothra whs");
+            if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_String.equalsIgnoreCase("bothra")))) {
+                Log.i(TAG, "getWareHouseDetails: in bothra whs and roles and admin_string : " + loginUserRole + " " + admin_String);
                 getBothraWareHouseDetails();
-            } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_SUPER) && viewId == 2131296886)) {
-                Log.i(TAG, "getWareHouseDetails: in coromandel whs");
+            } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_String.equalsIgnoreCase("coromandel")))) {
+                Log.i(TAG, "getWareHouseDetails: in coromandel whs  and roles and admin_string :  "+ loginUserRole + " " + admin_String);
                 Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
 
                 call.enqueue(new Callback<TransactionsApiResponse>() {
@@ -509,7 +510,8 @@ public class ScanFragment extends Fragment implements MyListener {
 
     private void RfidDetailsLoadingAdvise() {
         Log.i(TAG, "RfidDetailsLoadingAdvise: btnVerify is clicked ");
-        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_SUPER) && viewId == 2131296612)) {
+        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (admin_String.equalsIgnoreCase("loadingAdvise"))) {
+            Log.i(TAG, "RfidDetailsLoadingAdvise: admin screen plus roles : " + loginUserRole + " " + admin_String);
             if (arrDestinationLocation.contains(loginUserStorageLocation)) {
                 getRfidTagDetailBothraLA();
             } else {
@@ -651,6 +653,11 @@ public class ScanFragment extends Fragment implements MyListener {
             s.updateSwitchPreferenceValue(true);
         }
 
+    }
+
+    public String getScreenDetails() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("adminScreen", MODE_PRIVATE);
+        return sp.getString("screen", null);
     }
 
 }
