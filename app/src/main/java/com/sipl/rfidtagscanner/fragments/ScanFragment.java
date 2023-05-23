@@ -202,11 +202,13 @@ public class ScanFragment extends Fragment implements MyListener {
                             String vesselName = rfidLepIssueDto.getDailyTransportReportModule().getVesselName();
                             String truckCapacity = String.valueOf(rfidLepIssueDto.getDailyTransportReportModule().getTruckCapacity());
                             String commodity = rfidLepIssueDto.getDailyTransportReportModule().getCommodity();
+                            String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
+                            String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
 
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
                                 Log.i(TAG, "onResponse: before share pref");
-                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
+                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
 
@@ -234,7 +236,7 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
-    private void saveLADataSharedPref(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity) {
+    private void saveLADataSharedPref(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc) {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -248,6 +250,8 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.putString("vesselNameSPK", vesselName).apply();
         editor.putString("truckCapacitySPK", truckCapacity).apply();
         editor.putString("commoditySPK", commodity).apply();
+        editor.putString("strDestinationCodeSPK", strDestinationCode).apply();
+        editor.putString("strDestinationDescSPK", strDestinationDesc).apply();
         editor.apply();
     }
 
@@ -553,9 +557,10 @@ public class ScanFragment extends Fragment implements MyListener {
                             String vesselName = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVesselName();
                             String truckCapacity = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity());
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-
+                            String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
+                            String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
+                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
                         } catch (Exception e) {

@@ -73,6 +73,9 @@ public class LoadingAdviseFragment extends Fragment {
     //    private String loginUserPlantCode;
     private int loginUserId;
 
+    private String strDestinationCode;
+    private String strDestinationDesc;
+
     //    ArrayAdapter for spinner
     private ArrayAdapter<String> destinationLocationAdapter;
     private ArrayAdapter<String> pinnacleSupervisorAdapter;
@@ -305,17 +308,36 @@ public class LoadingAdviseFragment extends Fragment {
 
 
                         }
-                        arrDestinationLocationDis.add("Select Destination");
-//                        arrDestinationLocation.add("Select Destination");
+//                        arrDestinationLocationDis.add("Select Destination");
+
                         String userSourceLocation = loginUserStorageLocation;
                         String userSourceLocationDesc = loginUserStorageLocationDesc;
                         String userSourceDesc = userSourceLocation + " - " + userSourceLocationDesc;
                         if (arrDestinationLocationDis.contains(userSourceDesc)) {
                             arrDestinationLocationDis.remove(userSourceDesc);
                         }
+
+                        String oldSelectedStrCode = strDestinationCode;
+                        String oldSelectedStrDesc = strDestinationDesc;
+                        String com = oldSelectedStrCode + " - " + oldSelectedStrDesc;
+                        Log.i(TAG, "onResponse:  destination old selection com : " + com);
+
                         Log.i(TAG, "onResponse: array : " + arrDestinationLocationDis.size());
 
-                        destinationLocationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDis) {
+                        if (!arrDestinationLocationDis.contains(com)){
+                            ((MainActivity) requireActivity()) .alert(requireContext(),"ERROR","Something went wrong ...!", null,"OK");
+                            return;
+                        }
+
+
+                        destinationLocationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDis);
+
+                        int position = destinationLocationAdapter.getPosition(com);
+                        Log.i(TAG, "onResponse: " + destinationLocationAdapter.getPosition(com));
+                        spinnerDestinationLocation.setAdapter(destinationLocationAdapter);
+                        spinnerDestinationLocation.setSelection(position);
+                        /*{
+
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -331,18 +353,14 @@ public class LoadingAdviseFragment extends Fragment {
                             public int getCount() {
                                 return super.getCount() - 1;
                             }
-                        };
-
-                        spinnerDestinationLocation.setAdapter(destinationLocationAdapter);
-                        spinnerDestinationLocation.setSelection(destinationLocationAdapter.getCount());
+                        };*/
+//                        spinnerDestinationLocation.setSelection(destinationLocationAdapter.getCount());
 
                         spinnerDestinationLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String s = adapterView.getSelectedItem().toString();
-                              /*  if (hashMapDestinationLocation.containsKey(selectedDestinationLocation)){
-                                    Log.i(TAG, "onItemSelected: hashMapDestinationLocation.get(selectedDestinationLocation) : " + hashMapDestinationLocation.get(selectedDestinationLocation));
-                                }*/
+                                Log.i(TAG, "onItemSelected: s : " + s);
                                 if (hashMapDestinationLocationWithDesc.containsKey(s)) {
                                     Log.i(TAG, "onItemSelected: hashMapDestinationLocation.get(selectedDestinationLocation) : " + hashMapDestinationLocationWithDesc.get(s));
                                     selectedDestinationLocation = hashMapDestinationLocationWithDesc.get(s);
@@ -352,6 +370,7 @@ public class LoadingAdviseFragment extends Fragment {
 
                             @Override
                             public void onNothingSelected(AdapterView<?> adapterView) {
+                                selectedDestinationLocation = strDestinationCode;
                             }
                         });
                     } catch (Exception e) {
@@ -651,7 +670,12 @@ public class LoadingAdviseFragment extends Fragment {
         String vesselName = sp.getString("vesselNameSPK", null);
         String truckCapacity = sp.getString("truckCapacitySPK", null);
         String commodity = sp.getString("commoditySPK", null);
+         this.strDestinationCode = sp.getString("strDestinationCodeSPK", null);
+         this.strDestinationCode = sp.getString("strDestinationDescSPK", null);
+//        this.strDestinationCode = "0019";
+//        this.strDestinationDesc = "Lime Godown";
         saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
+//        saveLoginAdviseData("REWT123", "lepNo", "driverName", "driverMobileNo", "driverLicenseNo", "truckNo", "sapGrNo", "vesselName", "truckCapacity", "commodity");
     }
 
     private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity) {
