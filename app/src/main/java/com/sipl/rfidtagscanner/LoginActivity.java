@@ -1,6 +1,5 @@
 package com.sipl.rfidtagscanner;
 
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
@@ -116,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             progressBar.setVisibility(View.VISIBLE);
             JwtRequest jwtRequest = new JwtRequest(username, password);
-            Call<JwtAuthResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().login(jwtRequest);
+            Call<JwtAuthResponse> call = RetrofitController.getInstances(this).getLoadingAdviseApi().login(jwtRequest);
             Log.i(TAG, new Gson().toJson(jwtRequest));
             call.enqueue(new Callback<JwtAuthResponse>() {
                 @Override
@@ -254,8 +253,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void validateUser() {
+        Log.i(TAG, "validateUser: in validateUser()");
         progressBar.setVisibility(View.VISIBLE);
-        Call<UserValidateResponseDto> call = RetrofitController.getInstance().getLoadingAdviseApi().loginWithOutJwt(edtUsername.getText().toString().trim(), edtPassword.getText().toString().trim());
+        Call<UserValidateResponseDto> call = RetrofitController.getInstances(this).getLoadingAdviseApi().loginWithOutJwt(edtUsername.getText().toString().trim(), edtPassword.getText().toString().trim());
         call.enqueue(new Callback<UserValidateResponseDto>() {
             @Override
             public void onResponse(Call<UserValidateResponseDto> call, Response<UserValidateResponseDto> response) {
@@ -298,6 +298,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserValidateResponseDto> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
+                Log.i(TAG, "onFailure: error" + t.getMessage());
                 alert(LoginActivity.this, "ERROR", t.getMessage().toString(), null, "OK");
                 t.printStackTrace();
             }

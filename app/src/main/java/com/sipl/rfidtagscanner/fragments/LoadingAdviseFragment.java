@@ -269,7 +269,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void getAllDestinationLocation() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<DestinationLocationResponseApi> call = RetrofitController.getInstance().getLoadingAdviseApi().
+        Call<DestinationLocationResponseApi> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
                 getAllDestinationLocation("Bearer " + token);
 
         call.enqueue(new Callback<DestinationLocationResponseApi>() {
@@ -389,7 +389,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private boolean getAllBothraSupervisor() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<BothraSupervisorApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getAllBothraSupervisor("Bearer " + token);
+        Call<BothraSupervisorApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().getAllBothraSupervisor("Bearer " + token);
         HashMap<String, Integer> hashMapBothraSupervisor = new HashMap<>();
         arrBothraSupervisor = new ArrayList<>();
         call.enqueue(new Callback<BothraSupervisorApiResponse>() {
@@ -449,7 +449,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private boolean getAllPinnacleSupervisor() {
         Log.i(TAG, "getAllPinnacleSupervisor: " + token);
-        Call<PinnacleSupervisorApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getAllPinnacleSupervisor("Bearer " + token);
+        Call<PinnacleSupervisorApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().getAllPinnacleSupervisor("Bearer " + token);
         HashMap<String, Integer> hashMapPinnacleSupervisor = new HashMap<>();
         arrPinnacleSupervisor = new ArrayList<>();
         call.enqueue(new Callback<PinnacleSupervisorApiResponse>() {
@@ -508,7 +508,7 @@ public class LoadingAdviseFragment extends Fragment {
     private void sendLoadingAdviseDetails(LoadingAdviseRequestDto loadingAdviseRequestDto) {
         progressBar.setVisibility(View.VISIBLE);
         Log.i(TAG, new Gson().toJson(loadingAdviseRequestDto).toString());
-        Call<LoadingAdvisePostApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().addRfidLepIssue("Bearer " + token, loadingAdviseRequestDto);
+        Call<LoadingAdvisePostApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().addRfidLepIssue("Bearer " + token, loadingAdviseRequestDto);
         call.enqueue(new Callback<LoadingAdvisePostApiResponse>() {
             @Override
             public void onResponse(Call<LoadingAdvisePostApiResponse> call, Response<LoadingAdvisePostApiResponse> response) {
@@ -542,7 +542,7 @@ public class LoadingAdviseFragment extends Fragment {
                                                           updateBothraLoadingAdviseDto) {
         progressBar.setVisibility(View.VISIBLE);
         Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(updateBothraLoadingAdviseDto));
-        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {

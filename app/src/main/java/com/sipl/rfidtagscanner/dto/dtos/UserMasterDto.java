@@ -8,7 +8,10 @@ public class UserMasterDto {
     private String userId;
     private String name;
     private String password;
+    private String loginTime;
+    private String logoutTime;
     private Boolean isActive;
+    private Boolean isDeleted;
     private Integer rStat;
     private RoleMasterDto role;
     private PlantMasterDto plantMaster;
@@ -19,12 +22,15 @@ public class UserMasterDto {
         this.id = id;
     }
 
-    public UserMasterDto(Integer id, String userId, String name, String password, Boolean isActive, Integer rStat, RoleMasterDto role, PlantMasterDto plantMaster, StorageLocationDto storageLocation, AuditEntity auditEntity) {
+    public UserMasterDto(Integer id, String userId, String name, String password, String loginTime, String logoutTime, Boolean isActive, Boolean isDeleted, Integer rStat, RoleMasterDto role, PlantMasterDto plantMaster, StorageLocationDto storageLocation, AuditEntity auditEntity) {
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.password = password;
+        this.loginTime = loginTime;
+        this.logoutTime = logoutTime;
         this.isActive = isActive;
+        this.isDeleted = isDeleted;
         this.rStat = rStat;
         this.role = role;
         this.plantMaster = plantMaster;
@@ -64,12 +70,36 @@ public class UserMasterDto {
         this.password = password;
     }
 
+    public String getLoginTime() {
+        return loginTime;
+    }
+
+    public void setLoginTime(String loginTime) {
+        this.loginTime = loginTime;
+    }
+
+    public String getLogoutTime() {
+        return logoutTime;
+    }
+
+    public void setLogoutTime(String logoutTime) {
+        this.logoutTime = logoutTime;
+    }
+
     public Boolean getActive() {
         return isActive;
     }
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 
     public Integer getrStat() {

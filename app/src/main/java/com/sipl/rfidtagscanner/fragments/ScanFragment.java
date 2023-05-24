@@ -175,7 +175,7 @@ public class ScanFragment extends Fragment implements MyListener {
         Log.i(TAG, "getRfidTagDetailCoromandelLA: ");
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<RfidLepApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getRfidTagDetailCoromandelLA("Bearer " + loginUserToken, edtRfidTagId.getText().toString());
+            Call<RfidLepApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailCoromandelLA("Bearer " + loginUserToken, edtRfidTagId.getText().toString());
             call.enqueue(new Callback<RfidLepApiResponse>() {
                 @Override
                 public void onResponse(Call<RfidLepApiResponse> call, Response<RfidLepApiResponse> response) {
@@ -289,7 +289,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 getBothraWareHouseDetails();
             } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_String.equalsIgnoreCase("coromandel")))) {
                 Log.i(TAG, "getWareHouseDetails: in coromandel whs  and roles and admin_string :  "+ loginUserRole + " " + admin_String);
-                Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
+                Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
 
                 call.enqueue(new Callback<TransactionsApiResponse>() {
                     @Override
@@ -366,7 +366,7 @@ public class ScanFragment extends Fragment implements MyListener {
         Log.i(TAG, "getBothraWareHouseDetails: in bothra whs");
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getBothraWHDetails("Bearer " + loginUserToken, "8", "7", edtRfidTagId.getText().toString());
+            Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getBothraWHDetails("Bearer " + loginUserToken, "8", "7", edtRfidTagId.getText().toString());
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
@@ -440,7 +440,7 @@ public class ScanFragment extends Fragment implements MyListener {
         Log.i(TAG, "getBothraWareHouseDetails2: in bothra 2 url method");
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getBothraWHDetailsForExit("Bearer " + loginUserToken, "8", edtRfidTagId.getText().toString());
+            Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getBothraWHDetailsForExit("Bearer " + loginUserToken, "8", edtRfidTagId.getText().toString());
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
@@ -532,7 +532,7 @@ public class ScanFragment extends Fragment implements MyListener {
         Log.i(TAG, "getRfidTagDetailBothraLA: ");
         progressBar.setVisibility(View.VISIBLE);
         try {
-            Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "12", "11", edtRfidTagId.getText().toString());
+            Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "12", "11", edtRfidTagId.getText().toString());
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
@@ -598,7 +598,7 @@ public class ScanFragment extends Fragment implements MyListener {
     private boolean getWareHouseStorage() {
         Log.i("getWareHouseStorage", "getAllWareHouse: ()");
         progressBar.setVisibility(View.VISIBLE);
-        Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
+        Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllWareHouse("Bearer " + loginUserToken, "bothra");
 
         call.enqueue(new Callback<RmgNumberApiResponse>() {

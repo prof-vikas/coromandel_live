@@ -9,7 +9,8 @@ public class ApiConstants {
 //    public static final String BASE_URL = "http://10.210.213.4/coromandel-rest-repo/";
 //    public static final String BASE_URL = "http://localhost:8082/coromandel-rest-repo/";
 //    public static final String BASE_URL = "http://10.66.66.5:8082/coromandel-rest-repo/";
-    public static final String BASE_URL = "http://10.210.213.6:8080/coromandel-rest-repo/";
+//    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
+    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
 
 
 
@@ -20,6 +21,7 @@ public class ApiConstants {
 
     // login
     public static final String LOGIN = BASE_URL + "api/v1/auth/login/";
+    public static final String LOGOUT = BASE_URL + "users/logoutUser";
     public static final String LOGIN_WITHOUT_JWT = BASE_URL + "users/validate";
 
     // Loading Advise
