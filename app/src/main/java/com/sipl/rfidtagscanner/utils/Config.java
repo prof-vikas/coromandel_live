@@ -8,18 +8,18 @@ public class Config {
     public static final boolean isPlantDetailsRequiredInSideNav = true;
 
     //    Roles Constants
-    public static final String ROLES_BWH = "Bothra CIL Security Guard";
+/*    public static final String ROLES_BWH = "Bothra CIL Security Guard";
     public static final String ROLES_CWH = "Factory Warehouse Operator";
     public static final String ROLES_LAO = "LoadingAdvise Operator";
     public static final String ROLES_ADMIN_SUPER = "Super Admin";
-    public static final String ROLES_ADMIN_PLANT = "Plant Admin";
+    public static final String ROLES_ADMIN_PLANT = "Plant Admin";*/
 
 
-/*    public static final String ROLES_BWH = "Bothra CIL Security Guard";
+    public static final String ROLES_BWH = "Bothra CIL Security Guard";
     public static final String ROLES_CWH = "Factory Warehouse Operator";
     public static final String ROLES_LAO = "Coromandel LoadingAdvise Operator";
     public static final String ROLES_ADMIN_SUPER = "Super Admin";
-    public static final String ROLES_ADMIN_PLANT = "Plant Admin";*/
+    public static final String ROLES_ADMIN_PLANT = "Plant Admin";
 
 
     public static final String WRONG_CREDENTIALS = "User name or password Mismatch";
