@@ -324,8 +324,8 @@ public class LoadingAdviseFragment extends Fragment {
 
                         Log.i(TAG, "onResponse: array : " + arrDestinationLocationDis.size());
 
-                        if (!arrDestinationLocationDis.contains(com)){
-                            ((MainActivity) requireActivity()) .alert(requireContext(),"ERROR","Something went wrong ...!", null,"OK");
+                        if (!arrDestinationLocationDis.contains(com)) {
+                            ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", "Something went wrong ...!", null, "OK");
                             return;
                         }
 
@@ -382,9 +382,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<DestinationLocationResponseApi> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-//                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -443,9 +441,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<BothraSupervisorApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-//                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         return true;
@@ -503,9 +499,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<PinnacleSupervisorApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-//                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         return true;
@@ -586,9 +580,7 @@ public class LoadingAdviseFragment extends Fragment {
         BothraLoadingSupervisorDto bothraLoadingDto = new BothraLoadingSupervisorDto(selectedBothraSupervisorId);
         PinnacleLoadingSupervisorDto pinnacleLoadingDto = new PinnacleLoadingSupervisorDto(selectedPinnacleSupervisorId);
         return new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
-
     }
-
 
     private UpdateBothraLoadingAdviseDto updateData() {
         final Integer BOTHRA_FLAG = 12;
@@ -601,7 +593,6 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void updateUIBasedOnUser() {
-//        if (loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA)) {
         if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
             layoutBothraSupervisor.setVisibility(View.GONE);
             layoutPinnacleSupervisor.setVisibility(View.GONE);
@@ -612,8 +603,6 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void chooseMethodToCall() {
-
-//        if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
         if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
             UpdateBothraLoadingAdviseDetails(updateData());
         } else {
@@ -670,8 +659,11 @@ public class LoadingAdviseFragment extends Fragment {
         String vesselName = sp.getString("vesselNameSPK", null);
         String truckCapacity = sp.getString("truckCapacitySPK", null);
         String commodity = sp.getString("commoditySPK", null);
-         this.strDestinationCode = sp.getString("strDestinationCodeSPK", null);
-         this.strDestinationCode = sp.getString("strDestinationDescSPK", null);
+        this.strDestinationCode = sp.getString("strDestinationCodeSPK", null);
+        this.strDestinationDesc = sp.getString("strDestinationDescSPK", null);
+
+//        Log.i(TAG, "getLoadingAdviseDetails: strDestinationCode : " + strDestinationCode);
+//        Log.i(TAG, "getLoadingAdviseDetails: strDestinationCode : " + strDestinationCode);
 //        this.strDestinationCode = "0019";
 //        this.strDestinationDesc = "Lime Godown";
         saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);

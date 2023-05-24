@@ -205,6 +205,9 @@ public class ScanFragment extends Fragment implements MyListener {
                             String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
                             String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
 
+                            Log.i(TAG, "onResponse: destinationLocation : " + destinationLocation);
+                            Log.i(TAG, "onResponse: destinationLocationDesc : " + destinationLocationDesc);
+
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
                                 Log.i(TAG, "onResponse: before share pref");
@@ -251,6 +254,8 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.putString("truckCapacitySPK", truckCapacity).apply();
         editor.putString("commoditySPK", commodity).apply();
         editor.putString("strDestinationCodeSPK", strDestinationCode).apply();
+        Log.i(TAG, "saveLADataSharedPref: strDestinationCode : " + strDestinationCode);
+        Log.i(TAG, "saveLADataSharedPref: strDestinationDesc : " + strDestinationDesc);
         editor.putString("strDestinationDescSPK", strDestinationDesc).apply();
         editor.apply();
     }
@@ -269,14 +274,10 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.putString("previousRmgNoSPK", previousRmgNo).apply();
         editor.putString("PreviousRmgNoDescSPK", PreviousRmgNoDesc).apply();
         editor.putString("sourceGrossWeightSPK", sourceGrossWeight).apply();
-        Log.i(TAG, "saveWHDataToSharedPref: before boolean shearf pref");
-
         editor.putString("isWeighbridgeAvailableSPK", isWeighbridgeAvailable).apply();
-        Log.i(TAG, "saveWHDataToSharedPref: after boolean shearf pref");
         editor.putInt("callFromSPK", callFrom).apply();
         editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
         editor.apply();
-        Log.i(TAG, "saveWHDataToSharedPref: <<END>>");
     }
 
     private void getWareHouseDetails() {
@@ -559,6 +560,15 @@ public class ScanFragment extends Fragment implements MyListener {
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
                             String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                             String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
+                            String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                            String wareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+
+                            Log.i(TAG, "onResponse: wareHouseCode : " + wareHouseCode);
+                            Log.i(TAG, "onResponse: wareHouseCodeDesc : " + wareHouseCodeDesc);
+
+                            Log.i(TAG, "onResponse: destinationLocation : " + destinationLocation);
+                            Log.i(TAG, "onResponse: destinationLocationDesc : " + destinationLocationDesc);
+
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
                                 saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
