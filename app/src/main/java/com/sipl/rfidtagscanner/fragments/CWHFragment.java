@@ -35,7 +35,6 @@ import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomToast;
-import com.sipl.rfidtagscanner.utils.Helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,7 +152,7 @@ public class CWHFragment extends Fragment {
 
     private boolean getAllRmgStorage() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
+        Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllCoromandelRmgNo("Bearer " + token, "coromandel");
 
         call.enqueue(new Callback<RmgNumberApiResponse>() {
@@ -260,7 +259,7 @@ public class CWHFragment extends Fragment {
 
     private boolean getRemarks() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<RemarkApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
+        Call<RemarkApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllCoromandelRemark("Bearer " + token);
 
         call.enqueue(new Callback<RemarkApiResponse>() {
@@ -352,7 +351,7 @@ public class CWHFragment extends Fragment {
 
     private void updateRmgNo(UpdateRmgRequestDto updateRmgRequestDto) {
         Log.i(TAG, new Gson().toJson(updateRmgRequestDto).toString());
-        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateRmgNo("Bearer " + token, updateRmgRequestDto);
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().updateRmgNo("Bearer " + token, updateRmgRequestDto);
         progressBar.setVisibility(View.VISIBLE);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override

@@ -5,14 +5,28 @@ public class Config {
     //    view constants
     public static final boolean isJWTEnable = false;
 
+
     public static final boolean isPlantDetailsRequiredInSideNav = true;
 
     //    Roles Constants
-    public static final String ROLES_BWH = "Bothra CIL Security Guard";
+/*    public static final String ROLES_BWH = "Bothra CIL Security Guard";
     public static final String ROLES_CWH = "Factory Warehouse Operator";
     public static final String ROLES_LAO = "LoadingAdvise Operator";
-    public static final String ROLES_ADMIN_PLANT = "Plant Admin";
     public static final String ROLES_ADMIN_SUPER = "Super Admin";
+    public static final String ROLES_ADMIN_PLANT = "Plant Admin";*/
+
+    public static final String ROLES_BWH = "9";
+    public static final String ROLES_CWH = "18";
+    public static final String ROLES_LAO = "7";
+    public static final String ROLES_ADMIN_SUPER = "";
+    public static final String ROLES_ADMIN_PLANT = "4";
+
+
+/*    public static final String ROLES_BWH = "Bothra CIL Security Guard";
+    public static final String ROLES_CWH = "Factory Warehouse Operator";
+    public static final String ROLES_LAO = "Coromandel LoadingAdvise Operator";
+    public static final String ROLES_ADMIN_SUPER = "Super Admin";
+    public static final String ROLES_ADMIN_PLANT = "Plant Admin";*/
 
 
     public static final String WRONG_CREDENTIALS = "User name or password Mismatch";

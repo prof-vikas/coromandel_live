@@ -1,6 +1,6 @@
 package com.sipl.rfidtagscanner;
 
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -115,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             progressBar.setVisibility(View.VISIBLE);
             JwtRequest jwtRequest = new JwtRequest(username, password);
-            Call<JwtAuthResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().login(jwtRequest);
+            Call<JwtAuthResponse> call = RetrofitController.getInstances(this).getLoadingAdviseApi().login(jwtRequest);
             Log.i(TAG, new Gson().toJson(jwtRequest));
             call.enqueue(new Callback<JwtAuthResponse>() {
                 @Override
@@ -136,9 +136,10 @@ public class LoginActivity extends AppCompatActivity {
                         String userSourceLocationDesc = response.body().getUser().getStorageLocation().getStrLocationDesc();
                         String userPlantLocation = response.body().getUser().getPlantMaster().getPlantCode();
                         String userPlantLocationDesc = response.body().getUser().getPlantMaster().getPlantDesc();
+                        String userRoleId = String.valueOf(response.body().getUser().getRole().getId());
                         Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : " + userSourceLocation + " - " + userSourceLocationDesc + " userPlantLocation : " + userPlantLocation + " - " + userPlantLocationDesc);
                         if (token != null && role != null && username != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
-                            savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc);
+                            savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc, userRoleId);
                         } else {
                             alert(LoginActivity.this, "error", "Something went wrong with this user credentials", "Try login with other user credentials", "OK");
                             return;
@@ -160,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void savingLoginUserToSharedPref(String userID, String username, String role, String token, String userSourceLocation, String userSourceLocationDesc, String userPlantLocation, String userPlantLocationDesc) {
+    private void savingLoginUserToSharedPref(String userID, String username, String role, String token, String userSourceLocation, String userSourceLocationDesc, String userPlantLocation, String userPlantLocationDesc, String userRolesId) {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("userIDSPK", userID).apply();
@@ -172,6 +173,8 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("userPlantLocationSPK", userPlantLocation).apply();
         editor.putString("userPlantLocationDescSPK", userPlantLocationDesc).apply();
         editor.putString("userLoginStatus", "login").apply();
+        editor.putString("userRolesIdSPK", userRolesId).apply();
+        Log.i(TAG, "savingLoginUserToSharedPref: userRolesId : " + userRolesId);
         editor.apply();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
@@ -184,10 +187,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void hardCodeLogin(String username, String password) {
+/*    private void hardCodeLogin(String username, String password) {
         progressBar.setVisibility(View.VISIBLE);
         if (username.equals("la") && password.equals("")) {
-            savingLoginUserToSharedPref("2110", "CLoadingAdvise", ROLES_LAO, "apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0058", "Port Area Godown", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("2110", "CLoadingAdvise", ROLES_LAO, "apple0masdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0058", "Port Area Godown", "CFVZ", "Corormandel-Vizag",);
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -207,12 +210,12 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else if (username.equals("2") && password.equals("")) {
-            savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN_SUPER, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("7", "CSuperv", ROLES_ADMIN_PLANT, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0010", "Western Mezzanin", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else if (username.equals("1") && password.equals("")) {
-            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN_SUPER, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
+            savingLoginUserToSharedPref("8", "BSuperv", ROLES_ADMIN_PLANT, "eajkfdghsdfohiudfdsfwnjksduirecm,vdfklgimlssdfmxc,fekv", "0046", "Bothra Godown", "CFVZ", "Corormandel-Vizag");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -220,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             txtErrorMessage.setText(WRONG_CREDENTIALS);
         }
-    }
+    }*/
 
     public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
         Dialog dialog = new Dialog(context);
@@ -253,8 +256,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void validateUser() {
+        Log.i(TAG, "validateUser: in validateUser()");
         progressBar.setVisibility(View.VISIBLE);
-        Call<UserValidateResponseDto> call = RetrofitController.getInstance().getLoadingAdviseApi().loginWithOutJwt(edtUsername.getText().toString().trim(), edtPassword.getText().toString().trim());
+        Call<UserValidateResponseDto> call = RetrofitController.getInstances(this).getLoadingAdviseApi().loginWithOutJwt(edtUsername.getText().toString().trim(), edtPassword.getText().toString().trim());
         call.enqueue(new Callback<UserValidateResponseDto>() {
             @Override
             public void onResponse(Call<UserValidateResponseDto> call, Response<UserValidateResponseDto> response) {
@@ -269,20 +273,24 @@ public class LoginActivity extends AppCompatActivity {
                         String userID = response.body().getUserDto().getUserId();
                         String id = String.valueOf(response.body().getUserDto().getId());
                         String userRole = response.body().getUserDto().getRole().getName();
+                        String userRoleId = String.valueOf(response.body().getUserDto().getRole().getId());
                         String sourceLocationCode = response.body().getUserDto().getStorageLocation().getStrLocationCode();
                         String sourceLocationCodeDesc = response.body().getUserDto().getStorageLocation().getStrLocationDesc();
                         String plantLocationCode = response.body().getUserDto().getPlantMaster().getPlantCode();
                         String plantLocationCodeDesc = response.body().getUserDto().getPlantMaster().getPlantDesc();
                         Log.i(TAG, "onResponse: " + response.raw());
-                        if (userRole.equalsIgnoreCase(ROLES_LAO)) {
-                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
-                        } else if (userRole.equalsIgnoreCase(ROLES_CWH)) {
-                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
-                        } else if (userRole.equalsIgnoreCase(ROLES_BWH)) {
-                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc);
-                        } else {
+                        if (userRoleId.equalsIgnoreCase(ROLES_LAO)) {
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
+                        } else if (userRoleId.equalsIgnoreCase(ROLES_CWH)) {
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
+                        } else if (userRoleId.equalsIgnoreCase(ROLES_BWH)) {
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
+                        } else if(userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT)){
+                            savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
+                        }else{
                             alert(LoginActivity.this, "ERROR", "User role not allowed", null, "OK");
                             return;
+
                         }
                     } else {
                         alert(LoginActivity.this, "ERROR", response.body().getMessage(), null, "OK");
@@ -294,6 +302,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserValidateResponseDto> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
+                Log.i(TAG, "onFailure: error" + t.getMessage());
                 alert(LoginActivity.this, "ERROR", t.getMessage().toString(), null, "OK");
                 t.printStackTrace();
             }
