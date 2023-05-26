@@ -191,6 +191,11 @@ public class MainActivity extends AppCompatActivity {
 
     public String getLoginUserRole() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        return sp.getString("userRolesIdSPK", null);
+    }
+
+    public String getLoginUserRoleName() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("roleSPK", null);
     }
 
