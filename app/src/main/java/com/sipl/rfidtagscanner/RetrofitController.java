@@ -33,7 +33,7 @@ public class RetrofitController {
 
     private OkHttpClient getOkHttpClient(Context context) {
         try {
-            Log.i(TAG, "getOkHttpClient: ");
+            Log.i(TAG, "getOkHttpClient: try");
             // Load the server's certificate from the assets folder
             AssetManager assetManager = context.getAssets();
 //            InputStream inputStream = assetManager.open("Coromandelbiznew.crt");

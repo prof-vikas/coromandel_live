@@ -12,10 +12,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -69,6 +72,40 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("remember", "false").apply();
             }
         });
+    }
+
+/*    public void showHidePassword(View view) {
+
+        if (view.getId() == R.id.img_view_show_hide_password) {
+            Log.i(TAG, "showHidePassword: in if statement");
+            if (edtPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
+                ((ImageView) (view)).setImageResource(R.drawable.baseline_visibility_off_24);
+                //Show Password
+                edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            } else {
+                ((ImageView) (view)).setImageResource(R.drawable.baseline_show_password_24);
+                //Hide Password
+                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+        }
+    }*/
+
+    public void showHidePassword(View view) {
+        if (view.getId() == R.id.img_view_show_hide_password) {
+            ImageView showHideImageView = (ImageView) view;
+            if (edtPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
+                // Show Password
+                showHideImageView.setImageResource(R.drawable.baseline_show_password_24);
+                edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            } else {
+                // Hide Password
+                showHideImageView.setImageResource(R.drawable.baseline_visibility_off_24);
+                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+
+            // Move cursor to the end of the text
+            edtPassword.setSelection(edtPassword.getText().length());
+        }
     }
 
     public void isCheckBoxChecked() {
