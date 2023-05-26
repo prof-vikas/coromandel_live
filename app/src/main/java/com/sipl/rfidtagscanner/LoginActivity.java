@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText edtUsername, edtPassword;
     private TextView txtErrorMessage;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,10 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edt_password);
         txtErrorMessage = findViewById(R.id.txt_error_message);
         progressBar = findViewById(R.id.login_progressBar);
+        imageView = findViewById( R.id.img_view_show_hide_password);
+
         MaterialCheckBox checkBoxRememberMe = findViewById(R.id.checkbox_login_remember_me);
+
 
         isCheckBoxChecked();
         btnLogin.setOnClickListener(view -> {
@@ -72,41 +77,56 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("remember", "false").apply();
             }
         });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if (view.getId() == R.id.img_view_show_hide_password) {
+                    ImageView showHideImageView = (ImageView) view;
+                    if (edtPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
+                        // Password is currently hidden, so show it
+                        showHideImageView.setImageResource(R.drawable.baseline_show_password_24);
+//                edtPassword.setTransformationMethod(null); // Show password as plain text
+                        edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    } else {
+                        // Password is currently shown, so hide it
+                        showHideImageView.setImageResource(R.drawable.baseline_visibility_off_24);
+//                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance()); // Hide password
+                        edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    }
+
+                    // Move cursor to the end of the text
+                    edtPassword.setSelection(edtPassword.getText().length());
+                }
+//            }
+        });
     }
+
+
 
 /*    public void showHidePassword(View view) {
 
         if (view.getId() == R.id.img_view_show_hide_password) {
-            Log.i(TAG, "showHidePassword: in if statement");
-            if (edtPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
-                ((ImageView) (view)).setImageResource(R.drawable.baseline_visibility_off_24);
-                //Show Password
-                edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            } else {
-                ((ImageView) (view)).setImageResource(R.drawable.baseline_show_password_24);
-                //Hide Password
-                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            }
-        }
-    }*/
-
-    public void showHidePassword(View view) {
-        if (view.getId() == R.id.img_view_show_hide_password) {
             ImageView showHideImageView = (ImageView) view;
             if (edtPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
-                // Show Password
+                // Password is currently hidden, so show it
                 showHideImageView.setImageResource(R.drawable.baseline_show_password_24);
+//                edtPassword.setTransformationMethod(null); // Show password as plain text
                 edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             } else {
-                // Hide Password
+                // Password is currently shown, so hide it
                 showHideImageView.setImageResource(R.drawable.baseline_visibility_off_24);
+//                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance()); // Hide password
                 edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             }
 
             // Move cursor to the end of the text
             edtPassword.setSelection(edtPassword.getText().length());
         }
-    }
+    }*/
+
+
+
 
     public void isCheckBoxChecked() {
         SharedPreferences sp = getSharedPreferences("rememberMe", MODE_PRIVATE);
@@ -137,10 +157,10 @@ public class LoginActivity extends AppCompatActivity {
             edtPassword.setError("This field is required");
             return false;
         }
-        if (edtPassword.length() <= 7) {
+      /*  if (edtPassword.length() <= 7) {
             edtPassword.setError("password must be minimum 8 characters");
             return false;
-        }
+        }*/
         return true;
     }
 
