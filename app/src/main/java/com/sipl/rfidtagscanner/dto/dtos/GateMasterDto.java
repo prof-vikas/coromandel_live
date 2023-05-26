@@ -4,44 +4,22 @@ import com.sipl.rfidtagscanner.entites.AuditEntity;
 
 public class GateMasterDto {
 
-    private AuditEntity auditEntity;
-    private StorageLocationDto functionalLocationMaster;
-    private Integer gateNumber;
     private Integer id;
+    private String gateNumber;
     private Boolean isActive;
-    private Integer rstat;
+    private Integer rStat;
+    private PlantMasterDto plantMaster;
+    private StorageLocationDto storageLocation;
+    private AuditEntity auditEntity;
 
-    public GateMasterDto(AuditEntity auditEntity, StorageLocationDto functionalLocationMaster, Integer gateNumber, Integer id, Boolean isActive, Integer rstat) {
-        this.auditEntity = auditEntity;
-        this.functionalLocationMaster = functionalLocationMaster;
-        this.gateNumber = gateNumber;
+    public GateMasterDto(Integer id, String gateNumber, Boolean isActive, Integer rStat, PlantMasterDto plantMaster, StorageLocationDto storageLocation, AuditEntity auditEntity) {
         this.id = id;
-        this.isActive = isActive;
-        this.rstat = rstat;
-    }
-
-    public AuditEntity getAuditEntity() {
-        return auditEntity;
-    }
-
-    public void setAuditEntity(AuditEntity auditEntity) {
-        this.auditEntity = auditEntity;
-    }
-
-    public StorageLocationDto getFunctionalLocationMaster() {
-        return functionalLocationMaster;
-    }
-
-    public void setFunctionalLocationMaster(StorageLocationDto functionalLocationMaster) {
-        this.functionalLocationMaster = functionalLocationMaster;
-    }
-
-    public Integer getGateNumber() {
-        return gateNumber;
-    }
-
-    public void setGateNumber(Integer gateNumber) {
         this.gateNumber = gateNumber;
+        this.isActive = isActive;
+        this.rStat = rStat;
+        this.plantMaster = plantMaster;
+        this.storageLocation = storageLocation;
+        this.auditEntity = auditEntity;
     }
 
     public Integer getId() {
@@ -52,6 +30,14 @@ public class GateMasterDto {
         this.id = id;
     }
 
+    public String getGateNumber() {
+        return gateNumber;
+    }
+
+    public void setGateNumber(String gateNumber) {
+        this.gateNumber = gateNumber;
+    }
+
     public Boolean getActive() {
         return isActive;
     }
@@ -60,11 +46,35 @@ public class GateMasterDto {
         isActive = active;
     }
 
-    public Integer getRstat() {
-        return rstat;
+    public Integer getrStat() {
+        return rStat;
     }
 
-    public void setRstat(Integer rstat) {
-        this.rstat = rstat;
+    public void setrStat(Integer rStat) {
+        this.rStat = rStat;
+    }
+
+    public PlantMasterDto getPlantMaster() {
+        return plantMaster;
+    }
+
+    public void setPlantMaster(PlantMasterDto plantMaster) {
+        this.plantMaster = plantMaster;
+    }
+
+    public StorageLocationDto getStorageLocation() {
+        return storageLocation;
+    }
+
+    public void setStorageLocation(StorageLocationDto storageLocation) {
+        this.storageLocation = storageLocation;
+    }
+
+    public AuditEntity getAuditEntity() {
+        return auditEntity;
+    }
+
+    public void setAuditEntity(AuditEntity auditEntity) {
+        this.auditEntity = auditEntity;
     }
 }

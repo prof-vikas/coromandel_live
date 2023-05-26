@@ -14,10 +14,12 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_COROMANDEL_WAREHOUS
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_DESTINATION_LOCATION_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN_WITHOUT_JWT;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGOUT;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_BOTHRA_LOADING_ADVISE;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_RMG_NO;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_WAREHOUSE_NUMBER;
 
+import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 import com.sipl.rfidtagscanner.dto.request.JwtRequest;
 import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
@@ -51,6 +53,9 @@ public interface LoadingAdviseApi {
 
     @GET(LOGIN_WITHOUT_JWT + "/{userId}" + "/{password}")
     Call<UserValidateResponseDto> loginWithOutJwt(@Path("userId") String userId, @Path("password") String password);
+
+    @PUT(LOGOUT)
+    Call<UserValidateResponseDto> logout(UserMasterDto userMasterDto);
 
 
     //    Loading Advise

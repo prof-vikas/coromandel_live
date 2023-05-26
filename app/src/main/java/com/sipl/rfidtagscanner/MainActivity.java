@@ -2,6 +2,9 @@ package com.sipl.rfidtagscanner;
 
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
 import android.app.Dialog;
@@ -25,8 +28,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
+import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -182,6 +191,11 @@ public class MainActivity extends AppCompatActivity {
 
     public String getLoginUserRole() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        return sp.getString("userRolesIdSPK", null);
+    }
+
+    public String getLoginUserRoleName() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("roleSPK", null);
     }
 
@@ -197,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     public int getLoginUserId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+//        Log.i(TAG, "getLoginUserId: " + sp.getString("userIDSPK", null));
         return Integer.parseInt(sp.getString("userIDSPK", null));
     }
 
@@ -245,5 +260,35 @@ public class MainActivity extends AppCompatActivity {
         btn.setText(dialogBtnText);
         btn.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
+    }
+
+
+    private void logoutApi() {
+        Log.i(TAG, "validateUser: in validateUser()");
+//        progressBar.setVisibility(View.VISIBLE);
+        UserMasterDto userMasterDto = new UserMasterDto(getLoginUserId());
+        Call<UserValidateResponseDto> call = RetrofitController.getInstances(this).getLoadingAdviseApi().logout(userMasterDto);
+      call.enqueue(new Callback<UserValidateResponseDto>() {
+          @Override
+          public void onResponse(Call<UserValidateResponseDto> call, Response<UserValidateResponseDto> response) {
+              if (!response.isSuccessful()){
+                  alert(MainActivity.this,"ERROR",response.errorBody().toString(),null,"OK");
+              }
+              Log.i(TAG, "onResponse: logout response raw : " + response.raw());
+              if (response.isSuccessful()){
+                  if (response.body().getStatus().equalsIgnoreCase("FOUND")){
+                      Log.i(TAG, "onResponse: " + response.body().getMessage());
+                      logout();
+                  }else {
+                      alert(MainActivity.this,"ERROR", response.body().getMessage(),null,"OK");
+                  }
+              }
+          }
+
+          @Override
+          public void onFailure(Call<UserValidateResponseDto> call, Throwable t) {
+              alert(MainActivity.this,"ERROR", t.getMessage().toString(),null,"OK");
+          }
+      });
     }
 }

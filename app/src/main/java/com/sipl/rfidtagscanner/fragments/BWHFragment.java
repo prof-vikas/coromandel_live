@@ -166,7 +166,7 @@ public class BWHFragment extends Fragment {
 
     private void getWareHouseLocation() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<RmgNumberApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
+        Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
                 getAllWareHouse("Bearer " + token, "bothra");
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
@@ -269,7 +269,7 @@ public class BWHFragment extends Fragment {
 
     private void getAllRemarks() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<RemarkApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().
+        Call<RemarkApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
                 getAllBothraRemark("Bearer " + token);
         call.enqueue(new Callback<RemarkApiResponse>() {
             @Override
@@ -385,7 +385,7 @@ public class BWHFragment extends Fragment {
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
         Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
         progressBar.setVisibility(View.VISIBLE);
-        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {

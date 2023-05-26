@@ -14,9 +14,6 @@ public class UpdateRmgRequestDto {
     private RemarksDto remarkMaster;
     private Integer transactionFlag;
 
-
-
-
     public UpdateRmgRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag) {
         this.auditEntity = auditEntity;
         this.priviousWarehouse = priviousWarehouse;

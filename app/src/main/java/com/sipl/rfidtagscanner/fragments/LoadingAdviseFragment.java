@@ -73,6 +73,9 @@ public class LoadingAdviseFragment extends Fragment {
     //    private String loginUserPlantCode;
     private int loginUserId;
 
+    private String strDestinationCode;
+    private String strDestinationDesc;
+
     //    ArrayAdapter for spinner
     private ArrayAdapter<String> destinationLocationAdapter;
     private ArrayAdapter<String> pinnacleSupervisorAdapter;
@@ -266,7 +269,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void getAllDestinationLocation() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<DestinationLocationResponseApi> call = RetrofitController.getInstance().getLoadingAdviseApi().
+        Call<DestinationLocationResponseApi> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
                 getAllDestinationLocation("Bearer " + token);
 
         call.enqueue(new Callback<DestinationLocationResponseApi>() {
@@ -305,17 +308,36 @@ public class LoadingAdviseFragment extends Fragment {
 
 
                         }
-                        arrDestinationLocationDis.add("Select Destination");
-//                        arrDestinationLocation.add("Select Destination");
+//                        arrDestinationLocationDis.add("Select Destination");
+
                         String userSourceLocation = loginUserStorageLocation;
                         String userSourceLocationDesc = loginUserStorageLocationDesc;
                         String userSourceDesc = userSourceLocation + " - " + userSourceLocationDesc;
                         if (arrDestinationLocationDis.contains(userSourceDesc)) {
                             arrDestinationLocationDis.remove(userSourceDesc);
                         }
+
+                        String oldSelectedStrCode = strDestinationCode;
+                        String oldSelectedStrDesc = strDestinationDesc;
+                        String com = oldSelectedStrCode + " - " + oldSelectedStrDesc;
+                        Log.i(TAG, "onResponse:  destination old selection com : " + com);
+
                         Log.i(TAG, "onResponse: array : " + arrDestinationLocationDis.size());
 
-                        destinationLocationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDis) {
+                        if (!arrDestinationLocationDis.contains(com)) {
+                            ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", "Something went wrong ...!", null, "OK");
+                            return;
+                        }
+
+
+                        destinationLocationAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDis);
+
+                        int position = destinationLocationAdapter.getPosition(com);
+                        Log.i(TAG, "onResponse: " + destinationLocationAdapter.getPosition(com));
+                        spinnerDestinationLocation.setAdapter(destinationLocationAdapter);
+                        spinnerDestinationLocation.setSelection(position);
+                        /*{
+
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -331,18 +353,14 @@ public class LoadingAdviseFragment extends Fragment {
                             public int getCount() {
                                 return super.getCount() - 1;
                             }
-                        };
-
-                        spinnerDestinationLocation.setAdapter(destinationLocationAdapter);
-                        spinnerDestinationLocation.setSelection(destinationLocationAdapter.getCount());
+                        };*/
+//                        spinnerDestinationLocation.setSelection(destinationLocationAdapter.getCount());
 
                         spinnerDestinationLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String s = adapterView.getSelectedItem().toString();
-                              /*  if (hashMapDestinationLocation.containsKey(selectedDestinationLocation)){
-                                    Log.i(TAG, "onItemSelected: hashMapDestinationLocation.get(selectedDestinationLocation) : " + hashMapDestinationLocation.get(selectedDestinationLocation));
-                                }*/
+                                Log.i(TAG, "onItemSelected: s : " + s);
                                 if (hashMapDestinationLocationWithDesc.containsKey(s)) {
                                     Log.i(TAG, "onItemSelected: hashMapDestinationLocation.get(selectedDestinationLocation) : " + hashMapDestinationLocationWithDesc.get(s));
                                     selectedDestinationLocation = hashMapDestinationLocationWithDesc.get(s);
@@ -352,6 +370,7 @@ public class LoadingAdviseFragment extends Fragment {
 
                             @Override
                             public void onNothingSelected(AdapterView<?> adapterView) {
+                                selectedDestinationLocation = strDestinationCode;
                             }
                         });
                     } catch (Exception e) {
@@ -363,16 +382,14 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<DestinationLocationResponseApi> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-//                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private boolean getAllBothraSupervisor() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<BothraSupervisorApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getAllBothraSupervisor("Bearer " + token);
+        Call<BothraSupervisorApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().getAllBothraSupervisor("Bearer " + token);
         HashMap<String, Integer> hashMapBothraSupervisor = new HashMap<>();
         arrBothraSupervisor = new ArrayList<>();
         call.enqueue(new Callback<BothraSupervisorApiResponse>() {
@@ -424,9 +441,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<BothraSupervisorApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-//                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         return true;
@@ -434,7 +449,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private boolean getAllPinnacleSupervisor() {
         Log.i(TAG, "getAllPinnacleSupervisor: " + token);
-        Call<PinnacleSupervisorApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().getAllPinnacleSupervisor("Bearer " + token);
+        Call<PinnacleSupervisorApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().getAllPinnacleSupervisor("Bearer " + token);
         HashMap<String, Integer> hashMapPinnacleSupervisor = new HashMap<>();
         arrPinnacleSupervisor = new ArrayList<>();
         call.enqueue(new Callback<PinnacleSupervisorApiResponse>() {
@@ -484,9 +499,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<PinnacleSupervisorApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-//                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         return true;
@@ -495,7 +508,7 @@ public class LoadingAdviseFragment extends Fragment {
     private void sendLoadingAdviseDetails(LoadingAdviseRequestDto loadingAdviseRequestDto) {
         progressBar.setVisibility(View.VISIBLE);
         Log.i(TAG, new Gson().toJson(loadingAdviseRequestDto).toString());
-        Call<LoadingAdvisePostApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().addRfidLepIssue("Bearer " + token, loadingAdviseRequestDto);
+        Call<LoadingAdvisePostApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().addRfidLepIssue("Bearer " + token, loadingAdviseRequestDto);
         call.enqueue(new Callback<LoadingAdvisePostApiResponse>() {
             @Override
             public void onResponse(Call<LoadingAdvisePostApiResponse> call, Response<LoadingAdvisePostApiResponse> response) {
@@ -529,7 +542,7 @@ public class LoadingAdviseFragment extends Fragment {
                                                           updateBothraLoadingAdviseDto) {
         progressBar.setVisibility(View.VISIBLE);
         Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(updateBothraLoadingAdviseDto));
-        Call<TransactionsApiResponse> call = RetrofitController.getInstance().getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
@@ -567,9 +580,7 @@ public class LoadingAdviseFragment extends Fragment {
         BothraLoadingSupervisorDto bothraLoadingDto = new BothraLoadingSupervisorDto(selectedBothraSupervisorId);
         PinnacleLoadingSupervisorDto pinnacleLoadingDto = new PinnacleLoadingSupervisorDto(selectedPinnacleSupervisorId);
         return new LoadingAdviseRequestDto(auditEntity, bothraLoadingDto, loadingAdviseDto, pinnacleLoadingDto, sourceMasterDto, functionalLocationMasterDto, LocalDateTime.now().toString(), rfidLepIssueModel, FLAG, true, RSTAT);
-
     }
-
 
     private UpdateBothraLoadingAdviseDto updateData() {
         final Integer BOTHRA_FLAG = 12;
@@ -582,7 +593,6 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void updateUIBasedOnUser() {
-//        if (loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA)) {
         if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
             layoutBothraSupervisor.setVisibility(View.GONE);
             layoutPinnacleSupervisor.setVisibility(View.GONE);
@@ -593,8 +603,6 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void chooseMethodToCall() {
-
-//        if ((loginUserPlantCode.equalsIgnoreCase(PLANT_BOTHRA))) {
         if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
             UpdateBothraLoadingAdviseDetails(updateData());
         } else {
@@ -651,7 +659,15 @@ public class LoadingAdviseFragment extends Fragment {
         String vesselName = sp.getString("vesselNameSPK", null);
         String truckCapacity = sp.getString("truckCapacitySPK", null);
         String commodity = sp.getString("commoditySPK", null);
+        this.strDestinationCode = sp.getString("strDestinationCodeSPK", null);
+        this.strDestinationDesc = sp.getString("strDestinationDescSPK", null);
+
+//        Log.i(TAG, "getLoadingAdviseDetails: strDestinationCode : " + strDestinationCode);
+//        Log.i(TAG, "getLoadingAdviseDetails: strDestinationCode : " + strDestinationCode);
+//        this.strDestinationCode = "0019";
+//        this.strDestinationDesc = "Lime Godown";
         saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity);
+//        saveLoginAdviseData("REWT123", "lepNo", "driverName", "driverMobileNo", "driverLicenseNo", "truckNo", "sapGrNo", "vesselName", "truckCapacity", "commodity");
     }
 
     private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity) {
