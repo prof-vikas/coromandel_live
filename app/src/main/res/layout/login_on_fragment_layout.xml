@@ -54,7 +54,7 @@
                     android:textSize="@dimen/login_txt_login"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -68,38 +68,44 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dp"
-                        android:autofillHints="username"
                         android:background="@drawable/rectangle"
                         android:hint="@string/placeholder_username"
-                        android:inputType="text"
                         android:maxLength="25"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:paddingLeft="@dimen/login_edt_rectangle_pd_left"
-                        android:textSize="@dimen/login_edt_username_txt" />
+                        android:textSize="@dimen/login_edt_username_txt"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                     <EditText
                         android:id="@+id/edt_password"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dp"
                         android:autofillHints="password"
+                        android:layout_marginTop="10dp"
                         android:background="@drawable/rectangle"
                         android:hint="@string/placeholder_password"
-                        android:inputType="textPassword"
                         android:maxLength="16"
+                        android:inputType="textPassword"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:paddingLeft="@dimen/login_edt_rectangle_pd_left"
-                        android:textSize="@dimen/login_edt_password_txt" />
+                        android:textSize="@dimen/login_edt_password_txt"
+                        app:layout_constraintTop_toBottomOf="@id/edt_username"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:id="@+id/img_view_show_hide_password"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="1dp"
-                        android:weightSum="5"
-                        android:layout_marginBottom="10dp">
+                        android:padding="5dp"
+                        android:src="@drawable/baseline_visibility_off_24"
+                        app:layout_constraintBottom_toBottomOf="@+id/edt_password"
+                        app:layout_constraintEnd_toEndOf="@+id/edt_password"
+                        app:layout_constraintHorizontal_bias="0.972"
+                        app:layout_constraintStart_toStartOf="@+id/edt_password" />
+
 
                         <com.google.android.material.checkbox.MaterialCheckBox
                             android:id="@+id/checkbox_login_remember_me"
@@ -109,13 +115,16 @@
                             android:checked="false"
                             android:textSize="16sp"
                             android:text="Remember me"
+                            android:layout_marginTop="10dp"
                             android:fontFamily="@font/source_sans_pro_black"
                             android:textColor="@color/gray600"
                             android:theme="@style/checkBoxStyle"
-                            android:layout_weight="5"/>
+                            android:layout_weight="5"
+                            app:layout_constraintTop_toBottomOf="@id/edt_password"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"/>
 
 -->
-                    </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_login"
@@ -123,11 +132,15 @@
                         android:layout_height="40dp"
                         android:background="@drawable/btn_primary_rectangle"
                         android:padding="10sp"
+                        android:layout_marginTop="10dp"
                         android:text="@string/login_btn_login"
                         android:fontFamily="@font/source_sans_pro_black"
                         android:textAllCaps="true"
                         android:textColor="#fff"
-                        android:textSize="@dimen/login_btn_txt" />
+                        android:textSize="@dimen/login_btn_txt"
+                        app:layout_constraintTop_toBottomOf="@id/checkbox_login_remember_me"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
 
                     <TextView
@@ -140,7 +153,10 @@
                         android:textColor="@color/error_invalid_login_text"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@id/btn_login"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                  <!--   <TextView
                         android:id="@+id/txt_forget_password"
@@ -156,12 +172,16 @@
                         android:visibility="visible" />-->
 
                     <ImageView
+                        android:id="@+id/sipl"
                         android:layout_width="120dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:paddingTop="15dp"
                         android:contentDescription="@string/login_logo_sipl_content_description"
-                        android:src="@drawable/logo_sipl" />
+                        android:src="@drawable/logo_sipl"
+                        app:layout_constraintTop_toBottomOf="@id/txt_error_message"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -176,9 +196,12 @@
                         android:text="@string/login_app_version"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/login_app_version_text"
-                        android:textSize="@dimen/login_version_txt" />
+                        android:textSize="@dimen/login_version_txt"
+                        app:layout_constraintTop_toBottomOf="@id/sipl"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 

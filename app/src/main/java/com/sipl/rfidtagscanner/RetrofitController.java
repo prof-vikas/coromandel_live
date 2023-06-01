@@ -33,10 +33,7 @@ public class RetrofitController {
 
     private OkHttpClient getOkHttpClient(Context context) {
         try {
-            Log.i(TAG, "getOkHttpClient: ");
-            // Load the server's certificate from the assets folder
-            AssetManager assetManager = context.getAssets();
-//            InputStream inputStream = assetManager.open("Coromandelbiznew.crt");
+            Log.i(TAG, "getOkHttpClient: try");
               InputStream inputStream = context.getResources().openRawResource(R.raw.coromandelbiznew_crt);
 
             // Create a Certificate object from the input stream
@@ -67,13 +64,6 @@ public class RetrofitController {
             return new OkHttpClient();
         }
     }
-
-
-/*    OkHttpClient client = new OkHttpClient.Builder()
-//            .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagers[0])
-            .addInterceptor(new RetryInterceptor(1, 1000))
-            .build();*/
-
 
     private RetrofitController(Context context) {
         OkHttpClient client = getOkHttpClient(context);

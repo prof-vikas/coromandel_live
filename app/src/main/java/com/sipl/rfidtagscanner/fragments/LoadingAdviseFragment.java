@@ -409,12 +409,14 @@ public class LoadingAdviseFragment extends Fragment {
 
                     try {
                         if (bothraLoadingSupervisorDtosList == null || bothraLoadingSupervisorDtosList.isEmpty()) {
+                            Log.i(TAG, "onResponse: empty list bothra : ");
                             Toast.makeText(getActivity(), EMPTY_BOTHRA_SUPERVISOR, Toast.LENGTH_SHORT).show();
                             return;
                         }
                         for (int i = 0; i < bothraLoadingSupervisorDtosList.size(); i++) {
                             String name = bothraLoadingSupervisorDtosList.get(i).getName();
                             int id = bothraLoadingSupervisorDtosList.get(i).getId();
+                            Log.i(TAG, "onResponse: BOthrA " + name);
                             hashMapBothraSupervisor.put(name, id);
                             arrBothraSupervisor.add(name);
                         }
@@ -475,6 +477,7 @@ public class LoadingAdviseFragment extends Fragment {
                             String name = pinnacleLoadingSupervisorDtoList.get(i).getName();
                             int id = pinnacleLoadingSupervisorDtoList.get(i).getId();
                             hashMapPinnacleSupervisor.put(name, id);
+                            Log.i(TAG, "onResponse: " + name);
                             arrPinnacleSupervisor.add(name);
                         }
                         pinnacleSupervisorAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrPinnacleSupervisor);
