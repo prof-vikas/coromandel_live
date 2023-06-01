@@ -8,8 +8,9 @@
              android:right="2dp"
              android:bottom="2dp" />
 
-    <corners android:radius="5dp" />
+    <corners android:radius="7dp" />
 
     <solid android:color="@color/login_edt_bg" />
+
 
     </shape>
