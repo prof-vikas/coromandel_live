@@ -32,6 +32,8 @@ public class ApiConstants {
     public static final String GET_ALL_PINNACLE_SUPERVISOR = BASE_URL + "pinnacle/getAllPinnacleDetails/";
     public static final String GET_ALL_BOTHRA_SUPERVISOR = BASE_URL + "bothra/getAllBothraDetails/";
     public static final String ADD_RFID_LEP_ISSUE = BASE_URL + "transactions/addLoadingTransactions/";
+    public static final String ADD_OUT_RFID_LEP_ISSUE = BASE_URL + "/transactions/updatePortLoadingTransactions";
+
     public static final String UPDATE_BOTHRA_LOADING_ADVISE = BASE_URL + "transactions/updateLoadingTransactions/";
 
     //    Coromandel

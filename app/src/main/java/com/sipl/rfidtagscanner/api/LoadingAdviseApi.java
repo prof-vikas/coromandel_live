@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner.api;
 
+import static com.sipl.rfidtagscanner.utils.ApiConstants.ADD_OUT_RFID_LEP_ISSUE;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.ADD_RFID_LEP_ISSUE;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_BOTHRA_SUPERVISOR;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_PINNACLE_SUPERVISOR;
@@ -76,6 +77,9 @@ public interface LoadingAdviseApi {
 
     @POST(ADD_RFID_LEP_ISSUE)
     Call<LoadingAdvisePostApiResponse> addRfidLepIssue(@Header("Authorization") String authToken, @Body LoadingAdviseRequestDto loadingAdviseRequestDto);
+
+    @PUT(ADD_OUT_RFID_LEP_ISSUE)
+    Call<TransactionsApiResponse> updateCoromandelLoadingAdvise(@Header("Authorization") String authToken, @Body LoadingAdviseRequestDto loadingAdviseRequestDto);
 
     //  BothraLoadingAdvise
     @PUT(UPDATE_BOTHRA_LOADING_ADVISE)

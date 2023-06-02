@@ -8,43 +8,32 @@ import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 
 public class LoadingAdviseRequestDto {
-
     private AuditEntity auditEntity;
-    private BothraLoadingSupervisorDto bothraLoadingSupervisor;
+    private String strBothraLoadingSupervisor;
+    private String strPinnacleLoadingSupervisor;
     private UserMasterDto coromandelLoadingSupervisor;
-    private PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor;
     private StorageLocationDto sourceMaster;
     private StorageLocationDto functionalLocationDestinationMaster;
-    private String loadingTime;
     private RfidLepIssueDto rfidLepIssueModel;
     private Integer transactionFlag;
     private Boolean isActive;
     private Integer rStat;
+    private String inLoadingTime;
+    private String outLoadingTime;
 
-    public LoadingAdviseRequestDto(AuditEntity auditEntity, UserMasterDto coromandelLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, String loadingTime, RfidLepIssueDto rfidLepIssueModel, Integer transactionFlag, Boolean isActive, Integer rStat) {
+    public LoadingAdviseRequestDto(AuditEntity auditEntity, String strBothraLoadingSupervisor, String strPinnacleLoadingSupervisor, UserMasterDto coromandelLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, RfidLepIssueDto rfidLepIssueModel, Integer transactionFlag, Boolean isActive, Integer rStat, String inLoadingTime, String outLoadingTime) {
         this.auditEntity = auditEntity;
+        this.strBothraLoadingSupervisor = strBothraLoadingSupervisor;
+        this.strPinnacleLoadingSupervisor = strPinnacleLoadingSupervisor;
         this.coromandelLoadingSupervisor = coromandelLoadingSupervisor;
         this.sourceMaster = sourceMaster;
         this.functionalLocationDestinationMaster = functionalLocationDestinationMaster;
-        this.loadingTime = loadingTime;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.transactionFlag = transactionFlag;
         this.isActive = isActive;
         this.rStat = rStat;
-    }
-
-    public LoadingAdviseRequestDto(AuditEntity auditEntity, BothraLoadingSupervisorDto bothraLoadingSupervisor, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, String loadingTime, RfidLepIssueDto rfidLepIssueModel, Integer transactionFlag, Boolean isActive, Integer rStat) {
-        this.auditEntity = auditEntity;
-        this.bothraLoadingSupervisor = bothraLoadingSupervisor;
-        this.coromandelLoadingSupervisor = coromandelLoadingSupervisor;
-        this.pinnacleLoadingSupervisor = pinnacleLoadingSupervisor;
-        this.sourceMaster = sourceMaster;
-        this.functionalLocationDestinationMaster = functionalLocationDestinationMaster;
-        this.loadingTime = loadingTime;
-        this.rfidLepIssueModel = rfidLepIssueModel;
-        this.transactionFlag = transactionFlag;
-        this.isActive = isActive;
-        this.rStat = rStat;
+        this.inLoadingTime = inLoadingTime;
+        this.outLoadingTime = outLoadingTime;
     }
 
     public AuditEntity getAuditEntity() {
@@ -55,12 +44,20 @@ public class LoadingAdviseRequestDto {
         this.auditEntity = auditEntity;
     }
 
-    public BothraLoadingSupervisorDto getBothraLoadingSupervisor() {
-        return bothraLoadingSupervisor;
+    public String getStrBothraLoadingSupervisor() {
+        return strBothraLoadingSupervisor;
     }
 
-    public void setBothraLoadingSupervisor(BothraLoadingSupervisorDto bothraLoadingSupervisor) {
-        this.bothraLoadingSupervisor = bothraLoadingSupervisor;
+    public void setStrBothraLoadingSupervisor(String strBothraLoadingSupervisor) {
+        this.strBothraLoadingSupervisor = strBothraLoadingSupervisor;
+    }
+
+    public String getStrPinnacleLoadingSupervisor() {
+        return strPinnacleLoadingSupervisor;
+    }
+
+    public void setStrPinnacleLoadingSupervisor(String strPinnacleLoadingSupervisor) {
+        this.strPinnacleLoadingSupervisor = strPinnacleLoadingSupervisor;
     }
 
     public UserMasterDto getCoromandelLoadingSupervisor() {
@@ -69,14 +66,6 @@ public class LoadingAdviseRequestDto {
 
     public void setCoromandelLoadingSupervisor(UserMasterDto coromandelLoadingSupervisor) {
         this.coromandelLoadingSupervisor = coromandelLoadingSupervisor;
-    }
-
-    public PinnacleLoadingSupervisorDto getPinnacleLoadingSupervisor() {
-        return pinnacleLoadingSupervisor;
-    }
-
-    public void setPinnacleLoadingSupervisor(PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor) {
-        this.pinnacleLoadingSupervisor = pinnacleLoadingSupervisor;
     }
 
     public StorageLocationDto getSourceMaster() {
@@ -93,14 +82,6 @@ public class LoadingAdviseRequestDto {
 
     public void setFunctionalLocationDestinationMaster(StorageLocationDto functionalLocationDestinationMaster) {
         this.functionalLocationDestinationMaster = functionalLocationDestinationMaster;
-    }
-
-    public String getLoadingTime() {
-        return loadingTime;
-    }
-
-    public void setLoadingTime(String loadingTime) {
-        this.loadingTime = loadingTime;
     }
 
     public RfidLepIssueDto getRfidLepIssueModel() {
@@ -133,6 +114,22 @@ public class LoadingAdviseRequestDto {
 
     public void setrStat(Integer rStat) {
         this.rStat = rStat;
+    }
+
+    public String getInLoadingTime() {
+        return inLoadingTime;
+    }
+
+    public void setInLoadingTime(String inLoadingTime) {
+        this.inLoadingTime = inLoadingTime;
+    }
+
+    public String getOutLoadingTime() {
+        return outLoadingTime;
+    }
+
+    public void setOutLoadingTime(String outLoadingTime) {
+        this.outLoadingTime = outLoadingTime;
     }
 }
 

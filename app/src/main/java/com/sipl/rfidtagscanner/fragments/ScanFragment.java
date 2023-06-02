@@ -184,11 +184,13 @@ public class ScanFragment extends Fragment implements MyListener {
                         ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                         return;
                     }
+                    Log.i(TAG, "onResponse: response.raw : getRfidTagDetailCoromandelLA : " + response.raw());
 
                     if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
+                        Log.i(TAG, "onResponse: getRfidTagDetailCoromandelLA : <<Start >>");
                         vibrate();
                         progressBar.setVisibility(View.GONE);
-                        Log.i(TAG, "getAllLepNumber : response.isSuccessful() : " + response.isSuccessful() + " responseCode : " + response.code() + " responseRaw : " + response.raw());
+                        Log.i(TAG, "onResponse: response.body().getRfidLepIssueDto() : " + response.body().getRfidLepIssueDto());
                         RfidLepIssueDto rfidLepIssueDto = response.body().getRfidLepIssueDto();
                         try {
                             String rfidTag = rfidLepIssueDto.getRfidNumber();
@@ -204,6 +206,13 @@ public class ScanFragment extends Fragment implements MyListener {
                             String commodity = rfidLepIssueDto.getDailyTransportReportModule().getCommodity();
                             String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
                             String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
+                            Log.i(TAG, "onResponse: before condition");
+                           if (response.body().getRfidLepIssueDto().getRstat() == 0){
+                                Log.i(TAG, "onResponse: in condition");
+                                getRFIDCoromandelSecondURL();
+                                return;
+                            }
+                            Log.i(TAG, "onResponse: after condition");
 
                             Log.i(TAG, "onResponse: destinationLocation : " + destinationLocation);
                             Log.i(TAG, "onResponse: destinationLocationDesc : " + destinationLocationDesc);
@@ -211,7 +220,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
                                 Log.i(TAG, "onResponse: before share pref");
-                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc);
+                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, null, null, null, null);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
 
@@ -219,7 +228,13 @@ public class ScanFragment extends Fragment implements MyListener {
                             e.getMessage();
                             return;
                         }
+                        Log.i(TAG, "onResponse: getRfidTagDetailCoromandelLA : <<END >>");
+                    } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
+                        Log.i(TAG, "onResponse: NOT_FOUND");
+                        progressBar.setVisibility(View.GONE);
+                        getRFIDCoromandelSecondURL();
                     } else {
+                        Log.i(TAG, "onResponse: NOT_FOUND &&& else");
                         progressBar.setVisibility(View.GONE);
                         Log.i(TAG, "onResponse: " + response.raw());
                         ((MainActivity) requireActivity()).alert(requireContext(), "WARNING", response.body().getMessage(), null, "OK");
@@ -239,7 +254,99 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
-    private void saveLADataSharedPref(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc) {
+    private void getRFIDCoromandelSecondURL() {
+
+            Log.i(TAG, "getRFIDCoromandelSecondURL: ");
+            progressBar.setVisibility(View.VISIBLE);
+            try {
+                Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "1", "0", edtRfidTagId.getText().toString());
+                call.enqueue(new Callback<TransactionsApiResponse>() {
+                    @Override
+                    public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+                        if (!response.isSuccessful()) {
+                            progressBar.setVisibility(View.GONE);
+                            ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                            return;
+                        }
+                        Log.i(TAG, "onResponse: getRFIDCoromandelSecondURL : " + response.raw());
+
+                        if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
+                            Log.i(TAG, "onResponse: in found");
+                            vibrate();
+                            progressBar.setVisibility(View.GONE);
+                            TransactionsDto transactionsDto = response.body().getTransactionsDto();
+                         
+                            try {
+                                String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
+                                String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
+                                String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
+                                String driverMobileNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverMobileNo();
+                                Log.i(TAG, "onResponse: driverMobileNo");
+                                String driverLicenseNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
+                                String sapGrNo = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrNumber());
+                                String vesselName = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVesselName();
+                                Log.i(TAG, "onResponse: vesselName");
+                                String truckCapacity = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity());
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
+                                String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
+                                String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
+                                Log.i(TAG, "onResponse: destinationLocationDesc");
+                             /*   String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
+
+                                Log.i(TAG, "onResponse: bfore other end");
+
+                                String isgetInLoadingTime;
+                                String getInLoadingTime = null;
+                                String pinnacleSupervisor = null;
+                                String bothraSupervisor = null;
+
+                                Log.i(TAG, "onResponse: <<before >> + transactionsDto.getInLoadingTime()" );
+                                if (transactionsDto.getInLoadingTime() != null){
+                                    Log.i(TAG, "onResponse: in transactionsDto.getInLoadingTime() :" + transactionsDto.getInLoadingTime());
+                                    isgetInLoadingTime = "true";
+                                    String entryTime = transactionsDto.getInLoadingTime();
+                                    LocalDateTime aLDT = LocalDateTime.parse(entryTime);
+                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                                    getInLoadingTime = aLDT.format(formatter);
+                                    pinnacleSupervisor = transactionsDto.getStrPinnacleLoadingSupervisor();
+                                    bothraSupervisor = transactionsDto.getStrBothraLoadingSupervisor();
+                                    Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
+                                }else {
+                                    isgetInLoadingTime = "false";
+                                    Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
+                                }
+
+
+                                if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
+                                    saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
+                                    ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
+                                }
+                            } catch (Exception e) {
+                                e.getMessage();
+                                return;
+                            }
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
+                        progressBar.setVisibility(View.GONE);
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+    }
+
+    private void saveLADataSharedPref(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor) {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -254,6 +361,10 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.putString("truckCapacitySPK", truckCapacity).apply();
         editor.putString("commoditySPK", commodity).apply();
         editor.putString("strDestinationCodeSPK", strDestinationCode).apply();
+        editor.putString("isgetInLoadingTimeSPK", isgetInLoadingTime).apply();
+        editor.putString("getInloadingTimeSPK", getInloadingTime).apply();
+        editor.putString("pinnacleSupervisorSPK", pinnacleSupervisor).apply();
+        editor.putString("bothraSupervisorSPK", bothraSupervisor).apply();
         Log.i(TAG, "saveLADataSharedPref: strDestinationCode : " + strDestinationCode);
         Log.i(TAG, "saveLADataSharedPref: strDestinationDesc : " + strDestinationDesc);
         editor.putString("strDestinationDescSPK", strDestinationDesc).apply();
@@ -394,9 +505,15 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String destinationLocationByUIWEighbridgedesc = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
 
+
                                 Log.i(TAG, "onResponse: response data ge fet successfully");
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
-                                    String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
+                                    String sourceGrossWeight;
+                                    if (transactionsDto.getSourceGrossWeight()!=null){
+                                        sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
+                                    }else{
+                                        sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
+                                    }
                                     if (destinationLocationByUIcode != null) {
                                         saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null);
                                     } else {
@@ -563,14 +680,28 @@ public class ScanFragment extends Fragment implements MyListener {
                             String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                             String wareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();
 
-                            Log.i(TAG, "onResponse: wareHouseCode : " + wareHouseCode);
-                            Log.i(TAG, "onResponse: wareHouseCodeDesc : " + wareHouseCodeDesc);
+                            String isgetInLoadingTime;
+                            String getInLoadingTime = null;
+                            String pinnacleSupervisor = null;
+                            String bothraSupervisor = null;
 
-                            Log.i(TAG, "onResponse: destinationLocation : " + destinationLocation);
-                            Log.i(TAG, "onResponse: destinationLocationDesc : " + destinationLocationDesc);
+                            if (transactionsDto.getInLoadingTime() != null){
+                                isgetInLoadingTime = "true";
+                                String entryTime = transactionsDto.getInLoadingTime();
+                                LocalDateTime aLDT = LocalDateTime.parse(entryTime);
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                                 getInLoadingTime = aLDT.format(formatter);
+                                 pinnacleSupervisor = transactionsDto.getStrPinnacleLoadingSupervisor();
+                                 bothraSupervisor = transactionsDto.getStrBothraLoadingSupervisor();
+                                Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
+                            }else {
+                                isgetInLoadingTime = "false";
+                                Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
+                            }
+
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc);
+                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
                         } catch (Exception e) {

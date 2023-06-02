@@ -428,7 +428,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
 
-                    <Spinner
+                   <!-- <Spinner
                         android:id="@+id/ll_spinner_destination_location"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
@@ -437,6 +437,19 @@
                         android:background="@drawable/reactangle_spinner_select_able_field"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
+                        android:textSize="@dimen/common_edt_text" />-->
+
+                    <EditText
+                        android:id="@+id/ll_edt_destination_location"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -493,15 +506,16 @@
                         android:textSize="@dimen/common_tv_text" />
 
 
-                    <AutoCompleteTextView
-                        android:id="@+id/ll_auto_pinnacle_supervisor"
+                    <EditText
+                        android:id="@+id/ll_edt_pinnacle_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_write_able_field"
-                        android:hint="Search Supervisor"
+                        android:hint="Enter Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:inputType="textAutoComplete"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_edt_txt"
                         android:spinnerMode="dropdown"
@@ -528,15 +542,16 @@
                         android:textSize="@dimen/common_tv_text" />
 
 
-                    <AutoCompleteTextView
-                        android:id="@+id/ll_auto_bothra_supervisor"
+                    <EditText
+                        android:id="@+id/ll_edt_bothra_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_write_able_field"
-                        android:hint="Search Supervisor"
+                        android:hint="Enter Supervisor"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:inputType="textAutoComplete"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_edt_txt"
                         android:spinnerMode="dropdown"
@@ -571,7 +586,82 @@
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
-                        android:format12Hour="dd-MM-yy hh:mm:ss a"
+                        android:format12Hour="dd-MM-yy HH:mm:ss "
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
+                        android:textSize="@dimen/common_edt_text" />
+                    <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_ll_entry_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/la_ly_pd_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/system_date"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/ll_edt_entryTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_write_able_field"
+                        android:hint="Enter Supervisor"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:inputType="textAutoComplete"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
+                        android:spinnerMode="dropdown"
+                        android:textSize="@dimen/common_edt_text" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/title_exit_date_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/la_ly_pd_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="Out Loading Time"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
+                        android:textSize="@dimen/common_tv_text" />
+
+
+
+                    <TextClock
+                        android:id="@+id/la_exit_tv_clock"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:format12Hour="dd-MM-yy HH:mm:ss"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:fontFamily="@font/source_sans_pro_semi_bold"

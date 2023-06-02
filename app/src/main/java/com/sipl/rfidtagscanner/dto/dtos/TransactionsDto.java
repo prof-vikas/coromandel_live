@@ -46,8 +46,14 @@ public class TransactionsDto {
     private AuditEntity auditEntity;
     private String tareWeightTime;
     private String sourceTareWeightTime;
+    private String strBothraLoadingSupervisor;
+    private String strPinnacleLoadingSupervisor;
+    private String inLoadingTime;
+    private String outLoadingTime;
+    private String inUnLoadingTime;
+    private String outUnLoadingTime;
 
-    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, Integer grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, Integer sourceGrossWeight, String sourceGrossWeightTime, Integer sourceGrossWtPrintCount, BigDecimal sourceTareWeight, Integer sourceTareWtPrintCount, BigDecimal sourceNetWeight, String sourceNetWeightTime, String weighBridgeNo, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity, String tareWeightTime, String sourceTareWeightTime) {
+    public TransactionsDto(Integer id, RfidLepIssueDto rfidLepIssueModel, UserMasterDto coromandelLoadingSupervisor, PinnacleLoadingSupervisorDto pinnacleLoadingSupervisor, BothraLoadingSupervisorDto bothraLoadingSupervisor, StorageLocationDto sourceMaster, StorageLocationDto functionalLocationDestinationMaster, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, GateMasterDto gateInMaster, GateMasterDto gateOutMaster, WeighBridgeMasterDto weighBridgeGrossMaster, WeighBridgeMasterDto weighBridgeTareMaster, WeighmentTypeDto weighmentTypeMaster, RemarksDto remarkMaster, String loadingTime, Integer grossWeight, String grossWeightTime, Integer grossWtPrintCount, BigDecimal tareWeight, Integer tareWtPrintCount, BigDecimal netWeight, String netWeightTime, Integer sourceGrossWeight, String sourceGrossWeightTime, Integer sourceGrossWtPrintCount, BigDecimal sourceTareWeight, Integer sourceTareWtPrintCount, BigDecimal sourceNetWeight, String sourceNetWeightTime, String weighBridgeNo, String vehicleInTime, String vehicleOutTime, String whSupervisorRemark, String unloadingTime, Integer transactionFlag, Boolean isActive, Integer rStat, AuditEntity auditEntity, String tareWeightTime, String sourceTareWeightTime, String strBothraLoadingSupervisor, String strPinnacleLoadingSupervisor, String inLoadingTime, String outLoadingTime, String inUnLoadingTime, String outUnLoadingTime) {
         this.id = id;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.coromandelLoadingSupervisor = coromandelLoadingSupervisor;
@@ -89,6 +95,12 @@ public class TransactionsDto {
         this.auditEntity = auditEntity;
         this.tareWeightTime = tareWeightTime;
         this.sourceTareWeightTime = sourceTareWeightTime;
+        this.strBothraLoadingSupervisor = strBothraLoadingSupervisor;
+        this.strPinnacleLoadingSupervisor = strPinnacleLoadingSupervisor;
+        this.inLoadingTime = inLoadingTime;
+        this.outLoadingTime = outLoadingTime;
+        this.inUnLoadingTime = inUnLoadingTime;
+        this.outUnLoadingTime = outUnLoadingTime;
     }
 
     public Integer getId() {
@@ -417,5 +429,53 @@ public class TransactionsDto {
 
     public void setSourceTareWeightTime(String sourceTareWeightTime) {
         this.sourceTareWeightTime = sourceTareWeightTime;
+    }
+
+    public String getStrBothraLoadingSupervisor() {
+        return strBothraLoadingSupervisor;
+    }
+
+    public void setStrBothraLoadingSupervisor(String strBothraLoadingSupervisor) {
+        this.strBothraLoadingSupervisor = strBothraLoadingSupervisor;
+    }
+
+    public String getStrPinnacleLoadingSupervisor() {
+        return strPinnacleLoadingSupervisor;
+    }
+
+    public void setStrPinnacleLoadingSupervisor(String strPinnacleLoadingSupervisor) {
+        this.strPinnacleLoadingSupervisor = strPinnacleLoadingSupervisor;
+    }
+
+    public String getInLoadingTime() {
+        return inLoadingTime;
+    }
+
+    public void setInLoadingTime(String inLoadingTime) {
+        this.inLoadingTime = inLoadingTime;
+    }
+
+    public String getOutLoadingTime() {
+        return outLoadingTime;
+    }
+
+    public void setOutLoadingTime(String outLoadingTime) {
+        this.outLoadingTime = outLoadingTime;
+    }
+
+    public String getInUnLoadingTime() {
+        return inUnLoadingTime;
+    }
+
+    public void setInUnLoadingTime(String inUnLoadingTime) {
+        this.inUnLoadingTime = inUnLoadingTime;
+    }
+
+    public String getOutUnLoadingTime() {
+        return outUnLoadingTime;
+    }
+
+    public void setOutUnLoadingTime(String outUnLoadingTime) {
+        this.outUnLoadingTime = outUnLoadingTime;
     }
 }

@@ -14,7 +14,7 @@ public class RfidLepIssueDto {
     private String lepIssueDateTime;
     private Boolean isActive;
     private Integer printCount;
-    private Integer rStat;
+    private Integer rstat;
     private Boolean isRfidLepMapped;
     private AuditEntity auditEntity;
 
@@ -22,7 +22,7 @@ public class RfidLepIssueDto {
         this.id = id;
     }
 
-    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, String rfidNumber, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, Boolean isActive, Integer printCount, Integer rStat, Boolean isRfidLepMapped, AuditEntity auditEntity) {
+    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, String rfidNumber, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, Boolean isActive, Integer printCount, Integer rstat, Boolean isRfidLepMapped, AuditEntity auditEntity) {
         this.id = id;
         this.dailyTransportReportModule = dailyTransportReportModule;
         this.lepNumber = lepNumber;
@@ -33,7 +33,7 @@ public class RfidLepIssueDto {
         this.lepIssueDateTime = lepIssueDateTime;
         this.isActive = isActive;
         this.printCount = printCount;
-        this.rStat = rStat;
+        this.rstat = rstat;
         this.isRfidLepMapped = isRfidLepMapped;
         this.auditEntity = auditEntity;
     }
@@ -118,12 +118,12 @@ public class RfidLepIssueDto {
         this.printCount = printCount;
     }
 
-    public Integer getrStat() {
-        return rStat;
+    public Integer getRstat() {
+        return rstat;
     }
 
-    public void setrStat(Integer rStat) {
-        this.rStat = rStat;
+    public void setRstat(Integer rstat) {
+        this.rstat = rstat;
     }
 
     public Boolean getRfidLepMapped() {

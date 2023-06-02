@@ -29,7 +29,7 @@
     <string name="vessel_name">Vessel Name</string>
     <string name="rfid_lep_no">RFID/LEP No</string>
     <string name="truck_capacity">Truck Capacity</string>
-    <string name="system_date">Loading Time</string>
+    <string name="system_date">In Loading Time</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
