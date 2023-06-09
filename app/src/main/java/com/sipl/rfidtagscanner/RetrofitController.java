@@ -53,11 +53,14 @@ public class RetrofitController {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
 
+            Log.i(TAG, "getOkHttpClient: before building client");
             return new OkHttpClient.Builder()
                     .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagerFactory.getTrustManagers()[0])
                     .protocols(Collections.singletonList(Protocol.HTTP_1_1))
                     .addInterceptor(new RetryInterceptor(1, 1000))
                     .build();
+
+          
         } catch (Exception e) {
             Log.i(TAG, "getOkHttpClient: " + e);
             e.printStackTrace();

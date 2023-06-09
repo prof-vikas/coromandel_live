@@ -116,8 +116,12 @@ public class ScanFragment extends Fragment implements MyListener {
         getWareHouseStorage();
 
         btnVerify.setOnClickListener(view1 -> {
+            if (edtRfidTagId.length() != 0){
             vibrate();
             RfidDetailsLoadingAdvise();
+            }else {
+                edtRfidTagId.setError("This field is required");
+            }
         });
 
         RFIDDataModel.getInstance().getRFIDStatus().observe(getViewLifecycleOwner(), currentRFIDObserver);
@@ -779,6 +783,7 @@ public class ScanFragment extends Fragment implements MyListener {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         if (sharedPreferences.contains("enable_rfid_handle")) {
             Boolean value = sharedPreferences.getBoolean("enable_rfid_handle", false);
+            Log.i(TAG, "isRFIDHandleEnable: value : " + value);
             return value;
         }
         return false;

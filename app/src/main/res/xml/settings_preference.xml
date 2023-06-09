@@ -24,7 +24,7 @@
             android:key="enable_rfid_handle"
             android:title="Enable RFID Handle"
             android:summary="Summary of the switch preference"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             app:iconSpaceReserved="false"
