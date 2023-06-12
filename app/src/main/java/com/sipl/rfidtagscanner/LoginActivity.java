@@ -61,9 +61,9 @@ public class LoginActivity extends AppCompatActivity {
 
         isCheckBoxChecked();
         btnLogin.setOnClickListener(view -> {
-//            if (!validateEditText()) {
+            if (validateEditText()) {
             processLogin();
-//            }
+            }
         });
 
         checkBoxRememberMe.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -149,10 +149,10 @@ public class LoginActivity extends AppCompatActivity {
             edtUsername.setError("This field is required");
             return false;
         }
-        if (edtUsername.length() <= 2) {
+       /* if (edtUsername.length() <= 2) {
             edtUsername.setError("username must be minimum 3 characters");
             return false;
-        }
+        }*/
         if (edtPassword.length() == 0) {
             edtPassword.setError("This field is required");
             return false;

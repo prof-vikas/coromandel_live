@@ -15,7 +15,7 @@ public class DailyTransportReportModuleDto {
     private String date;
     private String batch;
     private Integer grSloc;
-    private Integer billNo;
+    private String billNo;
     private String uom;
     private Integer billOfEntry;
     private String billOfDate;
@@ -26,7 +26,7 @@ public class DailyTransportReportModuleDto {
     private Boolean isProcessed;
     private String remark;
 
-    public DailyTransportReportModuleDto(Integer id, String commodity, AuditDtrRequestDto auditDtrRequest, String truckNumber, String vesselName, Integer sapGrNumber, Integer truckCapacity, String date, String batch, Integer grSloc, Integer billNo, String uom, Integer billOfEntry, String billOfDate, String status, Boolean isActive, Integer rStat, AuditEntity auditEntity, Boolean isProcessed, String remark) {
+    public DailyTransportReportModuleDto(Integer id, String commodity, AuditDtrRequestDto auditDtrRequest, String truckNumber, String vesselName, Integer sapGrNumber, Integer truckCapacity, String date, String batch, Integer grSloc, String billNo, String uom, Integer billOfEntry, String billOfDate, String status, Boolean isActive, Integer rStat, AuditEntity auditEntity, Boolean isProcessed, String remark) {
         this.id = id;
         this.commodity = commodity;
         this.auditDtrRequest = auditDtrRequest;
@@ -129,11 +129,11 @@ public class DailyTransportReportModuleDto {
         this.grSloc = grSloc;
     }
 
-    public Integer getBillNo() {
+    public String getBillNo() {
         return billNo;
     }
 
-    public void setBillNo(Integer billNo) {
+    public void setBillNo(String billNo) {
         this.billNo = billNo;
     }
 
