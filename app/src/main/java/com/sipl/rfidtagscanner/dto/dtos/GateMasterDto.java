@@ -6,19 +6,21 @@ public class GateMasterDto {
 
     private Integer id;
     private String gateNumber;
+    private String gateDescription;
+    private Boolean isExternal;
     private Boolean isActive;
     private Integer rStat;
     private PlantMasterDto plantMaster;
-    private StorageLocationDto storageLocation;
     private AuditEntity auditEntity;
 
-    public GateMasterDto(Integer id, String gateNumber, Boolean isActive, Integer rStat, PlantMasterDto plantMaster, StorageLocationDto storageLocation, AuditEntity auditEntity) {
+    public GateMasterDto(Integer id, String gateNumber, String gateDescription, Boolean isExternal, Boolean isActive, Integer rStat, PlantMasterDto plantMaster, AuditEntity auditEntity) {
         this.id = id;
         this.gateNumber = gateNumber;
+        this.gateDescription = gateDescription;
+        this.isExternal = isExternal;
         this.isActive = isActive;
         this.rStat = rStat;
         this.plantMaster = plantMaster;
-        this.storageLocation = storageLocation;
         this.auditEntity = auditEntity;
     }
 
@@ -36,6 +38,22 @@ public class GateMasterDto {
 
     public void setGateNumber(String gateNumber) {
         this.gateNumber = gateNumber;
+    }
+
+    public String getGateDescription() {
+        return gateDescription;
+    }
+
+    public void setGateDescription(String gateDescription) {
+        this.gateDescription = gateDescription;
+    }
+
+    public Boolean getExternal() {
+        return isExternal;
+    }
+
+    public void setExternal(Boolean external) {
+        isExternal = external;
     }
 
     public Boolean getActive() {
@@ -60,14 +78,6 @@ public class GateMasterDto {
 
     public void setPlantMaster(PlantMasterDto plantMaster) {
         this.plantMaster = plantMaster;
-    }
-
-    public StorageLocationDto getStorageLocation() {
-        return storageLocation;
-    }
-
-    public void setStorageLocation(StorageLocationDto storageLocation) {
-        this.storageLocation = storageLocation;
     }
 
     public AuditEntity getAuditEntity() {

@@ -4,38 +4,28 @@ import com.sipl.rfidtagscanner.entites.AuditEntity;
 
 public class WeighBridgeMasterDto {
 
-    private AuditEntity auditEntity;
-    private StorageLocationDto functionalLocationMaster;
     private Integer id;
-    private Boolean isActive;
-    private Integer rstat;
     private String wbIpAddress;
-    private Integer weighbridgeNo;
+    private String weighbridgeName;
+    private String weighbrideDescription;
+    private Boolean isExternal;
+    private Boolean isActive;
+    private Integer rStat;
+    private PlantMasterDto plantMaster;
+    private StorageLocationDto storageLocation;
+    private AuditEntity auditEntity;
 
-    public WeighBridgeMasterDto(AuditEntity auditEntity, StorageLocationDto functionalLocationMaster, Integer id, Boolean isActive, Integer rstat, String wbIpAddress, Integer weighbridgeNo) {
-        this.auditEntity = auditEntity;
-        this.functionalLocationMaster = functionalLocationMaster;
+    public WeighBridgeMasterDto(Integer id, String wbIpAddress, String weighbridgeName, String weighbrideDescription, Boolean isExternal, Boolean isActive, Integer rStat, PlantMasterDto plantMaster, StorageLocationDto storageLocation, AuditEntity auditEntity) {
         this.id = id;
-        this.isActive = isActive;
-        this.rstat = rstat;
         this.wbIpAddress = wbIpAddress;
-        this.weighbridgeNo = weighbridgeNo;
-    }
-
-    public AuditEntity getAuditEntity() {
-        return auditEntity;
-    }
-
-    public void setAuditEntity(AuditEntity auditEntity) {
+        this.weighbridgeName = weighbridgeName;
+        this.weighbrideDescription = weighbrideDescription;
+        this.isExternal = isExternal;
+        this.isActive = isActive;
+        this.rStat = rStat;
+        this.plantMaster = plantMaster;
+        this.storageLocation = storageLocation;
         this.auditEntity = auditEntity;
-    }
-
-    public StorageLocationDto getFunctionalLocationMaster() {
-        return functionalLocationMaster;
-    }
-
-    public void setFunctionalLocationMaster(StorageLocationDto functionalLocationMaster) {
-        this.functionalLocationMaster = functionalLocationMaster;
     }
 
     public Integer getId() {
@@ -46,22 +36,6 @@ public class WeighBridgeMasterDto {
         this.id = id;
     }
 
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
-    public Integer getRstat() {
-        return rstat;
-    }
-
-    public void setRstat(Integer rstat) {
-        this.rstat = rstat;
-    }
-
     public String getWbIpAddress() {
         return wbIpAddress;
     }
@@ -70,11 +44,67 @@ public class WeighBridgeMasterDto {
         this.wbIpAddress = wbIpAddress;
     }
 
-    public Integer getWeighbridgeNo() {
-        return weighbridgeNo;
+    public String getWeighbridgeName() {
+        return weighbridgeName;
     }
 
-    public void setWeighbridgeNo(Integer weighbridgeNo) {
-        this.weighbridgeNo = weighbridgeNo;
+    public void setWeighbridgeName(String weighbridgeName) {
+        this.weighbridgeName = weighbridgeName;
+    }
+
+    public String getWeighbrideDescription() {
+        return weighbrideDescription;
+    }
+
+    public void setWeighbrideDescription(String weighbrideDescription) {
+        this.weighbrideDescription = weighbrideDescription;
+    }
+
+    public Boolean getExternal() {
+        return isExternal;
+    }
+
+    public void setExternal(Boolean external) {
+        isExternal = external;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public Integer getrStat() {
+        return rStat;
+    }
+
+    public void setrStat(Integer rStat) {
+        this.rStat = rStat;
+    }
+
+    public PlantMasterDto getPlantMaster() {
+        return plantMaster;
+    }
+
+    public void setPlantMaster(PlantMasterDto plantMaster) {
+        this.plantMaster = plantMaster;
+    }
+
+    public StorageLocationDto getStorageLocation() {
+        return storageLocation;
+    }
+
+    public void setStorageLocation(StorageLocationDto storageLocation) {
+        this.storageLocation = storageLocation;
+    }
+
+    public AuditEntity getAuditEntity() {
+        return auditEntity;
+    }
+
+    public void setAuditEntity(AuditEntity auditEntity) {
+        this.auditEntity = auditEntity;
     }
 }

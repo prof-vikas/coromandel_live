@@ -66,11 +66,11 @@ public class RetrofitController {
     }
 
     private RetrofitController(Context context) {
-        OkHttpClient client = getOkHttpClient(context);
+//        OkHttpClient client = getOkHttpClient(context);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstants.BASE_URL)
-                .client(client)
+//                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

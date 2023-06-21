@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText edtUsername, edtPassword;
     private TextView txtErrorMessage;
-    ImageView imageView;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,6 +321,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<UserValidateResponseDto> call, Response<UserValidateResponseDto> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
+                    Log.i(TAG, "onResponse: " + response.raw());
+//                    Log.i(TAG, "onResponse: " + response.);
+                    Log.i(TAG, "onResponse: " + response.message());
                     alert(LoginActivity.this, "ERROR", response.errorBody().toString(), null, "OK");
                 }
                 if (response.isSuccessful()) {
