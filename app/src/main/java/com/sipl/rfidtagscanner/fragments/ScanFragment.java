@@ -197,7 +197,7 @@ public class ScanFragment extends Fragment implements MyListener {
                         Log.i(TAG, "onResponse: response.body().getRfidLepIssueDto() : " + response.body().getRfidLepIssueDto());
                         RfidLepIssueDto rfidLepIssueDto = response.body().getRfidLepIssueDto();
                         try {
-                            String rfidTag = rfidLepIssueDto.getRfidNumber();
+                            String rfidTag = rfidLepIssueDto.getRfidMaster().getRfidNumber();
                             String lepNo = rfidLepIssueDto.getLepNumber();
                             String lepNoId = String.valueOf(rfidLepIssueDto.getId());
                             String driverName = rfidLepIssueDto.getDriverMaster().getDriverName();
@@ -422,7 +422,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             try {
                                 String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
                                 String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
-                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
@@ -498,7 +498,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             try {
                                 String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
                                 String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
-                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
@@ -579,7 +579,7 @@ public class ScanFragment extends Fragment implements MyListener {
                         try {
                             String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
                             String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
-                            String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
+                            String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                             String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                             String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
@@ -670,7 +670,7 @@ public class ScanFragment extends Fragment implements MyListener {
                         try {
                             String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
                             String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
-                            String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
+                            String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                             String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                             String driverMobileNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverMobileNo();
                             String driverLicenseNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo();

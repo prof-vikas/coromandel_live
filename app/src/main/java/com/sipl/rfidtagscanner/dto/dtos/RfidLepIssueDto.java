@@ -7,14 +7,14 @@ public class RfidLepIssueDto {
     private Integer id;
     private DailyTransportReportModuleDto dailyTransportReportModule;
     private String lepNumber;
-    private String rfidNumber;
+    private RfidMasterDto rfidMaster;
     private DriverMasterDto driverMaster;
     private UserMasterDto userMaster;
     private StorageLocationDto destinationLocation;
     private String lepIssueDateTime;
     private Boolean isActive;
     private Integer printCount;
-    private Integer rstat;
+    private Integer rStat;
     private Boolean isRfidLepMapped;
     private AuditEntity auditEntity;
 
@@ -22,18 +22,18 @@ public class RfidLepIssueDto {
         this.id = id;
     }
 
-    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, String rfidNumber, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, Boolean isActive, Integer printCount, Integer rstat, Boolean isRfidLepMapped, AuditEntity auditEntity) {
+    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, RfidMasterDto rfidMaster, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, Boolean isActive, Integer printCount, Integer rStat, Boolean isRfidLepMapped, AuditEntity auditEntity) {
         this.id = id;
         this.dailyTransportReportModule = dailyTransportReportModule;
         this.lepNumber = lepNumber;
-        this.rfidNumber = rfidNumber;
+        this.rfidMaster = rfidMaster;
         this.driverMaster = driverMaster;
         this.userMaster = userMaster;
         this.destinationLocation = destinationLocation;
         this.lepIssueDateTime = lepIssueDateTime;
         this.isActive = isActive;
         this.printCount = printCount;
-        this.rstat = rstat;
+        this.rStat = rStat;
         this.isRfidLepMapped = isRfidLepMapped;
         this.auditEntity = auditEntity;
     }
@@ -62,12 +62,12 @@ public class RfidLepIssueDto {
         this.lepNumber = lepNumber;
     }
 
-    public String getRfidNumber() {
-        return rfidNumber;
+    public RfidMasterDto getRfidMaster() {
+        return rfidMaster;
     }
 
-    public void setRfidNumber(String rfidNumber) {
-        this.rfidNumber = rfidNumber;
+    public void setRfidMaster(RfidMasterDto rfidMaster) {
+        this.rfidMaster = rfidMaster;
     }
 
     public DriverMasterDto getDriverMaster() {
@@ -118,12 +118,12 @@ public class RfidLepIssueDto {
         this.printCount = printCount;
     }
 
-    public Integer getRstat() {
-        return rstat;
+    public Integer getrStat() {
+        return rStat;
     }
 
-    public void setRstat(Integer rstat) {
-        this.rstat = rstat;
+    public void setrStat(Integer rStat) {
+        this.rStat = rStat;
     }
 
     public Boolean getRfidLepMapped() {
