@@ -119,7 +119,7 @@ public class BWHFragment extends Fragment {
     }
 
     private void resetFields() {
-        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(0), 1);
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
     }
 
     private void callOnCreateApi() {
@@ -165,15 +165,14 @@ public class BWHFragment extends Fragment {
     }
 
     private void getWareHouseLocation() {
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
                 getAllWareHouse("Bearer " + token, "bothra");
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
-                Log.i(TAG, "onResponse: getAllWareHouse : responseCode : " + response.code());
                 if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
+                    hideProgressBar();
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
@@ -268,21 +267,21 @@ public class BWHFragment extends Fragment {
     }
 
     private void getAllRemarks() {
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         Call<RemarkApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
                 getAllBothraRemark("Bearer " + token);
         call.enqueue(new Callback<RemarkApiResponse>() {
             @Override
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
+                    hideProgressBar();
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllBothraRemark : responseCode : " + response.code());
 
                 if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
+                    hideProgressBar();
                     List<RemarksDto> remarksDtoList = response.body().getRemarksDtos();
                     HashMap<String, Integer> hashMapRemarks = new HashMap<>();
                     ArrayList<String> arrRemarks = new ArrayList<>();
@@ -325,7 +324,6 @@ public class BWHFragment extends Fragment {
                                 selectedRemarks = adapterView.getSelectedItem().toString();
                                 if (hashMapRemarks.containsKey(selectedRemarks)) {
                                     selectedRemarksId = hashMapRemarks.get(selectedRemarks);
-                                    Log.i(TAG, "onItemSelected: Selected Remarks Id " + selectedRemarksId);
                                 }
                             }
 
@@ -334,14 +332,14 @@ public class BWHFragment extends Fragment {
                             }
                         });
                     } catch (Exception e) {
-                        e.getMessage();
+                        e.printStackTrace();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                hideProgressBar();
                 ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
@@ -360,7 +358,6 @@ public class BWHFragment extends Fragment {
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, String.valueOf(LocalDateTime.now()));
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousWarehouseCode, isWeighbridgeAvailable);
         if (selectedWhNo != null) {
-            Log.i(TAG, "setData: " + selectedWhNo + isSelectedWhHasWB);
             if (!selectedWhNo.equals("Select Warehouse No")) {
                 selectedWareHouseNo = new StorageLocationDto(selectedWhNo, isSelectedWhHasWB);
             }
@@ -384,31 +381,30 @@ public class BWHFragment extends Fragment {
 
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
         Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
+                   hideProgressBar();
                     ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
                 Log.i(TAG, "onResponse: code" + response.code() + "status : " + response.body().getStatus());
 
                 if (response.body().getStatus().equalsIgnoreCase("OK")) {
-                    progressBar.setVisibility(View.GONE);
+                    hideProgressBar();
                     ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
                     resetFields();
                 } else {
-                    progressBar.setVisibility(View.GONE);
+                    hideProgressBar();
                     ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
-//                    resetFields();
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                hideProgressBar();
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 t.printStackTrace();
             }
@@ -422,6 +418,7 @@ public class BWHFragment extends Fragment {
             tvExitTime.setFormat24Hour("dd-MM-yy hh:mm a");
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e(TAG, "Exception in setTvClock : e.getMessage() : " + e.getMessage());
         }
     }
 
@@ -451,7 +448,8 @@ public class BWHFragment extends Fragment {
         edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
     }
 
-    private void updateUIBaseOnWareHouseLocation() {
+    //before method 22 june version 1.0.2
+   /* private void updateUIBaseOnWareHouseLocation() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         String isWeighbridgeAvailable = sp.getString("isWeighbridgeAvailableSPK", null);
         String vehicleInTime = sp.getString("vehicleInTimeSPK", null);
@@ -469,5 +467,31 @@ public class BWHFragment extends Fragment {
         } else {
             Log.i(TAG, "updateUIBaseOnWareHouseLocation: weidgeBride is true");
         }
+    }*/
+
+    //    after new changes
+    private void updateUIBaseOnWareHouseLocation() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        String vehicleInTime = sp.getString("vehicleInTimeSPK", null);
+        int callFrom = sp.getInt("callFromSPK", 0);
+
+        if (callFrom == 1) {
+            tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
+        } else if (callFrom == 2) {
+            tvEntryTimeClocKLayout.setVisibility(View.GONE);
+            tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
+            edtEntryTime.setText(vehicleInTime);
+            tvLoadingTimeLayout.setVisibility(View.VISIBLE);
+            tvExitTimeLayout.setVisibility(View.VISIBLE);
+        }
     }
+
+    private void showProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar(){
+        progressBar.setVisibility(View.GONE);
+    }
+
 }

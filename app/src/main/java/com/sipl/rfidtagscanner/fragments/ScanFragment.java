@@ -2,6 +2,7 @@ package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
@@ -13,7 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -55,7 +57,6 @@ import retrofit2.Response;
 public class ScanFragment extends Fragment implements MyListener {
 
     private static final String TAG = "ConnectFragment";
-    private int viewId;
     private ArrayList<String> arrDestinationLocation;
     private ProgressBar progressBar;
     private EditText edtRfidTagId;
@@ -65,7 +66,6 @@ public class ScanFragment extends Fragment implements MyListener {
             if (tagDataArray != null && tagDataArray.length > 0) {
                 for (TagData tagData : rfidUiDataDto.getTagData()) {
                     edtRfidTagId.setText(tagData.getTagID());
-                    Log.i(TAG, "tag : " + edtRfidTagId.getText().toString());
                 }
             }
         }
@@ -76,11 +76,7 @@ public class ScanFragment extends Fragment implements MyListener {
     private String loginUserStorageLocation;
     private TextView errorHandle;
     private LinearLayout error_layout;
-    private String admin_String = null;
-
-    public ScanFragment(int viewId1) {
-        this.viewId = viewId1;
-    }
+    private String admin_selected_nav_screen = null;
 
     public ScanFragment() {
     }
@@ -96,30 +92,33 @@ public class ScanFragment extends Fragment implements MyListener {
         progressBar = view.findViewById(R.id.login_progressBar);
         this.loginUserRole = ((MainActivity) getActivity()).getLoginUserRole();
         this.loginUserToken = ((MainActivity) getActivity()).getLoginToken();
-//        this.loginUserPlantCode = ((MainActivity) getActivity()).getLoginUserPlantCode();
-        this.admin_String = getScreenDetails();
-        Log.i(TAG, "onCreateView: admin_String : " + admin_String);
+        this.admin_selected_nav_screen = getScreenDetails();
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
         Boolean value = isRFIDHandleEnable();
-        Log.i(TAG, "onCreateView: " + value);
-        if (value) {
-            Log.i(TAG, "onCreateView:  handle device");
-            edtRfidTagId.setEnabled(false);
-            rfidHandler = new RfidHandler(requireActivity());
-            rfidHandler.InitSDK(this);
-        } else {
-            edtRfidTagId.setEnabled(true);
-            Log.i(TAG, "onCreateView: no handle device");
+        try {
+            if (value != null) {
+                if (value) {
+                    edtRfidTagId.setEnabled(false);
+                    rfidHandler = new RfidHandler(requireActivity());
+                    rfidHandler.InitSDK(this);
+//                    onNotConnectedTpHandle(null,false);
+                } else {
+                    edtRfidTagId.setEnabled(true);
+                }
+            }
+        } catch (Exception exception) {
+            Log.i(TAG, "onCreateView: e" + exception.getMessage());
+            exception.printStackTrace();
         }
         getWareHouseStorage();
 
         btnVerify.setOnClickListener(view1 -> {
-            if (edtRfidTagId.length() != 0){
-            vibrate();
-            RfidDetailsLoadingAdvise();
-            }else {
+            if (edtRfidTagId.length() != 0) {
+                vibrate();
+                getRFIDDetails();
+            } else {
                 edtRfidTagId.setError("This field is required");
             }
         });
@@ -175,7 +174,7 @@ public class ScanFragment extends Fragment implements MyListener {
         });
     }
 
-    private void getRfidTagDetailCoromandelLA() {
+    private void getRfidDetailCoromandelLA() {
         Log.i(TAG, "getRfidTagDetailCoromandelLA: ");
         progressBar.setVisibility(View.VISIBLE);
         try {
@@ -194,7 +193,6 @@ public class ScanFragment extends Fragment implements MyListener {
                         Log.i(TAG, "onResponse: getRfidTagDetailCoromandelLA : <<Start >>");
                         vibrate();
                         progressBar.setVisibility(View.GONE);
-                        Log.i(TAG, "onResponse: response.body().getRfidLepIssueDto() : " + response.body().getRfidLepIssueDto());
                         RfidLepIssueDto rfidLepIssueDto = response.body().getRfidLepIssueDto();
                         try {
                             String rfidTag = rfidLepIssueDto.getRfidMaster().getRfidNumber();
@@ -210,21 +208,17 @@ public class ScanFragment extends Fragment implements MyListener {
                             String commodity = rfidLepIssueDto.getDailyTransportReportModule().getCommodity();
                             String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
                             String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
-                            Log.i(TAG, "onResponse: before condition");
-                           if (response.body().getRfidLepIssueDto().getRstat() == 0){
-                                Log.i(TAG, "onResponse: in condition");
-                                getRFIDCoromandelSecondURL();
+                            Log.i(TAG, "onResponse: in rstat : " + response.body().getRfidLepIssueDto().getRstat());
+                            if (rfidLepIssueDto.getRstat() == 0) {
+                                getRFIDBothraLA();
                                 return;
+                            } else {
+                                Log.i(TAG, "onResponse: in else");
                             }
-                            Log.i(TAG, "onResponse: after condition");
-
-                            Log.i(TAG, "onResponse: destinationLocation : " + destinationLocation);
-                            Log.i(TAG, "onResponse: destinationLocationDesc : " + destinationLocationDesc);
 
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
-                                Log.i(TAG, "onResponse: before share pref");
-                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, null, null, null, null);
+                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, null, null, null, null);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
 
@@ -236,7 +230,7 @@ public class ScanFragment extends Fragment implements MyListener {
                     } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
                         Log.i(TAG, "onResponse: NOT_FOUND");
                         progressBar.setVisibility(View.GONE);
-                        getRFIDCoromandelSecondURL();
+                        getRFIDBothraLA();
                     } else {
                         Log.i(TAG, "onResponse: NOT_FOUND &&& else");
                         progressBar.setVisibility(View.GONE);
@@ -258,58 +252,50 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
-    private void getRFIDCoromandelSecondURL() {
-
-            Log.i(TAG, "getRFIDCoromandelSecondURL: ");
-            progressBar.setVisibility(View.VISIBLE);
-            try {
-                Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "1", "0", edtRfidTagId.getText().toString());
-                call.enqueue(new Callback<TransactionsApiResponse>() {
-                    @Override
-                    public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-                        if (!response.isSuccessful()) {
-                            progressBar.setVisibility(View.GONE);
-                            ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
-                            return;
-                        }
-                        Log.i(TAG, "onResponse: getRFIDCoromandelSecondURL : " + response.raw());
-
+    private void getRFIDBothraLA() {
+        Log.i(TAG, "getRFIDBothraLA: <<Start>>");
+        progressBar.setVisibility(View.VISIBLE);
+        try {
+            Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "1", "0", edtRfidTagId.getText().toString());
+            call.enqueue(new Callback<TransactionsApiResponse>() {
+                @Override
+                public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+                    if (!response.isSuccessful()) {
+                        progressBar.setVisibility(View.GONE);
+                        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK");
+                        return;
+                    }
+                    Log.i(TAG, "onResponse: getRFIDBothraLA : response.raw() : " + response.raw());
+                    if (response.isSuccessful()) {
                         if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
-                            Log.i(TAG, "onResponse: in found");
                             vibrate();
                             progressBar.setVisibility(View.GONE);
                             TransactionsDto transactionsDto = response.body().getTransactionsDto();
-                         
+
                             try {
                                 String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
                                 String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
-                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidNumber();
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 String driverMobileNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverMobileNo();
-                                Log.i(TAG, "onResponse: driverMobileNo");
                                 String driverLicenseNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo();
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 String sapGrNo = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrNumber());
                                 String vesselName = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVesselName();
-                                Log.i(TAG, "onResponse: vesselName");
                                 String truckCapacity = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity());
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
                                 String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                                Log.i(TAG, "onResponse: destinationLocationDesc");
                              /*   String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
 
-                                Log.i(TAG, "onResponse: bfore other end");
 
                                 String isgetInLoadingTime;
                                 String getInLoadingTime = null;
                                 String pinnacleSupervisor = null;
                                 String bothraSupervisor = null;
 
-                                Log.i(TAG, "onResponse: <<before >> + transactionsDto.getInLoadingTime()" );
-                                if (transactionsDto.getInLoadingTime() != null){
-                                    Log.i(TAG, "onResponse: in transactionsDto.getInLoadingTime() :" + transactionsDto.getInLoadingTime());
+                                if (transactionsDto.getInLoadingTime() != null) {
                                     isgetInLoadingTime = "true";
                                     String entryTime = transactionsDto.getInLoadingTime();
                                     LocalDateTime aLDT = LocalDateTime.parse(entryTime);
@@ -317,40 +303,39 @@ public class ScanFragment extends Fragment implements MyListener {
                                     getInLoadingTime = aLDT.format(formatter);
                                     pinnacleSupervisor = transactionsDto.getStrPinnacleLoadingSupervisor();
                                     bothraSupervisor = transactionsDto.getStrBothraLoadingSupervisor();
-                                    Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
-                                }else {
+                                } else {
                                     isgetInLoadingTime = "false";
-                                    Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
                                 }
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                    saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
+                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
                                     ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 }
                             } catch (Exception e) {
-                                e.getMessage();
-                                return;
+                                Log.e(TAG, "onResponse: Exception in getRFIDCoromandelSecondURL" + e.getMessage());
+                                e.printStackTrace();
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
+                            ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.body().getMessage(), null, "OK");
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                        progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                @Override
+                public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
-    private void saveLADataSharedPref(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor) {
+    private void saveLADetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor) {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -375,7 +360,7 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.apply();
     }
 
-    private void saveWHDataToSharedPref(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String isWeighbridgeAvailable, Integer callFrom, String vehicleInTime) {
+    private void saveWHDetails(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String isWeighbridgeAvailable, Integer callFrom, String vehicleInTime) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         Log.i(TAG, "saveWHDataToSharedPref: in sherfPrench data list");
@@ -396,14 +381,11 @@ public class ScanFragment extends Fragment implements MyListener {
     }
 
     private void getWareHouseDetails() {
-        Log.i(TAG, "getWareHouseDetails: (Start)");
         progressBar.setVisibility(View.VISIBLE);
         try {
-            if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_String.equalsIgnoreCase("bothra")))) {
-                Log.i(TAG, "getWareHouseDetails: in bothra whs and roles and admin_string : " + loginUserRole + " " + admin_String);
-                getBothraWareHouseDetails();
-            } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_String.equalsIgnoreCase("coromandel")))) {
-                Log.i(TAG, "getWareHouseDetails: in coromandel whs  and roles and admin_string :  "+ loginUserRole + " " + admin_String);
+            if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
+                getBothraInUnLoadingDetails();
+            } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("coromandel")))) {
                 Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
 
                 call.enqueue(new Callback<TransactionsApiResponse>() {
@@ -438,10 +420,10 @@ public class ScanFragment extends Fragment implements MyListener {
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     if (destinationLocationByUIcode != null) {
-                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                     } else {
-                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                     }
                                 } else {
@@ -477,8 +459,8 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
-    private void getBothraWareHouseDetails() {
-        Log.i(TAG, "getBothraWareHouseDetails: in bothra whs");
+    private void getBothraInUnLoadingDetails() {
+        Log.i(TAG, "getBothraWareHouseDetails: <<Start>>");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getBothraWHDetails("Bearer " + loginUserToken, "8", "7", edtRfidTagId.getText().toString());
@@ -513,17 +495,16 @@ public class ScanFragment extends Fragment implements MyListener {
                                 Log.i(TAG, "onResponse: response data ge fet successfully");
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                     String sourceGrossWeight;
-                                    if (transactionsDto.getSourceGrossWeight()!=null){
+                                    if (transactionsDto.getSourceGrossWeight() != null) {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
-                                    }else{
+                                    } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
                                     if (destinationLocationByUIcode != null) {
-                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null);
                                     } else {
-                                        saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null);
                                     }
-                                    Log.i(TAG, "onResponse: before load fragment method");
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
                                     Log.i(TAG, "onResponse: in else roles other than ROLES_BWS : " + ROLES_BWH);
@@ -535,12 +516,11 @@ public class ScanFragment extends Fragment implements MyListener {
 
                             } catch (Exception e) {
                                 e.getMessage();
-                                return;
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
                             Log.i(TAG, "onResponse: in else bothra2 url");
-                            getBothraWareHouseDetails2();
+                            getBothraOutUnLoadingDetails();
                         }
                     }
                 }
@@ -557,8 +537,7 @@ public class ScanFragment extends Fragment implements MyListener {
 
     }
 
-    private void getBothraWareHouseDetails2() {
-        Log.i(TAG, "getBothraWareHouseDetails2: in bothra 2 url method");
+    private void getBothraOutUnLoadingDetails() {
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getBothraWHDetailsForExit("Bearer " + loginUserToken, "8", edtRfidTagId.getText().toString());
@@ -600,9 +579,9 @@ public class ScanFragment extends Fragment implements MyListener {
                             if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                 String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
                                 if (strWareHouseCode != null) {
-                                    saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, strWareHouseCode, strWareHouseCodeDesc, sourceGrossWeight, strWbAvailable, 2, entryTime);
+                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, strWareHouseCode, strWareHouseCodeDesc, sourceGrossWeight, strWbAvailable, 2, entryTime);
                                 } else {
-                                    saveWHDataToSharedPref(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 2, entryTime);
+                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 2, entryTime);
                                 }
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
@@ -634,23 +613,19 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
-    private void RfidDetailsLoadingAdvise() {
-        Log.i(TAG, "RfidDetailsLoadingAdvise: btnVerify is clicked ");
-        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (admin_String.equalsIgnoreCase("loadingAdvise"))) {
-            Log.i(TAG, "RfidDetailsLoadingAdvise: admin screen plus roles : " + loginUserRole + " " + admin_String);
+    private void getRFIDDetails() {
+        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (admin_selected_nav_screen.equalsIgnoreCase("loadingAdvise"))) {
             if (arrDestinationLocation.contains(loginUserStorageLocation)) {
                 getRfidTagDetailBothraLA();
             } else {
-                getRfidTagDetailCoromandelLA();
+                getRfidDetailCoromandelLA();
             }
         } else {
-            Log.i(TAG, "RfidDetailsLoadingAdvise: in else going for whs");
             getWareHouseDetails();
         }
     }
 
     private void getRfidTagDetailBothraLA() {
-        Log.i(TAG, "getRfidTagDetailBothraLA: ");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "12", "11", edtRfidTagId.getText().toString());
@@ -689,23 +664,23 @@ public class ScanFragment extends Fragment implements MyListener {
                             String pinnacleSupervisor = null;
                             String bothraSupervisor = null;
 
-                            if (transactionsDto.getInLoadingTime() != null){
+                            if (transactionsDto.getInLoadingTime() != null) {
                                 isgetInLoadingTime = "true";
                                 String entryTime = transactionsDto.getInLoadingTime();
                                 LocalDateTime aLDT = LocalDateTime.parse(entryTime);
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                                 getInLoadingTime = aLDT.format(formatter);
-                                 pinnacleSupervisor = transactionsDto.getStrPinnacleLoadingSupervisor();
-                                 bothraSupervisor = transactionsDto.getStrBothraLoadingSupervisor();
+                                getInLoadingTime = aLDT.format(formatter);
+                                pinnacleSupervisor = transactionsDto.getStrPinnacleLoadingSupervisor();
+                                bothraSupervisor = transactionsDto.getStrBothraLoadingSupervisor();
                                 Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
-                            }else {
+                            } else {
                                 isgetInLoadingTime = "false";
                                 Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
                             }
 
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                saveLADataSharedPref(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
+                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
                         } catch (Exception e) {
@@ -780,13 +755,21 @@ public class ScanFragment extends Fragment implements MyListener {
     }
 
     public boolean isRFIDHandleEnable() {
+        Log.i(TAG, "isRFIDHandleEnable: <<Start>>");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        Boolean value = false;
         if (sharedPreferences.contains("enable_rfid_handle")) {
-            Boolean value = sharedPreferences.getBoolean("enable_rfid_handle", false);
+             value = sharedPreferences.getBoolean("enable_rfid_handle", false);
             Log.i(TAG, "isRFIDHandleEnable: value : " + value);
-            return value;
+        }else {
+            value = true;
+            Log.i(TAG, "isRFIDHandleEnable: else");
         }
-        return false;
+        if (value){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     @Override
@@ -798,8 +781,12 @@ public class ScanFragment extends Fragment implements MyListener {
             String text = "Error : Rfid Handle is not connected";
             errorHandle.setText(text);
             error_layout.setVisibility(View.VISIBLE);
-            ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", name, "Try re attaching the handle", "OK");
-        } else {
+            if (name != null) {
+                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", name, "Try reattaching the handle", "OK");
+            }else {
+                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", "RFID handle not found", "Try reattaching the handle", "OK");
+            }
+            } else {
             error_layout.setVisibility(View.GONE);
             s.updateSwitchPreferenceValue(true);
         }

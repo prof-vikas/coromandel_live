@@ -17,7 +17,7 @@
         android:title="Bothra WareHouse" />
 
     <item
-        android:id="@+id/menu_item_setting"
+        android:id="@+id/menu_item_setting_admin"
         android:icon="@drawable/baseline_settings_24"
         android:title="Setting" />
 

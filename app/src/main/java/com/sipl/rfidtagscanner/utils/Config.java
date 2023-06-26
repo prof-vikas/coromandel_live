@@ -3,7 +3,7 @@ package com.sipl.rfidtagscanner.utils;
 public class Config {
 
     //    view constants
-    public static final boolean isJWTEnable = false;
+    public static final boolean isJWTEnable = true;
 
 
     public static final boolean isPlantDetailsRequiredInSideNav = true;
@@ -19,7 +19,9 @@ public class Config {
     public static final String ROLES_CWH = "18";
     public static final String ROLES_LAO = "7";
     public static final String ROLES_ADMIN_SUPER = "";
-    public static final String ROLES_ADMIN_PLANT = "4";
+    //TODO below 4 is need to use delete 1 in admin plant
+    public static final String ROLES_ADMIN_PLANT = "1";
+//    public static final String ROLES_ADMIN_PLANT = "4";
 
 
 /*    public static final String ROLES_BWH = "Bothra CIL Security Guard";
@@ -28,6 +30,11 @@ public class Config {
     public static final String ROLES_ADMIN_SUPER = "Super Admin";
     public static final String ROLES_ADMIN_PLANT = "Plant Admin";*/
 
+
+    //    Dialog message type
+    public static final String DIALOG_ERROR = "ERROR";
+    public static final String DIALOG_WARNING = "WARNING";
+    public static final String DIALOG_SUCCESS = "SUCCESS";
 
     public static final String WRONG_CREDENTIALS = "User name or password Mismatch";
 

@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner;
 
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
@@ -27,9 +28,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.gson.Gson;
+import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 import com.sipl.rfidtagscanner.dto.request.JwtRequest;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
+import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,15 +57,28 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edt_password);
         txtErrorMessage = findViewById(R.id.txt_error_message);
         progressBar = findViewById(R.id.login_progressBar);
-        imageView = findViewById( R.id.img_view_show_hide_password);
+        imageView = findViewById(R.id.img_view_show_hide_password);
 
         MaterialCheckBox checkBoxRememberMe = findViewById(R.id.checkbox_login_remember_me);
 
-
         isCheckBoxChecked();
+
+       /* String logout = isLogout();
+        if (getLoginUseriiiiId() != 0) {
+
+            if (logout != null) {
+                Log.i(TAG, "onCreate: in logout if ");
+                if (logout.equalsIgnoreCase("logout")) {
+                    Log.i(TAG, "onCreate:  in logout if if");
+                    logoutApi();
+                }
+            }
+        }*/
+
+
         btnLogin.setOnClickListener(view -> {
             if (validateEditText()) {
-            processLogin();
+                processLogin();
             }
         });
 
@@ -82,22 +98,22 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                if (view.getId() == R.id.img_view_show_hide_password) {
-                    ImageView showHideImageView = (ImageView) view;
-                    if (edtPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
-                        // Password is currently hidden, so show it
-                        showHideImageView.setImageResource(R.drawable.baseline_show_password_24);
+                ImageView showHideImageView = (ImageView) view;
+                if (edtPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
+                    // Password is currently hidden, so show it
+                    showHideImageView.setImageResource(R.drawable.baseline_show_password_24);
 //                edtPassword.setTransformationMethod(null); // Show password as plain text
-                        edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    } else {
-                        // Password is currently shown, so hide it
-                        showHideImageView.setImageResource(R.drawable.baseline_visibility_off_24);
+                    edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    // Password is currently shown, so hide it
+                    showHideImageView.setImageResource(R.drawable.baseline_visibility_off_24);
 //                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance()); // Hide password
-                        edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    }
-
-                    // Move cursor to the end of the text
-                    edtPassword.setSelection(edtPassword.getText().length());
+                    edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 }
+
+                // Move cursor to the end of the text
+                edtPassword.setSelection(edtPassword.getText().length());
+            }
 //            }
         });
     }
@@ -124,8 +140,6 @@ public class LoginActivity extends AppCompatActivity {
             edtPassword.setSelection(edtPassword.getText().length());
         }
     }*/
-
-
 
 
     public void isCheckBoxChecked() {
@@ -177,13 +191,26 @@ public class LoginActivity extends AppCompatActivity {
             call.enqueue(new Callback<JwtAuthResponse>() {
                 @Override
                 public void onResponse(Call<JwtAuthResponse> call, Response<JwtAuthResponse> response) {
+                    Log.i(TAG, "onResponse: " + response.raw());
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        Log.i(TAG, "onResponse: " + response.raw());
-                        alert(LoginActivity.this, "error", response.errorBody().toString(), null, "OK");
+                        alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, "OK");
                     }
-                    Log.i(TAG, "onResponse: " + response.raw());
                     if (response.isSuccessful()) {
+                        progressBar.setVisibility(View.GONE);
+                        if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                            String token = response.body().getToken();
+                            SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("userIDSPK", token).apply();
+                            Log.i(TAG, "onResponse: calling second api");
+                            getUserDetails(token);
+                        } else {
+                            Log.i(TAG, "onResponse: Status : " + response.body().getStatus() + "\nMessage : " + response.body().getMessage());
+                            alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, "OK");
+                        }
+                    }
+/*                    if (response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
                         String token = response.body().getToken();
                         String role = response.body().getUser().getRole().getName();
@@ -205,7 +232,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.code() != 200) {
                         Log.i(TAG, "onResponse: response code : " + response.code() + " response message" + response.message() + response.raw());
                         txtErrorMessage.setText(response.message());
-                    }
+                    }*/
                 }
 
                 @Override
@@ -236,6 +263,12 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void SavedId(int id) {
+        SharedPreferences sp1 = getSharedPreferences("saveId", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp1.edit();
+        editor.putInt("saveUserId", id).apply();
     }
 
 
@@ -345,9 +378,9 @@ public class LoginActivity extends AppCompatActivity {
                             savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
                         } else if (userRoleId.equalsIgnoreCase(ROLES_BWH)) {
                             savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
-                        } else if(userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT)){
+                        } else if (userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT)) {
                             savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
-                        }else{
+                        } else {
                             alert(LoginActivity.this, "ERROR", "User role not allowed", null, "OK");
                             return;
 
@@ -368,4 +401,109 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void getUserDetails(String token) {
+        progressBar.setVisibility(View.VISIBLE);
+        Log.i(TAG, "getUserDetails: token : " + token);
+        Call<UserValidateResponseDto> call = RetrofitController.getInstances(this).getLoadingAdviseApi().getLoginUserDetails("Bearer " + token, edtUsername.getText().toString().trim());
+        call.enqueue(new Callback<UserValidateResponseDto>() {
+            @Override
+            public void onResponse(Call<UserValidateResponseDto> call, Response<UserValidateResponseDto> response) {
+                Log.i(TAG, "onResponse: " + response.raw());
+                if (!response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    Log.i(TAG, "onResponse: " + response.errorBody().toString());
+                    alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, "OK");
+                }
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
+                        progressBar.setVisibility(View.GONE);
+                        String strToken = token;
+                        String role = response.body().getUserDto().getName();
+                        String username = response.body().getUserDto().getName();
+                        String userID = String.valueOf(response.body().getUserDto().getId());
+                        String userSourceLocation = response.body().getUserDto().getStorageLocation().getStrLocationCode();
+                        String userSourceLocationDesc = response.body().getUserDto().getStorageLocation().getStrLocationDesc();
+                        String userPlantLocation = response.body().getUserDto().getPlantMaster().getPlantCode();
+                        String userPlantLocationDesc = response.body().getUserDto().getPlantMaster().getPlantDesc();
+                        String userRoleId = String.valueOf(response.body().getUserDto().getRole().getId());
+                        SavedId(response.body().getUserDto().getId());
+                        Log.i(TAG, "processLogin: Token : " + token + " Username : " + username + " userID : " + userID + " role : " + role + " userSourceLocation : " + userSourceLocation + " - " + userSourceLocationDesc + " userPlantLocation : " + userPlantLocation + " - " + userPlantLocationDesc);
+                        if (token != null && role != null && username != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
+                            savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc, userRoleId);
+                        } else {
+                            alert(LoginActivity.this, DIALOG_ERROR, "Something went wrong with this user credentials", "Try login with other user credentials", "OK");
+                        }
+                    } else {
+                        alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, "OK");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserValidateResponseDto> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                t.printStackTrace();
+                alert(LoginActivity.this, "error", t.getMessage(), null, "OK");
+            }
+        });
+    }
+
+    public int getLoginUserId() {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        String a = sp.getString("userIDSPK", null);
+        return Integer.parseInt(sp.getString("userIDSPK", null));
+    }
+
+    public int getLoginUseriiiiId() {
+        SharedPreferences sp = getSharedPreferences("saveId", MODE_PRIVATE);
+        Integer a = sp.getInt("saveUserId", 0);
+        return a;
+    }
+
+    private String isLogout() {
+        Log.i(TAG, "isLogout:  in logout ");
+        SharedPreferences sp = getSharedPreferences("logoutMark", MODE_PRIVATE);
+        Log.i(TAG, "isLogout: " + sp.getString("isLogout", null));
+        return sp.getString("isLogout", null);
+    }
+
+
+    private void logoutApi() {
+        Log.i(TAG, "validateUser: in validateUser()");
+//        progressBar.setVisibility(View.VISIBLE);
+        Log.i(TAG, "logoutApi: " + getLoginUseriiiiId());
+        UserMasterDto userMasterDto = new UserMasterDto(getLoginUseriiiiId());
+        Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(userMasterDto));
+        try {
+            Call<UserMasterDto> call = RetrofitController.getInstances(this).getLoadingAdviseApi().logout(userMasterDto);
+            Log.i(TAG, "logoutApi: call pass");
+            call.enqueue(new Callback<UserMasterDto>() {
+                @Override
+                public void onResponse(Call<UserMasterDto> call, Response<UserMasterDto> response) {
+                    if (!response.isSuccessful()) {
+//                  alert(MainActivity.this,"ERROR",response.errorBody().toString(),null,"OK");
+                    }
+                    Log.i(TAG, "onResponse: logout response raw : " + response.raw());
+               /* if (response.isSuccessful()) {
+                    if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                        Log.i(TAG, "onResponse: " + response.body().getMessage());
+                    } else {
+                        alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, "OK");
+                    }
+                }*/
+                }
+
+                @Override
+                public void onFailure(Call<UserMasterDto> call, Throwable t) {
+//              alert(MainActivity.this,DIALOG_ERROR, t.getMessage().toString(),null,"OK");
+                    Log.i(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.i(TAG, "logoutApi: " + e.getMessage() + e.getCause() + e.getStackTrace());
+        }
+    }
+
 }

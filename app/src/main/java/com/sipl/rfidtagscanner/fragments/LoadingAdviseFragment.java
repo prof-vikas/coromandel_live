@@ -240,7 +240,7 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void resetTextField() {
-        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(0), 1);
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
     }
 
     private void makeTvTextCompulsory() {

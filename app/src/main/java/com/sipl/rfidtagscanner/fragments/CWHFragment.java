@@ -147,7 +147,7 @@ public class CWHFragment extends Fragment {
     }
 
     private void resetFields() {
-        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(0), 1);
+        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
     }
 
     private boolean getAllRmgStorage() {

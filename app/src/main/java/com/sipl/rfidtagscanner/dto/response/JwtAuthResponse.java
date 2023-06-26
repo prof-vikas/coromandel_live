@@ -4,11 +4,15 @@ import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 
 public class JwtAuthResponse {
     private String token;
-    private UserMasterDto user;
+    private String status;
+    private String message;
+    private boolean error;
 
-    public JwtAuthResponse(String token, UserMasterDto user) {
+    public JwtAuthResponse(String token, String status, String message, boolean error) {
         this.token = token;
-        this.user = user;
+        this.status = status;
+        this.message = message;
+        this.error = error;
     }
 
     public String getToken() {
@@ -19,11 +23,27 @@ public class JwtAuthResponse {
         this.token = token;
     }
 
-    public UserMasterDto getUser() {
-        return user;
+    public String getStatus() {
+        return status;
     }
 
-    public void setUser(UserMasterDto user) {
-        this.user = user;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 }

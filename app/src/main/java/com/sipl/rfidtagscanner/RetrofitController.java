@@ -119,11 +119,11 @@ public class RetrofitController {
     }
 
     private RetrofitController(Context context) {
-//        OkHttpClient client = getOkHttpClient(context);
+        OkHttpClient client = getOkHttpClient(context);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConstants.BASE_URL)
-//                .client(client)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -133,6 +133,13 @@ public class RetrofitController {
     public static synchronized RetrofitController getInstances(Context context) {
         if (instance == null) {
             instance = new RetrofitController(context);
+        }
+        return instance;
+    }
+
+    public static synchronized RetrofitController getInstances() {
+        if (instance == null) {
+            instance = new RetrofitController(null);
         }
         return instance;
     }
