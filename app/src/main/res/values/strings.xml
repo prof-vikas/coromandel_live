@@ -73,7 +73,7 @@
     <string name="update_wh_no">Warehouse No</string>
 
 
-    <string name="login_app_version">Version 1.0.2 (UAT)</string>
+    <string name="login_app_version">Version 1.0.2 (UAT)- sipl testing 1.0</string>
     <string name="unloading_in_time">Unloading in time</string>
     <string name="unloading_out_time">Unloading out time</string>
 </resources>

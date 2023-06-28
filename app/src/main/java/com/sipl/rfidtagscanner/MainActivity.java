@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     public void loadFragment(Fragment fragment, int flag) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
+        Log.i(TAG, "loadFragment:  in loadingfragment method");
         if (flag == 0) {
             ft.add(R.id.main_container, fragment);
         } else {

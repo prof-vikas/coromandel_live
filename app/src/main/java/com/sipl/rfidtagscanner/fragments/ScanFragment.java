@@ -96,15 +96,19 @@ public class ScanFragment extends Fragment implements MyListener {
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
+        Log.i(TAG, "onCreateView: before warehose method");
+        getWareHouseStorage();
         Boolean value = isRFIDHandleEnable();
         try {
             if (value != null) {
                 if (value) {
+                    Log.i(TAG, "onCreateView: in if of isRFIDEnable");
                     edtRfidTagId.setEnabled(false);
                     rfidHandler = new RfidHandler(requireActivity());
                     rfidHandler.InitSDK(this);
 //                    onNotConnectedTpHandle(null,false);
                 } else {
+                    Log.i(TAG, "onCreateView: in else of isRFIDEnable");
                     edtRfidTagId.setEnabled(true);
                 }
             }
@@ -112,7 +116,6 @@ public class ScanFragment extends Fragment implements MyListener {
             Log.i(TAG, "onCreateView: e" + exception.getMessage());
             exception.printStackTrace();
         }
-        getWareHouseStorage();
 
         btnVerify.setOnClickListener(view1 -> {
             if (edtRfidTagId.length() != 0) {
@@ -217,12 +220,18 @@ public class ScanFragment extends Fragment implements MyListener {
                             }
 
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
+                            Log.i(TAG, "onResponse: role " + role);
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
+                                Log.i(TAG, "onResponse:  in before saving in shp");
                                 saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, null, null, null, null);
+                                Log.i(TAG, "onResponse: after saving data");
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
+                                return;
                             }
+                            Log.i(TAG, "onResponse:  out of reach");
 
                         } catch (Exception e) {
+                            Log.i(TAG, "onResponse: " + e.getMessage());
                             e.getMessage();
                             return;
                         }
@@ -243,6 +252,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onFailure(Call<RfidLepApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    Log.i(TAG, "onFailure: " + t.getMessage());
                     t.printStackTrace();
                 }
             });
@@ -726,6 +736,9 @@ public class ScanFragment extends Fragment implements MyListener {
                     List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
                     arrDestinationLocation = new ArrayList<>();
                     try {
+
+                        Log.i("getWareHouseStorage", "onResponse: " + response.raw());
+                        Log.i("getWareHouseStorage", "onResponse: " + response.body().getMessage() + response.body().getStatus());
                         if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
                             return;
                         }
@@ -737,6 +750,10 @@ public class ScanFragment extends Fragment implements MyListener {
                             Log.i("getWareHouseStorage", "onResponse: " + i + "   " + s);
                             arrDestinationLocation.add(s);
                         }
+                        for (String s : arrDestinationLocation) {
+                            Log.i("getWareHouseStorage", "onResponse: " + s);
+                        }
+                        Log.i("getWareHouseStorage", "onResponse: " + arrDestinationLocation.size());
                         editor.putString("size", String.valueOf(arrDestinationLocation.size())).apply();
 
                     } catch (Exception e) {

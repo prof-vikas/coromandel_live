@@ -158,10 +158,14 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void getBundleData() {
         SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
-        int s = Integer.parseInt(sp.getString("size", null));
-        for (int i = 0; i < s; i++) {
-            String m = sp.getString(String.valueOf(i), null);
-            arrBothraStrLocation.add(m);
+        String s = sp.getString("size", null);
+        Log.i(TAG, "getBundleData: S : " + s);
+        if (s != null) {
+            int m = Integer.parseInt(s);
+            for (int i = 0; i < m; i++) {
+                String n = sp.getString(String.valueOf(i), null);
+                arrBothraStrLocation.add(n);
+            }
         }
     }
 
@@ -223,7 +227,7 @@ public class LoadingAdviseFragment extends Fragment {
 
         if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
 
-            if (!strisgetInLoadingTime.equalsIgnoreCase("true")){
+            if (!strisgetInLoadingTime.equalsIgnoreCase("true")) {
                 if (edtPinnacleSupervisor.length() == 0) {
                     edtPinnacleSupervisor.setError("This field is required");
                     return false;
@@ -369,7 +373,7 @@ public class LoadingAdviseFragment extends Fragment {
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
         String bothraSupervisor = edtBothraSupervisor.getText().toString();
         String pinnacleSupervisor = edtPinnacleSupervisor.getText().toString();
-        return new LoadingAdviseRequestDto(auditEntity, bothraSupervisor, pinnacleSupervisor, loadingAdviseDto,sourceMasterDto, functionalLocationMasterDto, rfidLepIssueModel, FLAG, true, RSTAT, String.valueOf(LocalDateTime.now()), String.valueOf(LocalDateTime.now()));
+        return new LoadingAdviseRequestDto(auditEntity, bothraSupervisor, pinnacleSupervisor, loadingAdviseDto, sourceMasterDto, functionalLocationMasterDto, rfidLepIssueModel, FLAG, true, RSTAT, String.valueOf(LocalDateTime.now()), String.valueOf(LocalDateTime.now()));
     }
 
     private UpdateBothraLoadingAdviseDto updateData() {
@@ -439,9 +443,9 @@ public class LoadingAdviseFragment extends Fragment {
         Log.i(TAG, "getLoadingAdviseDetails: strisgetInLoadingTime : " + strisgetInLoadingTime);
         String getInTime = null;
 
-        if (strisgetInLoadingTime.equalsIgnoreCase("true")){
+        if (strisgetInLoadingTime.equalsIgnoreCase("true")) {
             getInTime = sp.getString("getInloadingTimeSPK", null);
-            Log.i(TAG, "getLoadingAdviseDetails: in if statment : getInTime : "  + getInTime );
+            Log.i(TAG, "getLoadingAdviseDetails: in if statment : getInTime : " + getInTime);
             constaintEntryTimeLayout.setVisibility(View.VISIBLE);
             lltvClockLayout.setVisibility(View.GONE);
             edtConstEntryTime.setText(getInTime);
@@ -454,7 +458,6 @@ public class LoadingAdviseFragment extends Fragment {
             edtBothraSupervisor.setEnabled(false);
             edtBothraSupervisor.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
             textclockLayoutexit.setVisibility(View.VISIBLE);
-
 
 
         }
