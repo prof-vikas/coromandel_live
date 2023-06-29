@@ -310,16 +310,20 @@ public class LoadingAdviseFragment extends Fragment {
                 }
                 Log.i(TAG, "onResponse: UpdateCoromadelLoadingAdviseDetails : " + response.raw());
 
-                if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
-                    progressBar.setVisibility(View.GONE);
-                    Log.i(TAG, "onResponse: response : " + response.body().getStatus());
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
-                    resetTextField();
-                } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
-                    sendLoadingAdviseDetails(setData());
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
+                if (response.isSuccessful()){
+                   if (response.body().getStatus() != null){
+                       if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
+                           progressBar.setVisibility(View.GONE);
+                           Log.i(TAG, "onResponse: response : " + response.body().getStatus());
+                           ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
+                           resetTextField();
+                       } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
+                           sendLoadingAdviseDetails(setData());
+                       } else {
+                           progressBar.setVisibility(View.GONE);
+                           ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
+                       }
+                   }
                 }
             }
 

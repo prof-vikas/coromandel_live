@@ -14,11 +14,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+
 import androidx.preference.PreferenceManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -45,6 +48,7 @@ import com.sipl.rfidtagscanner.interf.RFIDDataModel;
 import com.sipl.rfidtagscanner.interf.RfidUiDataDto;
 import com.zebra.rfid.api3.TagData;
 
+import java.security.spec.ECField;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -390,25 +394,32 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.apply();
     }
 
-    private void getWareHouseDetails() {
+    private void showProgress() {
         progressBar.setVisibility(View.VISIBLE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void getCoromandelWareHouseDetails() {
+        showProgress();
         try {
-            if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
-                getBothraInUnLoadingDetails();
-            } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("coromandel")))) {
-                Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
+            Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
 
-                call.enqueue(new Callback<TransactionsApiResponse>() {
-                    @Override
-                    public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-                        if (!response.isSuccessful()) {
-                            progressBar.setVisibility(View.GONE);
-                            ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
-                            return;
-                        }
-
+            call.enqueue(new Callback<TransactionsApiResponse>() {
+                @Override
+                public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+                    hideProgress();
+                    if (!response.isSuccessful()) {
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                        return;
+                    }
+                    if (response.body().getStatus() != null) {
                         if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
-                            progressBar.setVisibility(View.GONE);
                             vibrate();
                             TransactionsDto transactionsDto = response.body().getTransactionsDto();
                             try {
@@ -422,10 +433,6 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                                 String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
-
-
-//                                Boolean isWeighBridgeAvailble = transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable();
-
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
@@ -444,8 +451,7 @@ public class ScanFragment extends Fragment implements MyListener {
                                 }
 
                             } catch (Exception e) {
-                                e.getMessage();
-                                return;
+                                Log.i(TAG, "onResponse: Exception in coromandel warehouse : " + e.getMessage());
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
@@ -453,19 +459,27 @@ public class ScanFragment extends Fragment implements MyListener {
                             ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                        progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
-                    }
-                });
-            } else {
-                progressBar.setVisibility(View.GONE);
-                Log.i(TAG, "getWareHouseDetails: method not call wh");
-            }
+                @Override
+                public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
+                    hideProgress();
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                }
+            });
         } catch (Exception e) {
+            Log.i(TAG, "getCoromandelWareHouseDetails: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void getWareHouseDetails() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
+            getBothraInUnLoadingDetails();
+        } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("coromandel")))) {
+            getCoromandelWareHouseDetails();
         }
     }
 
@@ -776,15 +790,15 @@ public class ScanFragment extends Fragment implements MyListener {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         Boolean value = false;
         if (sharedPreferences.contains("enable_rfid_handle")) {
-             value = sharedPreferences.getBoolean("enable_rfid_handle", false);
+            value = sharedPreferences.getBoolean("enable_rfid_handle", false);
             Log.i(TAG, "isRFIDHandleEnable: value : " + value);
-        }else {
+        } else {
             value = true;
             Log.i(TAG, "isRFIDHandleEnable: else");
         }
-        if (value){
+        if (value) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -800,10 +814,10 @@ public class ScanFragment extends Fragment implements MyListener {
             error_layout.setVisibility(View.VISIBLE);
             if (name != null) {
                 ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", name, "Try reattaching the handle", "OK");
-            }else {
+            } else {
                 ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", "RFID handle not found", "Try reattaching the handle", "OK");
             }
-            } else {
+        } else {
             error_layout.setVisibility(View.GONE);
             s.updateSwitchPreferenceValue(true);
         }
