@@ -36,6 +36,8 @@ import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +53,8 @@ public class CWHFragment extends Fragment {
 
     private ArrayAdapter<String> updateRmgNoAdapter;
     private ArrayAdapter<String> remarksAdapter;
+    private String inUnloadingTime = null;
+    private String outUnloadingTime = null;
 
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
     private CustomToast customToast = new CustomToast();
@@ -59,18 +63,12 @@ public class CWHFragment extends Fragment {
     private TextClock tvClock;
     private Button btnSubmit, btnReset;
 
-    //    userDetails
     private String loginUserName;
     private String token;
-//    private String loginUserPlantCode;
-
     private String selectedRemarks;
     private Integer selectedRemarksId;
-
     private String selectedRmgNo;
-
     private Integer selectedLepNumberId;
-
     private String previousRmgNoId;
 
     @Override
@@ -188,7 +186,7 @@ public class CWHFragment extends Fragment {
                             arrDestinationLocationDesc.add(strLocationDescWithCode);
                             hashMapLocationCode.put(strLocationDescWithCode, s);
                         }
-                        if (arrDestinationLocationDesc.contains(removedPreviousRmgCode)){
+                        if (arrDestinationLocationDesc.contains(removedPreviousRmgCode)) {
                             arrDestinationLocationDesc.remove(removedPreviousRmgCode);
                         }
                         arrDestinationLocationDesc.add("Update RMG No");
@@ -249,7 +247,6 @@ public class CWHFragment extends Fragment {
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
@@ -307,8 +304,7 @@ public class CWHFragment extends Fragment {
                                 return super.getCount() - 1;
                             }
                         };
-                   /*     spinnerRemark.setEnabled(false);
-                        spinnerRemark.setClickable(false);*/
+
                         spinnerRemark.setAdapter(remarksAdapter);
                         spinnerRemark.setSelection(remarksAdapter.getCount());
 
@@ -320,13 +316,6 @@ public class CWHFragment extends Fragment {
                                     selectedRemarksId = hashMapRemarks.get(selectedRemarks);
                                     Log.i(TAG, "onItemSelected: Selected Remarks Id " + selectedRemarksId);
                                 }
-                              /*  if (selectedRmgNo != null) {
-                                    if (selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
-                                        spinnerRemark.setEnabled(false);
-                                        spinnerRemark.setClickable(false);
-                                        spinnerRemark.setFocusable(false);
-                                    }
-                                }*/
                             }
 
                             @Override
@@ -342,7 +331,6 @@ public class CWHFragment extends Fragment {
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
                 ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
             }
         });
@@ -361,29 +349,26 @@ public class CWHFragment extends Fragment {
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
 
-                Log.i(TAG, "onResponse: code" + response.code());
-               /* if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
-//                    alertBuilder(response.body().getMessage());
-                    resetFields();
-                }*/
-
-                if (response.body().getStatus().equalsIgnoreCase("OK")) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
-                    resetFields();
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
-                    resetFields();
+                Log.i(TAG, "onResponse: code" + response.code() + response.raw());
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus() != null) {
+                        if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                            progressBar.setVisibility(View.GONE);
+                            ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                            resetFields();
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
+                            resetFields();
+                        }
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-//                alertBuilder(t.getMessage());
+                Log.i(TAG, "onFailure: " + t.getMessage());
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
                 t.printStackTrace();
             }
@@ -404,8 +389,13 @@ public class CWHFragment extends Fragment {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
         }
+
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
-        return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG);
+        if (inUnloadingTime != null) {
+            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, inUnloadingTime, LocalDateTime.now().toString());
+        } else {
+            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, LocalDateTime.now().toString(), null);
+        }
     }
 
 
@@ -426,18 +416,35 @@ public class CWHFragment extends Fragment {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
-//        this.selectedLepNumberId = Integer.valueOf(rfidTagId);
         String lepNo = sp.getString("lepNoSPK", null);
         String driverName = sp.getString("driverNameSPK", null);
         String truckNo = sp.getString("truckNoSPK", null);
         String commodity = sp.getString("commoditySPK", null);
         String grossWeight = sp.getString("GrossWeightSPK", null);
         String previousRmgNo = sp.getString("previousRmgNoSPK", null);
+        String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+        String outUnloadingTime = sp.getString("outUnloadingTimeSPK", null);
         this.previousRmgNoId = previousRmgNo;
+        this.inUnloadingTime = inUnloadingTime;
+        this.outUnloadingTime = outUnloadingTime;
         String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
 
         saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc);
     }
+/*    private void updateUIBaseOnWareHouseLocation() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+
+        if (inUnloadingTime != null){
+            tvEntryTimeClocKLayout.setVisibility(View.GONE);
+            tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
+            edtEntryTime.setText(inUnloadingTime);
+            tvLoadingTimeLayout.setVisibility(View.VISIBLE);
+//            tvExitTimeLayout.setVisibility(View.VISIBLE);
+        }else {
+            tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
+        }
+    }*/
 
     private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String grossWeight, String previousRmgNo, String PreviousRmgNoDesc) {
         Log.i(TAG, "saveLoginAdviseData: <<Start>>");

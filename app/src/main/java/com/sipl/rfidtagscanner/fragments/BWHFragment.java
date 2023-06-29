@@ -30,6 +30,7 @@ import com.sipl.rfidtagscanner.RetrofitController;
 import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
+import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
@@ -70,6 +71,8 @@ public class BWHFragment extends Fragment {
     private ArrayAdapter<String> remarkAdapter;
     private ArrayAdapter<String> updateWareHouseNoAdapter;
     private String previousWarehouseCode;
+    private String inUnloadingTime = null;
+    private String outUnloadingTime = null;
 
     public BWHFragment() {
     }
@@ -366,7 +369,7 @@ public class BWHFragment extends Fragment {
             }
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNoId);
-        if (weighbridgeAvailable.equalsIgnoreCase("true")) {
+ /*       if (weighbridgeAvailable.equalsIgnoreCase("true")) {
             updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null);
         } else {
             if (callFrom == 1) {
@@ -375,9 +378,39 @@ public class BWHFragment extends Fragment {
                 updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, String.valueOf(LocalDateTime.now()), null);
             }
         }
-        return updateWareHouseNoRequestDto;
+        return updateWareHouseNoRequestDto;*/
+        Log.i(TAG, "setData: inUnloadingTime : " + inUnloadingTime);
+        if (inUnloadingTime != null) {
+            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG,null,null, inUnloadingTime, LocalDateTime.now().toString());
+        } else {
+            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, LocalDateTime.now().toString(), null);
+        }
 
     }
+
+
+  /*  private UpdateRmgRequestDto setData() {
+        StorageLocationDto selectedWareHouseNo = null;
+        RemarksDto remarksDto = null;
+        final Integer FLAG = 4;
+        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
+        StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousRmgNoId);
+        if (selectedRmgNo != null) {
+            if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
+                selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
+            }
+            if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
+                remarksDto = new RemarksDto(selectedRemarksId);
+            }
+        }
+
+        RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
+        if (inUnloadingTime != null) {
+            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, inUnloadingTime, LocalDateTime.now().toString());
+        } else {
+            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, LocalDateTime.now().toString(), null);
+        }
+    }*/
 
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
         Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
@@ -390,7 +423,7 @@ public class BWHFragment extends Fragment {
                    hideProgressBar();
                     ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
                 }
-                Log.i(TAG, "onResponse: code" + response.code() + "status : " + response.body().getStatus());
+                Log.i(TAG, "onResponse: updateWareHouseNo : " + response.raw());
 
                 if (response.body().getStatus().equalsIgnoreCase("OK")) {
                     hideProgressBar();
@@ -432,10 +465,30 @@ public class BWHFragment extends Fragment {
         String commodity = sp.getString("commoditySPK", null);
         String sourceGrossWeight = sp.getString("sourceGrossWeightSPK", null);
         String previousRmgNo = sp.getString("previousRmgNoSPK", null);
+        String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+        String outUnloadingTime = sp.getString("outUnloadingTimeSPK", null);
+        this.inUnloadingTime = inUnloadingTime;
+        this.outUnloadingTime = outUnloadingTime;
         this.previousWarehouseCode = previousRmgNo;
         String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
 
         saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc);
+    }
+
+    //    after new changes
+    private void updateUIBaseOnWareHouseLocation() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+
+        if (inUnloadingTime != null){
+            tvEntryTimeClocKLayout.setVisibility(View.GONE);
+            tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
+            edtEntryTime.setText(inUnloadingTime);
+            tvLoadingTimeLayout.setVisibility(View.VISIBLE);
+//            tvExitTimeLayout.setVisibility(View.VISIBLE);
+        }else {
+            tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc) {
@@ -469,22 +522,7 @@ public class BWHFragment extends Fragment {
         }
     }*/
 
-    //    after new changes
-    private void updateUIBaseOnWareHouseLocation() {
-        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-        String vehicleInTime = sp.getString("vehicleInTimeSPK", null);
-        int callFrom = sp.getInt("callFromSPK", 0);
 
-        if (callFrom == 1) {
-            tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
-        } else if (callFrom == 2) {
-            tvEntryTimeClocKLayout.setVisibility(View.GONE);
-            tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
-            edtEntryTime.setText(vehicleInTime);
-            tvLoadingTimeLayout.setVisibility(View.VISIBLE);
-            tvExitTimeLayout.setVisibility(View.VISIBLE);
-        }
-    }
 
     private void showProgressBar(){
         progressBar.setVisibility(View.VISIBLE);

@@ -374,12 +374,14 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.apply();
     }
 
-    private void saveWHDetails(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String isWeighbridgeAvailable, Integer callFrom, String vehicleInTime) {
+    private void saveWHDetails(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String isWeighbridgeAvailable, Integer callFrom, String vehicleInTime, String outUnloadingTime, String inUnloadingTime) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         Log.i(TAG, "saveWHDataToSharedPref: in sherfPrench data list");
         editor.putString("rfidTagSPK", rfidTag).apply();
         editor.putString("lepNoSPK", lepNo).apply();
+        editor.putString("inUnloadingTimeSPK", inUnloadingTime).apply();
+        editor.putString("outUnloadingTimeSPK", outUnloadingTime).apply();
         editor.putString("lepNoIdSPK", lepNoId).apply();
         editor.putString("driverNameSPK", driverName).apply();
         editor.putString("truckNoSPK", truckNo).apply();
@@ -433,14 +435,16 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                                 String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                String inUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     if (destinationLocationByUIcode != null) {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null, outUnloadingTime, inUnloadingTime);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                     } else {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null, inUnloadingTime, outUnloadingTime);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                     }
                                 } else {
@@ -514,9 +518,10 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String destinationLocationByUIWEighbridgedesc = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
+                                String inUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
 
-                                Log.i(TAG, "onResponse: response data ge fet successfully");
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                     String sourceGrossWeight;
                                     if (transactionsDto.getSourceGrossWeight() != null) {
@@ -525,9 +530,9 @@ public class ScanFragment extends Fragment implements MyListener {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
                                     if (destinationLocationByUIcode != null) {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null, outUnloadingTime, inUnloadingTime);
                                     } else {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null,outUnloadingTime, inUnloadingTime);
                                     }
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
@@ -603,9 +608,9 @@ public class ScanFragment extends Fragment implements MyListener {
                             if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                 String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
                                 if (strWareHouseCode != null) {
-                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, strWareHouseCode, strWareHouseCodeDesc, sourceGrossWeight, strWbAvailable, 2, entryTime);
+                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, strWareHouseCode, strWareHouseCodeDesc, sourceGrossWeight, strWbAvailable, 2, entryTime, null, null);
                                 } else {
-                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 2, entryTime);
+                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 2, entryTime, null, null);
                                 }
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
@@ -621,7 +626,6 @@ public class ScanFragment extends Fragment implements MyListener {
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        Log.i(TAG, "onResponse: " + response.raw());
                         ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
                     }
                 }
