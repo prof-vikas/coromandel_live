@@ -85,12 +85,12 @@ public class BWHFragment extends Fragment {
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
         tvClock = view.findViewById(R.id.bwh_tv_clock);
         tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
-        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
+//        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
         edtEntryTime = view.findViewById(R.id.edt_entry_time2);
         tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
         tvEntryTimeEdtLayout = view.findViewById(R.id.title_entry_time2);
         tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
-        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
+//        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
 
         edtRfidTag = view.findViewById(R.id.bwh_edt_rfid_tag);
         edtLepNo = view.findViewById(R.id.bwh_edt_lep_number);
@@ -349,7 +349,6 @@ public class BWHFragment extends Fragment {
     }
 
     private UpdateWareHouseNoRequestDto setData() {
-        UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto;
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         String weighbridgeAvailable = sp.getString("isWeighbridgeAvailableSPK", null);
         Boolean isWeighbridgeAvailable = Boolean.valueOf(weighbridgeAvailable);
@@ -363,10 +362,15 @@ public class BWHFragment extends Fragment {
         if (selectedWhNo != null) {
             if (!selectedWhNo.equals("Select Warehouse No")) {
                 selectedWareHouseNo = new StorageLocationDto(selectedWhNo, isSelectedWhHasWB);
+            }else {
+                selectedWareHouseNo = new StorageLocationDto(selectedWhNo);
             }
             if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
+        }else {
+            Log.i(TAG, "setData: in else where setting warehouse in excel");
+            selectedWareHouseNo = new StorageLocationDto(selectedWhNo);
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNoId);
  /*       if (weighbridgeAvailable.equalsIgnoreCase("true")) {

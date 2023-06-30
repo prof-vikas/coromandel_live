@@ -470,7 +470,7 @@
                           android:textSize="@dimen/common_edt_text" />-->
                 </LinearLayout>
 
-                <LinearLayout
+      <!--          <LinearLayout
                     android:id="@+id/title_exit_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -503,8 +503,8 @@
                         android:textColor="@color/wh_edt_txt"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textSize="@dimen/common_edt_text" />
-                    <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
-                </LinearLayout>
+                    &lt;!&ndash;            android:format24hours="hh:mm:ss a  EEE MMM d"&ndash;&gt;
+                </LinearLayout>-->
 
 
                 <!--Buttons -->

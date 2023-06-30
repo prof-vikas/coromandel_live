@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextClock;
@@ -55,12 +56,14 @@ public class CWHFragment extends Fragment {
     private ArrayAdapter<String> remarksAdapter;
     private String inUnloadingTime = null;
     private String outUnloadingTime = null;
+    private EditText edtEntryTime;;
+    private TextClock tvClock, tvEntryTime, tvExitTime;
+    private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvExitTimeLayout;
 
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
     private CustomToast customToast = new CustomToast();
     private ProgressBar progressBar;
     private Spinner spinnerUpdateRmgNo, spinnerRemark;
-    private TextClock tvClock;
     private Button btnSubmit, btnReset;
 
     private String loginUserName;
@@ -88,13 +91,23 @@ public class CWHFragment extends Fragment {
         btnReset = view.findViewById(R.id.cwh_btn_reset);
         btnSubmit = view.findViewById(R.id.cwh_btn_submit);
         progressBar = view.findViewById(R.id.cwh_progressBar);
-        tvClock = view.findViewById(R.id.cwh_tv_clock);
+//        tvClock = view.findViewById(R.id.cwh_tv_clock);
+
+        tvClock = view.findViewById(R.id.bwh_tv_clock);
+        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
+//        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
+        edtEntryTime = view.findViewById(R.id.edt_entry_time2);
+        tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
+        tvEntryTimeEdtLayout = view.findViewById(R.id.title_entry_time2);
+        tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
+//        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
 
         this.token = ((MainActivity) getActivity()).getLoginToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
 
         currentTime();
         getLoadingAdviseDetails();
+        updateUIBaseOnWareHouseLocation();
         callOnCreateApi();
 
         btnSubmit.setOnClickListener(view12 -> {
@@ -105,6 +118,21 @@ public class CWHFragment extends Fragment {
         btnReset.setOnClickListener(view1 -> resetFields());
 
         return view;
+    }
+
+    private void updateUIBaseOnWareHouseLocation() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+
+        if (inUnloadingTime != null){
+            tvEntryTimeClocKLayout.setVisibility(View.GONE);
+            tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
+            edtEntryTime.setText(inUnloadingTime);
+            tvLoadingTimeLayout.setVisibility(View.VISIBLE);
+//            tvExitTimeLayout.setVisibility(View.VISIBLE);
+        }else {
+            tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean validateLoadingAdviseForm() {
@@ -236,6 +264,7 @@ public class CWHFragment extends Fragment {
 
                             @Override
                             public void onNothingSelected(AdapterView<?> adapterView) {
+                                Log.i(TAG, "onNothingSelected: noting is selected");
                             }
                         });
                     } catch (Exception e) {
@@ -388,6 +417,8 @@ public class CWHFragment extends Fragment {
             if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
+        }else {
+            selectedWareHouseNo = new StorageLocationDto(previousRmgNoId);
         }
 
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
