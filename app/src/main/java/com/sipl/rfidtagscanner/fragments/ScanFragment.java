@@ -435,8 +435,12 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                                 String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
-                                String inUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
+
+                                LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                                String inUnloadingTime = aLDT.format(formatter);
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
@@ -518,8 +522,13 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String destinationLocationByUIWEighbridgedesc = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
-                                String inUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
+
+
+                                LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+                                String inUnloadingTime = aLDT.format(formatter);
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
