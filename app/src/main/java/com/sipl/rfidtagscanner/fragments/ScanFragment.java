@@ -85,7 +85,6 @@ public class ScanFragment extends Fragment implements MyListener {
     public ScanFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,26 +99,8 @@ public class ScanFragment extends Fragment implements MyListener {
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
-        Log.i(TAG, "onCreateView: before warehose method");
         getWareHouseStorage();
-        Boolean value = isRFIDHandleEnable();
-        try {
-            if (value != null) {
-                if (value) {
-                    Log.i(TAG, "onCreateView: in if of isRFIDEnable");
-                    edtRfidTagId.setEnabled(false);
-                    rfidHandler = new RfidHandler(requireActivity());
-                    rfidHandler.InitSDK(this);
-//                    onNotConnectedTpHandle(null,false);
-                } else {
-                    Log.i(TAG, "onCreateView: in else of isRFIDEnable");
-                    edtRfidTagId.setEnabled(true);
-                }
-            }
-        } catch (Exception exception) {
-            Log.i(TAG, "onCreateView: e" + exception.getMessage());
-            exception.printStackTrace();
-        }
+        checkInitialRFIDEnableStatus();
 
         btnVerify.setOnClickListener(view1 -> {
             if (edtRfidTagId.length() != 0) {
@@ -132,6 +113,26 @@ public class ScanFragment extends Fragment implements MyListener {
 
         RFIDDataModel.getInstance().getRFIDStatus().observe(getViewLifecycleOwner(), currentRFIDObserver);
         return view;
+    }
+
+    /*
+     * This initial check weather RFID is enable or not and perform activity
+     * */
+    private void checkInitialRFIDEnableStatus() {
+        Boolean value = isRFIDHandleEnable();
+        try {
+            if (value != null) {
+                if (value) {
+                    edtRfidTagId.setEnabled(false);
+                    rfidHandler = new RfidHandler(requireActivity());
+                    rfidHandler.InitSDK(this);
+                } else {
+                    edtRfidTagId.setEnabled(true);
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     private void vibrate() {
@@ -525,7 +526,6 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
-
                                 LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
                                 String inUnloadingTime = aLDT.format(formatter);
@@ -541,7 +541,7 @@ public class ScanFragment extends Fragment implements MyListener {
                                     if (destinationLocationByUIcode != null) {
                                         saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null, outUnloadingTime, inUnloadingTime);
                                     } else {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null,outUnloadingTime, inUnloadingTime);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null, outUnloadingTime, inUnloadingTime);
                                     }
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
@@ -743,7 +743,6 @@ public class ScanFragment extends Fragment implements MyListener {
     }
 
     private boolean getWareHouseStorage() {
-        Log.i("getWareHouseStorage", "getAllWareHouse: ()");
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllWareHouse("Bearer " + loginUserToken, "bothra");
@@ -753,37 +752,38 @@ public class ScanFragment extends Fragment implements MyListener {
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ifWareHouseIsNotEmpty();
                     return;
                 }
-                Log.i("getWareHouseStorage", "onResponse: getAllWareHouse : responseCode : " + response.code());
                 if (response.isSuccessful()) {
+                    Log.i("getWareHouseStorage", "onResponse: raw : " + response.raw());
                     progressBar.setVisibility(View.GONE);
-                    Log.i("getWareHouseStorage", "onResponse: getAllWareHouse " + response.code());
                     List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
-                    arrDestinationLocation = new ArrayList<>();
                     try {
-
-                        Log.i("getWareHouseStorage", "onResponse: " + response.raw());
-                        Log.i("getWareHouseStorage", "onResponse: " + response.body().getMessage() + response.body().getStatus());
-                        if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
-                            return;
-                        }
                         SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
-                        for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
-                            String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
-                            editor.putString(String.valueOf(i), s).apply();
-                            Log.i("getWareHouseStorage", "onResponse: " + i + "   " + s);
-                            arrDestinationLocation.add(s);
+                        if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
+                            Log.i(TAG, "onResponse: in if");
+                            arrDestinationLocation.add("dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore");
+                            arrDestinationLocation.add("dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore2");
+                            editor.putString(String.valueOf(0), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore").apply();
+                            editor.putString(String.valueOf(1), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore2").apply();
+                        } else {
+                            Log.i(TAG, "onResponse:  in else");
+                            for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
+                                String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
+                                editor.putString(String.valueOf(i), s).apply();
+                                arrDestinationLocation.add(s);
+                            }
                         }
-                        for (String s : arrDestinationLocation) {
-                            Log.i("getWareHouseStorage", "onResponse: " + s);
+                        for (String s: arrDestinationLocation) {
+                            Log.i(TAG, "onResponse: " + s);
                         }
-                        Log.i("getWareHouseStorage", "onResponse: " + arrDestinationLocation.size());
+
                         editor.putString("size", String.valueOf(arrDestinationLocation.size())).apply();
 
                     } catch (Exception e) {
+                        Log.i(TAG, "onResponse: " + e.getMessage());
                         e.getMessage();
                     }
                 }
@@ -792,32 +792,37 @@ public class ScanFragment extends Fragment implements MyListener {
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ifWareHouseIsNotEmpty();
+//                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
             }
         });
         return true;
     }
 
-    public boolean isRFIDHandleEnable() {
-        Log.i(TAG, "isRFIDHandleEnable: <<Start>>");
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        Boolean value = false;
-        if (sharedPreferences.contains("enable_rfid_handle")) {
-            value = sharedPreferences.getBoolean("enable_rfid_handle", false);
-            Log.i(TAG, "isRFIDHandleEnable: value : " + value);
-        } else {
-            value = true;
-            Log.i(TAG, "isRFIDHandleEnable: else");
-        }
-        if (value) {
-            return true;
-        } else {
-            return false;
+    private void ifWareHouseIsNotEmpty(){
+        arrDestinationLocation = new ArrayList<>();
+        arrDestinationLocation = new ArrayList<>();
+        SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        arrDestinationLocation.add("dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore");
+        arrDestinationLocation.add("dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore2");
+        editor.putString(String.valueOf(0), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore").apply();
+        editor.putString(String.valueOf(1), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore2").apply();
+        editor.putString("size", String.valueOf(arrDestinationLocation.size())).apply();
+
+        for (String s: arrDestinationLocation) {
+            Log.i(TAG, "onResponse: " + s);
         }
     }
 
+
+    public boolean isRFIDHandleEnable() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        return sharedPreferences.getBoolean("enable_rfid_handle", true);
+    }
+
     @Override
-    public void onNotConnectedTpHandle(String name, Boolean status) {
+    public void onNotConnectedToHandle(String name, Boolean status) {
         SettingsFragment s = new SettingsFragment();
         if (!status) {
 

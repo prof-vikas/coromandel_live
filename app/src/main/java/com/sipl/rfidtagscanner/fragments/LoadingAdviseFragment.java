@@ -405,20 +405,20 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void updateUIBasedOnUser() {
-        if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
-            layoutBothraSupervisor.setVisibility(View.GONE);
-            layoutPinnacleSupervisor.setVisibility(View.GONE);
-        } else {
+        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
             layoutBothraSupervisor.setVisibility(View.VISIBLE);
             layoutPinnacleSupervisor.setVisibility(View.VISIBLE);
+        } else {
+            layoutBothraSupervisor.setVisibility(View.GONE);
+            layoutPinnacleSupervisor.setVisibility(View.GONE);
         }
     }
 
     private void chooseMethodToCall() {
-        if (arrBothraStrLocation.contains(loginUserStorageLocation)) {
-            UpdateBothraLoadingAdviseDetails(updateData());
-        } else {
+        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
             UpdateCoromadelLoadingAdviseDetails(setData());
+        } else {
+            UpdateBothraLoadingAdviseDetails(updateData());
         }
     }
 

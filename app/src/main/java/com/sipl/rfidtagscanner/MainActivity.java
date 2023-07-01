@@ -263,4 +263,51 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
+
+    public void alertWithReturnToScanFrag(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanFrag) {
+        Dialog dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setContentView(R.layout.custom_alert_dialog_box);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        TextView error = dialog.findViewById(R.id.dialog_type_error);
+        TextView success = dialog.findViewById(R.id.dialog_type_success);
+        TextView warning = dialog.findViewById(R.id.dialog_type_warning);
+        if (dialogType.equalsIgnoreCase("error")) {
+            error.setVisibility(View.VISIBLE);
+            success.setVisibility(View.GONE);
+            warning.setVisibility(View.GONE);
+        } else if (dialogType.equalsIgnoreCase("success")) {
+            error.setVisibility(View.GONE);
+            warning.setVisibility(View.GONE);
+            success.setVisibility(View.VISIBLE);
+        } else if (dialogType.equalsIgnoreCase("warning")) {
+            error.setVisibility(View.GONE);
+            success.setVisibility(View.GONE);
+            warning.setVisibility(View.VISIBLE);
+        } else {
+            Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
+        }
+        TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
+        if (dialogMessage == null) {
+            dialogMessageTxt.setVisibility(View.GONE);
+        }
+        TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
+        TextView btn = dialog.findViewById(R.id.text_btn);
+        dialogTitleTxt.setText(dialogTitle);
+        dialogMessageTxt.setText(dialogMessage);
+        btn.setText(dialogBtnText);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isReturnToScanFrag) {
+                    loadFragment(new ScanFragment(), 1);
+                    dialog.dismiss();
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.show();
+    }
 }
