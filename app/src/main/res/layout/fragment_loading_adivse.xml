@@ -176,6 +176,37 @@
                         android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/title_berth_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/la_ly_margin_bottom"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/la_ly_pd_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/berthNumber"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/edt_la_berth_number"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/la_edt_rectangle_height"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
+                        android:layout_weight="4"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:enabled="false"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/title_driver_name"

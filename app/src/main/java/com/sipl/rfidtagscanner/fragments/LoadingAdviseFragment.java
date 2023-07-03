@@ -41,18 +41,15 @@ import retrofit2.Response;
 public class LoadingAdviseFragment extends Fragment {
     private static final String TAG = "TracingError";
     private final Helper helper = new Helper();
-    ArrayList<String> arrPinnacleSupervisor;
-    ArrayList<String> arrBothraSupervisor;
     ArrayList<String> arrBothraStrLocation = new ArrayList<>();
 
     private String strisgetInLoadingTime;
     private TextClock tvClock, exitClock;
     private LinearLayout lltvClockLayout;
     private ProgressBar progressBar;
-    //    private AutoCompleteTextView autoCompletePinnacleSupervisor, autoCompleteBothraSupervisor;
     private EditText edtDestinationLocation, edtBothraSupervisor, edtPinnacleSupervisor;
     private TextView tvDestinationLocation, tvPinnacleSupervisor, tvBothraSupervisor;
-    private EditText edtRfidTagNo, edtLepNo, edtSapGrNo, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtTruckCapacity, edtLoadingSupervisor, edtSourceLocation;
+    private EditText edtRfidTagNo, edtBerthNumber, edtLepNo, edtSapGrNo, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtTruckCapacity, edtLoadingSupervisor, edtSourceLocation;
 
     //    userDetails
     private String loginUserName;
@@ -63,23 +60,10 @@ public class LoadingAdviseFragment extends Fragment {
     private int loginUserId;
 
     private String selectedDestinationCode;
-
-
-    //    ArrayAdapter for spinner
-/*    private ArrayAdapter<String> pinnacleSupervisorAdapter;
-    private ArrayAdapter<String> bothraSupervisorAdapter;*/
-
-    private Integer selectedBothraSupervisorId;
-    private String selectedBothraSupervisor;
-    private Integer selectedPinnacleSupervisorId;
-    private String selectedPinnacleSupervisor;
     private Integer selectedLepNumberId;
-
     private LinearLayout constaintEntryTimeLayout, textclockLayoutexit;
-
     private EditText edtConstEntryTime;
-
-    private LinearLayout layoutBothraSupervisor, layoutPinnacleSupervisor;
+    private LinearLayout layoutBothraSupervisor, layoutPinnacleSupervisor, edtBerthNumberLayout;
 
     public LoadingAdviseFragment() {
     }
@@ -114,7 +98,9 @@ public class LoadingAdviseFragment extends Fragment {
         edtVesselName = view.findViewById(R.id.edt_la_vessel_name);
         edtCommodity = view.findViewById(R.id.edt_la_commodity);
         edtTruckCapacity = view.findViewById(R.id.edt_la_quantity);
+        edtBerthNumber = view.findViewById(R.id.edt_la_berth_number);
         edtLoadingSupervisor = view.findViewById(R.id.edt_la_loading_supervisor);
+        edtBerthNumberLayout = view.findViewById(R.id.title_berth_number);
 
         progressBar = view.findViewById(R.id.la_progressBar);
 
@@ -235,6 +221,11 @@ public class LoadingAdviseFragment extends Fragment {
 
                 if (edtBothraSupervisor.length() == 0) {
                     edtBothraSupervisor.setError("This field is required");
+                    return false;
+                }
+
+                if (edtBerthNumber.length() == 0) {
+                    edtBerthNumber.setError("This field is required");
                     return false;
                 }
             }
@@ -408,9 +399,11 @@ public class LoadingAdviseFragment extends Fragment {
         if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
             layoutBothraSupervisor.setVisibility(View.VISIBLE);
             layoutPinnacleSupervisor.setVisibility(View.VISIBLE);
+            edtBerthNumberLayout.setVisibility(View.VISIBLE);
         } else {
             layoutBothraSupervisor.setVisibility(View.GONE);
             layoutPinnacleSupervisor.setVisibility(View.GONE);
+            edtBerthNumberLayout.setVisibility(View.GONE);
         }
     }
 
@@ -443,6 +436,7 @@ public class LoadingAdviseFragment extends Fragment {
         String strDestinationDesc = sp.getString("strDestinationDescSPK", null);
         String strPinnaclesupervisor = sp.getString("pinnacleSupervisorSPK", null);
         String strBothraSupervisor = sp.getString("bothraSupervisorSPK", null);
+        String strBerthNumber = sp.getString("BerthNumberSPK", null);
         this.strisgetInLoadingTime = sp.getString("isgetInLoadingTimeSPK", "false");
         Log.i(TAG, "getLoadingAdviseDetails: strisgetInLoadingTime : " + strisgetInLoadingTime);
         String getInTime = null;
@@ -468,10 +462,10 @@ public class LoadingAdviseFragment extends Fragment {
         Log.i(TAG, "getLoadingAdviseDetails: strisgetInLoadingTime : " + strisgetInLoadingTime);
         String destinationLocation = strDestinationCode + " - " + strDestinationDesc;
         this.selectedDestinationCode = strDestinationCode;
-        saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation);
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, strBerthNumber);
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String destinationLocation) {
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String destinationLocation, String berthNumber) {
         edtRfidTagNo.setText(rfidTag);
         edtLepNo.setText(lepNo);
         edtSapGrNo.setText(sapGrNo);
@@ -483,6 +477,7 @@ public class LoadingAdviseFragment extends Fragment {
         edtCommodity.setText(commodity);
         edtTruckCapacity.setText(truckCapacity);
         edtDestinationLocation.setText(destinationLocation);
+        edtBerthNumber.setText(berthNumber);
 
 
     }

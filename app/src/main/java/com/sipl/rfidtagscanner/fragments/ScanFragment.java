@@ -215,6 +215,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             String truckCapacity = String.valueOf(rfidLepIssueDto.getDailyTransportReportModule().getTruckCapacity());
                             String commodity = rfidLepIssueDto.getDailyTransportReportModule().getCommodity();
                             String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
+                            String berthLocation = rfidLepIssueDto.getBerthMaster().getBerthNumber();
                             String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
                             Log.i(TAG, "onResponse: in rstat : " + response.body().getRfidLepIssueDto().getRstat());
                             if (rfidLepIssueDto.getRstat() == 0) {
@@ -228,7 +229,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             Log.i(TAG, "onResponse: role " + role);
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
                                 Log.i(TAG, "onResponse:  in before saving in shp");
-                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, null, null, null, null);
+                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, null, null, null, null, berthLocation);
                                 Log.i(TAG, "onResponse: after saving data");
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 return;
@@ -324,7 +325,7 @@ public class ScanFragment extends Fragment implements MyListener {
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
+                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor,null);
                                     ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 }
                             } catch (Exception e) {
@@ -350,7 +351,7 @@ public class ScanFragment extends Fragment implements MyListener {
 
     }
 
-    private void saveLADetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor) {
+    private void saveLADetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor, String BerthNumber) {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -369,6 +370,7 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.putString("getInloadingTimeSPK", getInloadingTime).apply();
         editor.putString("pinnacleSupervisorSPK", pinnacleSupervisor).apply();
         editor.putString("bothraSupervisorSPK", bothraSupervisor).apply();
+        editor.putString("BerthNumberSPK", BerthNumber).apply();
         Log.i(TAG, "saveLADataSharedPref: strDestinationCode : " + strDestinationCode);
         Log.i(TAG, "saveLADataSharedPref: strDestinationDesc : " + strDestinationDesc);
         editor.putString("strDestinationDescSPK", strDestinationDesc).apply();
@@ -717,12 +719,11 @@ public class ScanFragment extends Fragment implements MyListener {
 
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor);
+                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, null);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
                         } catch (Exception e) {
                             e.getMessage();
-                            return;
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
@@ -752,12 +753,14 @@ public class ScanFragment extends Fragment implements MyListener {
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
+                    Log.i(TAG, "onResponse: not success");
                     ifWareHouseIsNotEmpty();
                     return;
                 }
                 if (response.isSuccessful()) {
                     Log.i("getWareHouseStorage", "onResponse: raw : " + response.raw());
                     progressBar.setVisibility(View.GONE);
+                    arrDestinationLocation = new ArrayList<>();
                     List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
                     try {
                         SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
@@ -771,9 +774,13 @@ public class ScanFragment extends Fragment implements MyListener {
                         } else {
                             Log.i(TAG, "onResponse:  in else");
                             for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
+                                Log.i(TAG, "onResponse: in for loop" + functionalLocationMasterDtoList.get(i).getStrLocationCode());
                                 String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
+                                Log.i(TAG, "onResponse: s : " + s);
                                 editor.putString(String.valueOf(i), s).apply();
+                                Log.i(TAG, "onResponse: after editior" );
                                 arrDestinationLocation.add(s);
+                                Log.i(TAG, "onResponse: ware logcation : " + s);
                             }
                         }
                         for (String s: arrDestinationLocation) {
@@ -800,7 +807,7 @@ public class ScanFragment extends Fragment implements MyListener {
     }
 
     private void ifWareHouseIsNotEmpty(){
-        arrDestinationLocation = new ArrayList<>();
+        Log.i(TAG, "ifWareHouseIsNotEmpty: in method()");
         arrDestinationLocation = new ArrayList<>();
         SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();

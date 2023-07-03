@@ -8,6 +8,7 @@ public class RfidLepIssueDto {
     private DailyTransportReportModuleDto dailyTransportReportModule;
     private String lepNumber;
     private RfidMasterDto rfidMaster;
+    private BerthMasterDto berthMaster;
     private DriverMasterDto driverMaster;
     private UserMasterDto userMaster;
     private StorageLocationDto destinationLocation;
@@ -22,11 +23,12 @@ public class RfidLepIssueDto {
         this.id = id;
     }
 
-    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, RfidMasterDto rfidMaster, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, Boolean isActive, Integer printCount, Integer rstat, Boolean isRfidLepMapped, AuditEntity auditEntity) {
+    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, RfidMasterDto rfidMaster, BerthMasterDto berthMaster, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, Boolean isActive, Integer printCount, Integer rstat, Boolean isRfidLepMapped, AuditEntity auditEntity) {
         this.id = id;
         this.dailyTransportReportModule = dailyTransportReportModule;
         this.lepNumber = lepNumber;
         this.rfidMaster = rfidMaster;
+        this.berthMaster = berthMaster;
         this.driverMaster = driverMaster;
         this.userMaster = userMaster;
         this.destinationLocation = destinationLocation;
@@ -68,6 +70,14 @@ public class RfidLepIssueDto {
 
     public void setRfidMaster(RfidMasterDto rfidMaster) {
         this.rfidMaster = rfidMaster;
+    }
+
+    public BerthMasterDto getBerthMaster() {
+        return berthMaster;
+    }
+
+    public void setBerthMaster(BerthMasterDto berthMaster) {
+        this.berthMaster = berthMaster;
     }
 
     public DriverMasterDto getDriverMaster() {

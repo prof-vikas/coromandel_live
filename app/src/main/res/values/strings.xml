@@ -12,6 +12,7 @@
 
     <string name="driverName">Driver Name</string>
     <string name="TruckNumber">Truck Number</string>
+    <string name="berthNumber">Berth Number</string>
     <string name="commodity">Commodity</string>
     <string name="grossWeight">Gross Weight (kg)</string>
     <string name="print">Print</string>
