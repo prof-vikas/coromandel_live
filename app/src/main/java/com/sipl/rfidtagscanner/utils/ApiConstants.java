@@ -7,8 +7,8 @@ public class ApiConstants {
 
 
 //    Apache
-    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
-//    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
+//    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
+    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
 
 
 //    Tomcat
