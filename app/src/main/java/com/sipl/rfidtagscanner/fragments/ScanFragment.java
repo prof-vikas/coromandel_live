@@ -192,7 +192,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onResponse(Call<RfidLepApiResponse> call, Response<RfidLepApiResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                         return;
                     }
                     Log.i(TAG, "onResponse: response.raw : getRfidTagDetailCoromandelLA : " + response.raw());
@@ -250,14 +250,14 @@ public class ScanFragment extends Fragment implements MyListener {
                         Log.i(TAG, "onResponse: NOT_FOUND &&& else");
                         progressBar.setVisibility(View.GONE);
                         Log.i(TAG, "onResponse: " + response.raw());
-                        ((MainActivity) requireActivity()).alert(requireContext(), "WARNING", response.body().getMessage(), null, "OK");
+                        ((MainActivity) requireActivity()).alert(requireContext(), "WARNING", response.body().getMessage(), null, "OK", false);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<RfidLepApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                     Log.i(TAG, "onFailure: " + t.getMessage());
                     t.printStackTrace();
                 }
@@ -269,7 +269,7 @@ public class ScanFragment extends Fragment implements MyListener {
     }
 
     private void getRFIDBothraLA() {
-        Log.i(TAG, "getRFIDBothraLA: <<Start>>");
+        Log.i(TAG, "getRFIDCoromandelLa_2(): <<Start>>");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "1", "0", edtRfidTagId.getText().toString());
@@ -278,7 +278,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
                         return;
                     }
                     Log.i(TAG, "onResponse: getRFIDBothraLA : response.raw() : " + response.raw());
@@ -302,6 +302,8 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
                                 String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
+                                String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
+
                              /*   String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
 
@@ -325,7 +327,7 @@ public class ScanFragment extends Fragment implements MyListener {
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor,null);
+                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor,berthNumber);
                                     ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 }
                             } catch (Exception e) {
@@ -334,7 +336,7 @@ public class ScanFragment extends Fragment implements MyListener {
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.body().getMessage(), null, "OK");
+                            ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.body().getMessage(), null, "OK", false);
                         }
                     }
                 }
@@ -342,7 +344,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
@@ -420,7 +422,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     hideProgress();
                     if (!response.isSuccessful()) {
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                         return;
                     }
                     if (response.body().getStatus() != null) {
@@ -441,33 +443,31 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
-                                LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
-                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                                String inUnloadingTime = aLDT.format(formatter);
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     if (destinationLocationByUIcode != null) {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null, outUnloadingTime, inUnloadingTime);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null, outUnloadingTime, strInUnloadingTime);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                     } else {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null, inUnloadingTime, outUnloadingTime);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null, strInUnloadingTime, outUnloadingTime);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                     }
                                 } else {
-                                    ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
+                                    ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK", false);
                                     Intent id = new Intent(requireActivity(), LoginActivity.class);
                                     startActivity(id);
                                     requireActivity().finish();
                                 }
 
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 Log.i(TAG, "onResponse: Exception in coromandel warehouse : " + e.getMessage());
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
                             Log.i(TAG, "onResponse: " + response.raw());
-                            ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
+                            ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK", false);
                         }
                     }
                 }
@@ -475,7 +475,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     hideProgress();
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
@@ -528,9 +528,7 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
-                                LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
-                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                                String inUnloadingTime = aLDT.format(formatter);
+
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
@@ -541,14 +539,14 @@ public class ScanFragment extends Fragment implements MyListener {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
                                     if (destinationLocationByUIcode != null) {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null, outUnloadingTime, inUnloadingTime);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null, outUnloadingTime, strInUnloadingTime);
                                     } else {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null, outUnloadingTime, inUnloadingTime);
+                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null, outUnloadingTime, strInUnloadingTime);
                                     }
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
                                     Log.i(TAG, "onResponse: in else roles other than ROLES_BWS : " + ROLES_BWH);
-                                    ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
+                                    ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK", false);
                                     Intent id = new Intent(requireActivity(), LoginActivity.class);
                                     startActivity(id);
                                     requireActivity().finish();
@@ -568,7 +566,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
@@ -586,7 +584,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                         return;
                     }
 
@@ -625,7 +623,7 @@ public class ScanFragment extends Fragment implements MyListener {
                                 }
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
-                                ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK");
+                                ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK", false);
                                 Intent id = new Intent(requireActivity(), LoginActivity.class);
                                 startActivity(id);
                                 requireActivity().finish();
@@ -637,14 +635,14 @@ public class ScanFragment extends Fragment implements MyListener {
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK", false);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
@@ -673,7 +671,7 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                         return;
                     }
 
@@ -728,14 +726,14 @@ public class ScanFragment extends Fragment implements MyListener {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         Log.i(TAG, "onResponse: " + response.raw());
-                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK");
+                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK", false);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
@@ -838,9 +836,9 @@ public class ScanFragment extends Fragment implements MyListener {
             errorHandle.setText(text);
             error_layout.setVisibility(View.VISIBLE);
             if (name != null) {
-                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", name, "Try reattaching the handle", "OK");
+                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", name, "Try reattaching the handle", "OK", false);
             } else {
-                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", "RFID handle not found", "Try reattaching the handle", "OK");
+                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", "RFID handle not found", "Try reattaching the handle", "OK", false);
             }
         } else {
             error_layout.setVisibility(View.GONE);

@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("UserSourceLocationDescSPK", null);
     }
 
-    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
+    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.custom_alert_dialog_box);
@@ -260,7 +260,13 @@ public class MainActivity extends AppCompatActivity {
         dialogTitleTxt.setText(dialogTitle);
         dialogMessageTxt.setText(dialogMessage);
         btn.setText(dialogBtnText);
-        btn.setOnClickListener(view -> dialog.dismiss());
+        btn.setOnClickListener(view -> {
+            if(isReturnToScanner){
+                dialog.dismiss();
+            }else {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
     }
 

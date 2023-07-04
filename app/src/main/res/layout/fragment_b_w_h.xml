@@ -438,7 +438,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <TextClock
-                        android:id="@+id/bwh_tv_clock"
+                        android:id="@+id/bbwh_tv_clock"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -470,7 +470,7 @@
                           android:textSize="@dimen/common_edt_text" />-->
                 </LinearLayout>
 
-      <!--          <LinearLayout
+                <LinearLayout
                     android:id="@+id/title_exit_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -503,8 +503,8 @@
                         android:textColor="@color/wh_edt_txt"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textSize="@dimen/common_edt_text" />
-                    &lt;!&ndash;            android:format24hours="hh:mm:ss a  EEE MMM d"&ndash;&gt;
-                </LinearLayout>-->
+<!--                       android:format24hours="hh:mm:ss a  EEE MMM d"-->
+                </LinearLayout>
 
 
                 <!--Buttons -->

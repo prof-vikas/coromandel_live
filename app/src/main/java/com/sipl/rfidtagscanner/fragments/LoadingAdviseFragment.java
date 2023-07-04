@@ -263,17 +263,16 @@ public class LoadingAdviseFragment extends Fragment {
                 Log.i(TAG, "onResponse code : " + response.code());
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
-//                    alertBuilder(response.errorBody().toString());
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                 }
                 Log.i(TAG, "onResponse: add loading advise : " + response.body().getStatus());
                 if (response.body().getStatus().equalsIgnoreCase("CREATED")) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK", true);
                     resetTextField();
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK", false);
                     resetTextField();
                 }
             }
@@ -281,7 +280,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<LoadingAdvisePostApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
             }
         });
     }
@@ -297,7 +296,7 @@ public class LoadingAdviseFragment extends Fragment {
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK", false);
                 }
                 Log.i(TAG, "onResponse: UpdateCoromadelLoadingAdviseDetails : " + response.raw());
 
@@ -306,13 +305,13 @@ public class LoadingAdviseFragment extends Fragment {
                        if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                            progressBar.setVisibility(View.GONE);
                            Log.i(TAG, "onResponse: response : " + response.body().getStatus());
-                           ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
+                           ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
                            resetTextField();
                        } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
                            sendLoadingAdviseDetails(setData());
                        } else {
                            progressBar.setVisibility(View.GONE);
-                           ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
+                           ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
                        }
                    }
                 }
@@ -321,7 +320,7 @@ public class LoadingAdviseFragment extends Fragment {
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
             }
         });
     }
@@ -337,23 +336,23 @@ public class LoadingAdviseFragment extends Fragment {
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK", false);
                 }
 
                 if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
                     resetTextField();
                 } else {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
             }
         });
     }

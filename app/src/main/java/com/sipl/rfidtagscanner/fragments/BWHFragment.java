@@ -30,7 +30,6 @@ import com.sipl.rfidtagscanner.RetrofitController;
 import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
-import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
@@ -39,6 +38,7 @@ import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,14 +83,14 @@ public class BWHFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_b_w_h, container, false);
         spinnerWarehouseNo = view.findViewById(R.id.bwh_spinner_warehouse_no);
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
-        tvClock = view.findViewById(R.id.bwh_tv_clock);
+        tvClock = view.findViewById(R.id.bbwh_tv_clock);
         tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
-//        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
+        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
         edtEntryTime = view.findViewById(R.id.edt_entry_time2);
         tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
         tvEntryTimeEdtLayout = view.findViewById(R.id.title_entry_time2);
         tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
-//        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
+        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
 
         edtRfidTag = view.findViewById(R.id.bwh_edt_rfid_tag);
         edtLepNo = view.findViewById(R.id.bwh_edt_lep_number);
@@ -176,7 +176,7 @@ public class BWHFragment extends Fragment {
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 if (!response.isSuccessful()) {
                     hideProgressBar();
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -264,7 +264,7 @@ public class BWHFragment extends Fragment {
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
             }
         });
     }
@@ -278,7 +278,7 @@ public class BWHFragment extends Fragment {
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
                     hideProgressBar();
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllBothraRemark : responseCode : " + response.code());
@@ -343,7 +343,7 @@ public class BWHFragment extends Fragment {
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
                 hideProgressBar();
-                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
             }
         });
     }
@@ -354,6 +354,7 @@ public class BWHFragment extends Fragment {
         Boolean isWeighbridgeAvailable = Boolean.valueOf(weighbridgeAvailable);
         int callFrom = sp.getInt("callFromSPK", 0);
 
+
         StorageLocationDto selectedWareHouseNo = null;
         RemarksDto remarksDto = null;
         Integer FLAG = 8;
@@ -362,59 +363,24 @@ public class BWHFragment extends Fragment {
         if (selectedWhNo != null) {
             if (!selectedWhNo.equals("Select Warehouse No")) {
                 selectedWareHouseNo = new StorageLocationDto(selectedWhNo, isSelectedWhHasWB);
-            }else {
+            } else {
                 selectedWareHouseNo = new StorageLocationDto(selectedWhNo);
             }
             if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
-        }else {
+        } else {
             Log.i(TAG, "setData: in else where setting warehouse in excel");
-            selectedWareHouseNo = new StorageLocationDto(selectedWhNo);
+            selectedWareHouseNo = new StorageLocationDto(previousWarehouseCode);
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNoId);
- /*       if (weighbridgeAvailable.equalsIgnoreCase("true")) {
-            updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null);
-        } else {
-            if (callFrom == 1) {
-                updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, String.valueOf(LocalDateTime.now()));
-            } else {
-                updateWareHouseNoRequestDto = new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, String.valueOf(LocalDateTime.now()), null);
-            }
-        }
-        return updateWareHouseNoRequestDto;*/
-        Log.i(TAG, "setData: inUnloadingTime : " + inUnloadingTime);
         if (inUnloadingTime != null) {
-            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG,null,null, inUnloadingTime, LocalDateTime.now().toString());
+            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, inUnloadingTime, LocalDateTime.now().toString());
         } else {
             return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, LocalDateTime.now().toString(), null);
         }
-
     }
 
-
-  /*  private UpdateRmgRequestDto setData() {
-        StorageLocationDto selectedWareHouseNo = null;
-        RemarksDto remarksDto = null;
-        final Integer FLAG = 4;
-        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
-        StorageLocationDto previousWareHouseNo = new StorageLocationDto(previousRmgNoId);
-        if (selectedRmgNo != null) {
-            if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
-                selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
-            }
-            if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
-                remarksDto = new RemarksDto(selectedRemarksId);
-            }
-        }
-
-        RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
-        if (inUnloadingTime != null) {
-            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, inUnloadingTime, LocalDateTime.now().toString());
-        } else {
-            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, LocalDateTime.now().toString(), null);
-        }
-    }*/
 
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
         Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
@@ -424,25 +390,27 @@ public class BWHFragment extends Fragment {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
-                   hideProgressBar();
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK");
+                    hideProgressBar();
+                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK", false);
                 }
                 Log.i(TAG, "onResponse: updateWareHouseNo : " + response.raw());
 
-                if (response.body().getStatus().equalsIgnoreCase("OK")) {
-                    hideProgressBar();
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK");
-                    resetFields();
-                } else {
-                    hideProgressBar();
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK");
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus().equalsIgnoreCase("OK")) {
+                        hideProgressBar();
+                        ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
+                        resetFields();
+                    } else {
+                        hideProgressBar();
+                        ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 hideProgressBar();
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                 t.printStackTrace();
             }
         });
@@ -450,12 +418,12 @@ public class BWHFragment extends Fragment {
 
     private void setTvClock() {
         try {
-            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
-            tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm a");
-            tvExitTime.setFormat24Hour("dd-MM-yy hh:mm a");
+            tvClock.setFormat24Hour("dd-MM-yy hh:mm:ss a");
+            tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm:ss a");
+            tvExitTime.setFormat24Hour("dd-MM-yy hh:mm:ss a");
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "Exception in setTvClock : e.getMessage() : " + e.getMessage());
+            Log.e(TAG, "Exception in setTvClock : Message : " + e.getMessage());
         }
     }
 
@@ -479,18 +447,22 @@ public class BWHFragment extends Fragment {
         saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc);
     }
 
-    //    after new changes
     private void updateUIBaseOnWareHouseLocation() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+        String strInUnloadingTime = null;
+        if (inUnloadingTime != null) {
+            LocalDateTime localDateTime = LocalDateTime.parse(inUnloadingTime);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss a");
+            strInUnloadingTime = localDateTime.format(formatter);
+        }
 
-        if (inUnloadingTime != null){
+        if (inUnloadingTime != null) {
             tvEntryTimeClocKLayout.setVisibility(View.GONE);
             tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
-            edtEntryTime.setText(inUnloadingTime);
+            edtEntryTime.setText(strInUnloadingTime);
             tvLoadingTimeLayout.setVisibility(View.VISIBLE);
-//            tvExitTimeLayout.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -505,34 +477,11 @@ public class BWHFragment extends Fragment {
         edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
     }
 
-    //before method 22 june version 1.0.2
-   /* private void updateUIBaseOnWareHouseLocation() {
-        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-        String isWeighbridgeAvailable = sp.getString("isWeighbridgeAvailableSPK", null);
-        String vehicleInTime = sp.getString("vehicleInTimeSPK", null);
-        int callFrom = sp.getInt("callFromSPK", 0);
-        if (isWeighbridgeAvailable != null) {
-            if (isWeighbridgeAvailable.equalsIgnoreCase("false") && callFrom == 1) {
-                tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
-            } else if (isWeighbridgeAvailable.equalsIgnoreCase("false") && callFrom == 2) {
-                tvEntryTimeClocKLayout.setVisibility(View.GONE);
-                tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
-                edtEntryTime.setText(vehicleInTime);
-                tvLoadingTimeLayout.setVisibility(View.VISIBLE);
-                tvExitTimeLayout.setVisibility(View.VISIBLE);
-            }
-        } else {
-            Log.i(TAG, "updateUIBaseOnWareHouseLocation: weidgeBride is true");
-        }
-    }*/
-
-
-
-    private void showProgressBar(){
+    private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void hideProgressBar(){
+    private void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
 

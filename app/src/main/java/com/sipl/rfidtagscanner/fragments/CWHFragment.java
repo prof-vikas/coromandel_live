@@ -39,6 +39,7 @@ import com.sipl.rfidtagscanner.utils.CustomToast;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +123,13 @@ public class CWHFragment extends Fragment {
 
     private void updateUIBaseOnWareHouseLocation() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-        String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+        String strInUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
+        String inUnloadingTime = null;
+        if (strInUnloadingTime != null){
+            LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss a");
+            inUnloadingTime = aLDT.format(formatter);
+        }
 
         if (inUnloadingTime != null){
             tvEntryTimeClocKLayout.setVisibility(View.GONE);
@@ -187,7 +194,7 @@ public class CWHFragment extends Fragment {
 
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllUpdateRmgNo : responseCode : " + response.code() + " " + response.raw());
@@ -276,7 +283,7 @@ public class CWHFragment extends Fragment {
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
             }
         });
 
@@ -293,7 +300,7 @@ public class CWHFragment extends Fragment {
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
 //                    alertBuilder(response.errorBody().toString());
                     return;
                 }
@@ -360,7 +367,7 @@ public class CWHFragment extends Fragment {
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
             }
         });
         return true;
@@ -375,7 +382,7 @@ public class CWHFragment extends Fragment {
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK");
+                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                 }
 
                 Log.i(TAG, "onResponse: code" + response.code() + response.raw());
@@ -383,11 +390,11 @@ public class CWHFragment extends Fragment {
                     if (response.body().getStatus() != null) {
                         if (response.body().getStatus().equalsIgnoreCase("OK")) {
                             progressBar.setVisibility(View.GONE);
-                            ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK");
+                            ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK", true);
                             resetFields();
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK");
+                            ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK", false);
                             resetFields();
                         }
                     }
@@ -398,7 +405,7 @@ public class CWHFragment extends Fragment {
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 Log.i(TAG, "onFailure: " + t.getMessage());
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                 t.printStackTrace();
             }
         });
@@ -459,6 +466,7 @@ public class CWHFragment extends Fragment {
         this.inUnloadingTime = inUnloadingTime;
         this.outUnloadingTime = outUnloadingTime;
         String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
+
 
         saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc);
     }
