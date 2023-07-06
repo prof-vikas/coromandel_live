@@ -3,22 +3,16 @@ package com.sipl.rfidtagscanner;
 import android.content.Context;
 import android.util.Log;
 
-import com.sipl.rfidtagscanner.api.LoadingAdviseApi;
+import com.sipl.rfidtagscanner.api.ApiController;
 import com.sipl.rfidtagscanner.utils.ApiConstants;
 import com.sipl.rfidtagscanner.utils.RetryInterceptor;
 
-import java.io.InputStream;
-import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
@@ -29,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitController {
     private static final String TAG = "RetrofitController";
     private static RetrofitController instance = null;
-    private LoadingAdviseApi loadingAdviseApi;
+    private ApiController apiController;
 
     public RetrofitController(Context context) {
         try {
@@ -69,7 +63,7 @@ public class RetrofitController {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-            this.loadingAdviseApi = retrofit.create(LoadingAdviseApi.class);
+            this.apiController = retrofit.create(ApiController.class);
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(TAG, "RetrofitController: in exception");
@@ -145,7 +139,7 @@ public class RetrofitController {
     }
 
 
-    public LoadingAdviseApi getLoadingAdviseApi() {
-        return loadingAdviseApi;
+    public ApiController getLoadingAdviseApi() {
+        return apiController;
     }
 }

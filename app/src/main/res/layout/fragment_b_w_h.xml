@@ -16,7 +16,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
@@ -60,7 +60,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="RFID Tag"
+                        android:text="@string/rfid_tag"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
@@ -76,7 +76,7 @@
                         android:textColor="@color/wh_edt_txt"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:inputType="textAutoComplete"
-                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:paddingStart="@dimen/common_edt_rectangle_pd_left"
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
 
@@ -351,7 +351,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:paddingBottom="@dimen/bwh_ly_pd_bottom"
                     android:layout_marginBottom="@dimen/common_ly_margin_bottom"
                     android:weightSum="7">
@@ -383,11 +383,11 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_entry_time2"
+                    android:id="@+id/bwh_ll_entry_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:paddingBottom="@dimen/bwh_ly_pd_bottom"
                     android:layout_marginBottom="@dimen/common_ly_margin_bottom"
                     android:weightSum="7">
@@ -423,7 +423,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:paddingBottom="@dimen/bwh_ly_pd_bottom"
                     android:layout_marginBottom="@dimen/common_ly_margin_bottom"
                     android:weightSum="7">
@@ -438,7 +438,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <TextClock
-                        android:id="@+id/bbwh_tv_clock"
+                        android:id="@+id/bwh_exit_time"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -451,60 +451,9 @@
                         android:textColor="@color/wh_edt_txt"
                         android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
                         android:textSize="@dimen/common_edt_text" />
-                    <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
-
-                    <!--  <EditText
-                          android:id="@+id/bwh_edt_truck_no__"
-                          android:layout_width="0dp"
-                          android:layout_height="@dimen/bwh_edt_rectangle_height"
-                          android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
-                          android:layout_weight="4"
-                          android:background="@drawable/rectangle_edt_read_only_field"
-                          android:enabled="false"
-                          android:inputType="textCapCharacters"
-                          android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                          android:text="04-05-23 10:40:43 AM"
-                          android:textAllCaps="true"
-                          android:fontFamily="@font/source_sans_pro_semi_bold"
-                          android:textColor="@color/wh_edt_txt"
-                          android:textSize="@dimen/common_edt_text" />-->
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/title_exit_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
-                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
-                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
-                    android:weightSum="7">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:text="Exit Time"
-                        android:fontFamily="@font/source_sans_pro_semi_bold"
-                        android:textColor="@color/wh_tv_txt"
-                        android:textSize="@dimen/common_tv_text" />
-
-                    <TextClock
-                        android:id="@+id/bwh_tv_exit_time"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
-                        android:layout_weight="4"
-                        android:background="@drawable/rectangle_edt_read_only_field"
-                        android:enabled="false"
-                        android:format12Hour="dd-MM-yy hh:mm:ss a"
-                        android:gravity="center_vertical"
-                        android:fontFamily="@font/source_sans_pro_semi_bold"
-                        android:textColor="@color/wh_edt_txt"
-                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
-                        android:textSize="@dimen/common_edt_text" />
-<!--                       android:format24hours="hh:mm:ss a  EEE MMM d"-->
-                </LinearLayout>
 
 
                 <!--Buttons -->
@@ -566,11 +515,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true" />
             </LinearLayout>
-
-
         </LinearLayout>
-
-
 
     </ScrollView>
     <ProgressBar

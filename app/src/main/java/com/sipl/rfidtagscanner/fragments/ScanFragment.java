@@ -3,6 +3,7 @@ package com.sipl.rfidtagscanner.fragments;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_WARNING;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
@@ -14,9 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-
-import androidx.preference.PreferenceManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,10 +25,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.preference.PreferenceManager;
 
 import com.sipl.rfidtagscanner.LoginActivity;
 import com.sipl.rfidtagscanner.MainActivity;
@@ -43,12 +41,11 @@ import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
-import com.sipl.rfidtagscanner.interf.MyListener;
+import com.sipl.rfidtagscanner.interf.HandleStatusInterface;
 import com.sipl.rfidtagscanner.interf.RFIDDataModel;
 import com.sipl.rfidtagscanner.interf.RfidUiDataDto;
 import com.zebra.rfid.api3.TagData;
 
-import java.security.spec.ECField;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -58,7 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ScanFragment extends Fragment implements MyListener {
+public class ScanFragment extends Fragment implements HandleStatusInterface {
 
     private static final String TAG = "ConnectFragment";
     private ArrayList<String> arrDestinationLocation;
@@ -180,6 +177,21 @@ public class ScanFragment extends Fragment implements MyListener {
             }
             rfidHandler.stopInventory();
         });
+    }
+
+    /*
+     * Method call on verify
+     * */
+    private void getRFIDDetails() {
+        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (admin_selected_nav_screen.equalsIgnoreCase("loadingAdvise"))) {
+            if (arrDestinationLocation.contains(loginUserStorageLocation)) {
+                getRfidTagDetailBothraLA();
+            } else {
+                getRfidDetailCoromandelLA();
+            }
+        } else {
+            getAllWareHouseDetails();
+        }
     }
 
     private void getRfidDetailCoromandelLA() {
@@ -327,7 +339,7 @@ public class ScanFragment extends Fragment implements MyListener {
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor,berthNumber);
+                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, berthNumber);
                                     ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 }
                             } catch (Exception e) {
@@ -382,7 +394,6 @@ public class ScanFragment extends Fragment implements MyListener {
     private void saveWHDetails(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String isWeighbridgeAvailable, Integer callFrom, String vehicleInTime, String outUnloadingTime, String inUnloadingTime) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        Log.i(TAG, "saveWHDataToSharedPref: in sherfPrench data list");
         editor.putString("rfidTagSPK", rfidTag).apply();
         editor.putString("lepNoSPK", lepNo).apply();
         editor.putString("inUnloadingTimeSPK", inUnloadingTime).apply();
@@ -401,30 +412,50 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.apply();
     }
 
-    private void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    private void saveWHDetailsCoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks) {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("rfidTagSPK", rfidTag).apply();
+        editor.putString("lepNoSPK", lepNo).apply();
+        editor.putString("inUnloadingTimeSPK", inUnloadingTime).apply();
+        editor.putString("outUnloadingTimeSPK", outUnloadingTime).apply();
+        editor.putString("lepNoIdSPK", lepNoId).apply();
+        editor.putString("driverNameSPK", driverName).apply();
+        editor.putString("truckNoSPK", truckNo).apply();
+        editor.putString("commoditySPK", commodity).apply();
+        editor.putString("GrossWeightSPK", GrossWeight).apply();
+        editor.putString("previousRmgNoSPK", previousRmgNo).apply();
+        editor.putString("PreviousRmgNoDescSPK", PreviousRmgNoDesc).apply();
+        editor.putString("sourceGrossWeightSPK", sourceGrossWeight).apply();
+        editor.putString("wareHouseCodeSPK", wareHouseCode).apply();
+        editor.putString("wareHouseCodeDescSPK", wareHouseDesc).apply();
+        editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
+        editor.putString("remarksSPK", remarks).apply();
+        editor.apply();
     }
 
-    private void hideProgress() {
-        progressBar.setVisibility(View.GONE);
-        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    private void getAllWareHouseDetails() {
+        if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
+            getBothraInUnLoadingDetails();
+        } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("coromandel")))) {
+            getCoromandelWareHouseDetails();
+        }
     }
 
     private void getCoromandelWareHouseDetails() {
         showProgress();
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
-
             call.enqueue(new Callback<TransactionsApiResponse>() {
                 @Override
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     hideProgress();
                     if (!response.isSuccessful()) {
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
+                        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
                         return;
                     }
+                    Log.i(TAG, "onResponse: getCoromandelWareHouseDetails : raw " + response.raw());
                     if (response.body().getStatus() != null) {
                         if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                             vibrate();
@@ -436,38 +467,58 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                                String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
-                                String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                                String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                String previousRmgNo = null;
+                                String PreviousRmgNoDesc = null;
+                                String remarks = null;
+                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
+                                if (strInUnloadingTime != null) {
+                                    if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
+                                        previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
+                                        PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
+                                        remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                    }
+                                } else {
+                                    previousRmgNo = null;
+                                    PreviousRmgNoDesc = null;
+                                    remarks = null;
+                                }
 
+                                try {
+                                    Log.i(TAG, "onResponse: in time : " + strInUnloadingTime + " outtime : " + outUnloadingTime);
+                                    Log.i(TAG, "onResponse: previous : " + previousRmgNo + "|  wareHouse : " + wareHouseCode);
+                                } catch (Exception e) {
+                                    Log.e(TAG, "onResponse: Exception in inlounloadin time " + e.getMessage());
+                                    e.printStackTrace();
+                                }
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
-                                    if (destinationLocationByUIcode != null) {
+                                  /*  if (destinationLocationByUIcode != null) {
                                         saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null, outUnloadingTime, strInUnloadingTime);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                     } else {
                                         saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null, strInUnloadingTime, outUnloadingTime);
                                         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
-                                    }
+                                    }*/
+                                    saveWHDetailsCoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks);
+                                    ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                 } else {
-                                    ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK", false);
+                                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
                                     Intent id = new Intent(requireActivity(), LoginActivity.class);
                                     startActivity(id);
                                     requireActivity().finish();
                                 }
 
                             } catch (Exception e) {
-                                e.printStackTrace();
                                 Log.i(TAG, "onResponse: Exception in coromandel warehouse : " + e.getMessage());
+                                e.printStackTrace();
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            Log.i(TAG, "onResponse: " + response.raw());
-                            ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK", false);
+                            ((MainActivity) getActivity()).alert(getActivity(), DIALOG_WARNING, response.body().getMessage(), null, "OK", false);
                         }
                     }
                 }
@@ -475,27 +526,16 @@ public class ScanFragment extends Fragment implements MyListener {
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     hideProgress();
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
-            Log.i(TAG, "getCoromandelWareHouseDetails: " + e.getMessage());
+            Log.i(TAG, "getCoromandelWareHouseDetails: Exception in coromandelWareHouse : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private void getWareHouseDetails() {
-        progressBar.setVisibility(View.VISIBLE);
-
-        if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
-            getBothraInUnLoadingDetails();
-        } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("coromandel")))) {
-            getCoromandelWareHouseDetails();
-        }
-    }
-
     private void getBothraInUnLoadingDetails() {
-        Log.i(TAG, "getBothraWareHouseDetails: <<Start>>");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getBothraWHDetails("Bearer " + loginUserToken, "8", "7", edtRfidTagId.getText().toString());
@@ -527,10 +567,6 @@ public class ScanFragment extends Fragment implements MyListener {
                                 String destinationLocationByUIWEighbridgedesc = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
-
-
-
-
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                     String sourceGrossWeight;
                                     if (transactionsDto.getSourceGrossWeight() != null) {
@@ -545,19 +581,17 @@ public class ScanFragment extends Fragment implements MyListener {
                                     }
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
-                                    Log.i(TAG, "onResponse: in else roles other than ROLES_BWS : " + ROLES_BWH);
-                                    ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK", false);
+                                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
                                     Intent id = new Intent(requireActivity(), LoginActivity.class);
                                     startActivity(id);
                                     requireActivity().finish();
                                 }
-
                             } catch (Exception e) {
-                                e.getMessage();
+                                Log.i(TAG, "onResponse : Exception in bothraWarehouse vehicle in case : " + e.getMessage());
+                                e.printStackTrace();
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            Log.i(TAG, "onResponse: in else bothra2 url");
                             getBothraOutUnLoadingDetails();
                         }
                     }
@@ -566,15 +600,19 @@ public class ScanFragment extends Fragment implements MyListener {
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
+            Log.i(TAG, "getBothraInUnLoadingDetails: Exception in bothraWarehouse vehicle in case : " + e.getMessage());
             e.printStackTrace();
         }
 
     }
 
+    /*
+     * This method is call to fetch RFID details for vehicle out time and save data in shared preferences
+     * */
     private void getBothraOutUnLoadingDetails() {
         progressBar.setVisibility(View.VISIBLE);
         try {
@@ -584,10 +622,9 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
+                        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
                         return;
                     }
-
                     Log.i(TAG, "onResponse: response.raw : " + response.raw());
                     if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                         progressBar.setVisibility(View.GONE);
@@ -607,12 +644,10 @@ public class ScanFragment extends Fragment implements MyListener {
                             String strWareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                             String strWbAvailable = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
 
-
                             String strEntryTime = transactionsDto.getVehicleInTime();
                             LocalDateTime aLDT = LocalDateTime.parse(strEntryTime);
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
                             String entryTime = aLDT.format(formatter);
-
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                 String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
@@ -623,26 +658,27 @@ public class ScanFragment extends Fragment implements MyListener {
                                 }
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
-                                ((MainActivity) requireActivity()).alert(requireActivity(), "ERROR", "Invalid roles", null, "OK", false);
+                                ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
                                 Intent id = new Intent(requireActivity(), LoginActivity.class);
                                 startActivity(id);
                                 requireActivity().finish();
                             }
 
                         } catch (Exception e) {
-                            e.getMessage();
+                            Log.i(TAG, "onResponse: Exception in bothraWarehouse vehicle out case : " + e.getMessage());
+                            e.printStackTrace();
                             return;
                         }
                     } else {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "warning", response.body().getMessage(), null, "OK", false);
+                        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_WARNING, response.body().getMessage(), null, "OK", false);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
                 }
             });
         } catch (Exception e) {
@@ -650,18 +686,9 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
-    private void getRFIDDetails() {
-        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (admin_selected_nav_screen.equalsIgnoreCase("loadingAdvise"))) {
-            if (arrDestinationLocation.contains(loginUserStorageLocation)) {
-                getRfidTagDetailBothraLA();
-            } else {
-                getRfidDetailCoromandelLA();
-            }
-        } else {
-            getWareHouseDetails();
-        }
-    }
-
+    /*
+     * Get all rfid tag details for bothra loading advise
+     * */
     private void getRfidTagDetailBothraLA() {
         progressBar.setVisibility(View.VISIBLE);
         try {
@@ -671,10 +698,9 @@ public class ScanFragment extends Fragment implements MyListener {
                 public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
+                        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
                         return;
                     }
-
                     if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                         vibrate();
                         progressBar.setVisibility(View.GONE);
@@ -693,8 +719,6 @@ public class ScanFragment extends Fragment implements MyListener {
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
                             String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                             String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                            String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                            String wareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();
 
                             String isgetInLoadingTime;
                             String getInLoadingTime = null;
@@ -709,13 +733,9 @@ public class ScanFragment extends Fragment implements MyListener {
                                 getInLoadingTime = aLDT.format(formatter);
                                 pinnacleSupervisor = transactionsDto.getStrPinnacleLoadingSupervisor();
                                 bothraSupervisor = transactionsDto.getStrBothraLoadingSupervisor();
-                                Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
                             } else {
                                 isgetInLoadingTime = "false";
-                                Log.i(TAG, "onResponse: isgetInLoadingTime " + isgetInLoadingTime);
                             }
-
-
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
                                 saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, null);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
@@ -741,18 +761,19 @@ public class ScanFragment extends Fragment implements MyListener {
         }
     }
 
+    /*
+     * if warehouse is found then this is use for comparison and open screen base on storage location get match with below warehouse list (if matched then Open bothra Loading Advise screen else open Coromandel Loading advise screen)
+     * */
     private boolean getWareHouseStorage() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllWareHouse("Bearer " + loginUserToken, "bothra");
-
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    Log.i(TAG, "onResponse: not success");
-                    ifWareHouseIsNotEmpty();
+                    ifWareHouseIsEmpty();
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -764,27 +785,17 @@ public class ScanFragment extends Fragment implements MyListener {
                         SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
                         if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
-                            Log.i(TAG, "onResponse: in if");
                             arrDestinationLocation.add("dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore");
                             arrDestinationLocation.add("dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore2");
                             editor.putString(String.valueOf(0), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore").apply();
                             editor.putString(String.valueOf(1), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore2").apply();
                         } else {
-                            Log.i(TAG, "onResponse:  in else");
                             for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
-                                Log.i(TAG, "onResponse: in for loop" + functionalLocationMasterDtoList.get(i).getStrLocationCode());
                                 String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
-                                Log.i(TAG, "onResponse: s : " + s);
                                 editor.putString(String.valueOf(i), s).apply();
-                                Log.i(TAG, "onResponse: after editior" );
                                 arrDestinationLocation.add(s);
-                                Log.i(TAG, "onResponse: ware logcation : " + s);
                             }
                         }
-                        for (String s: arrDestinationLocation) {
-                            Log.i(TAG, "onResponse: " + s);
-                        }
-
                         editor.putString("size", String.valueOf(arrDestinationLocation.size())).apply();
 
                     } catch (Exception e) {
@@ -797,15 +808,16 @@ public class ScanFragment extends Fragment implements MyListener {
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ifWareHouseIsNotEmpty();
-//                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK");
+                ifWareHouseIsEmpty();
             }
         });
         return true;
     }
 
-    private void ifWareHouseIsNotEmpty(){
-        Log.i(TAG, "ifWareHouseIsNotEmpty: in method()");
+    /*
+     * if warehouse is empty then below method is called and add dummy record for comparison (Open Coromandel Loading Advise screen)
+     * */
+    private void ifWareHouseIsEmpty() {
         arrDestinationLocation = new ArrayList<>();
         SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -814,10 +826,6 @@ public class ScanFragment extends Fragment implements MyListener {
         editor.putString(String.valueOf(0), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore").apply();
         editor.putString(String.valueOf(1), "dummyListDataIsAddedForCompareNotRequiredAndIsNotUseFulAnyMore2").apply();
         editor.putString("size", String.valueOf(arrDestinationLocation.size())).apply();
-
-        for (String s: arrDestinationLocation) {
-            Log.i(TAG, "onResponse: " + s);
-        }
     }
 
 
@@ -826,25 +834,34 @@ public class ScanFragment extends Fragment implements MyListener {
         return sharedPreferences.getBoolean("enable_rfid_handle", true);
     }
 
+    private void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
     @Override
-    public void onNotConnectedToHandle(String name, Boolean status) {
+    public void handleConnectionStatus(String name, Boolean status) {
         SettingsFragment s = new SettingsFragment();
         if (!status) {
-
             s.updateSwitchPreferenceValue(false);
             String text = "Error : Rfid Handle is not connected";
             errorHandle.setText(text);
             error_layout.setVisibility(View.VISIBLE);
             if (name != null) {
-                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", name, "Try reattaching the handle", "OK", false);
+                ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_ERROR, name, "Try reattaching the handle", "OK", false);
             } else {
-                ((MainActivity) requireActivity()).alert(requireContext(), "ERROR", "RFID handle not found", "Try reattaching the handle", "OK", false);
+                ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_ERROR, "RFID handle not found", "Try reattaching the handle", "OK", false);
             }
         } else {
             error_layout.setVisibility(View.GONE);
             s.updateSwitchPreferenceValue(true);
         }
-
     }
 
     public String getScreenDetails() {

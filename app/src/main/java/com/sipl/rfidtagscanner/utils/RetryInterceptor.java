@@ -26,8 +26,6 @@ public class RetryInterceptor implements Interceptor {
         Response response;
         IOException ioException = null;
 
-        Log.i(TAG, "intercept: in intercept");
-
         // retry the request for a maximum of maxRetries times
         for (int retryCount = 0; retryCount < maxRetries; retryCount++) {
             Log.i(TAG, "intercept: " + retryCount);
@@ -52,7 +50,7 @@ public class RetryInterceptor implements Interceptor {
         if (ioException != null) {
             throw ioException;
         } else {
-            throw new IOException("Unknown error occurred");
+            throw new IOException("fails to connect with server");
         }
     }
 }

@@ -29,7 +29,7 @@ import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
 import com.sipl.rfidtagscanner.dto.response.LoadingAdvisePostApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
-import com.sipl.rfidtagscanner.utils.Helper;
+import com.sipl.rfidtagscanner.utils.Concatenator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ import retrofit2.Response;
 
 public class LoadingAdviseFragment extends Fragment {
     private static final String TAG = "TracingError";
-    private final Helper helper = new Helper();
+    private final Concatenator concatenator = new Concatenator();
     ArrayList<String> arrBothraStrLocation = new ArrayList<>();
 
     private String strisgetInLoadingTime;
@@ -239,8 +239,8 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void makeTvTextCompulsory() {
-        helper.multiColorStringForTv(tvBothraSupervisor, "Bothra \r\nSupervisor", " *");
-        helper.multiColorStringForTv(tvPinnacleSupervisor, "Pinnacle \r\nSupervisor", " *");
+        concatenator.multiStringConcatenate(tvBothraSupervisor, "Bothra \r\nSupervisor", " *");
+        concatenator.multiStringConcatenate(tvPinnacleSupervisor, "Pinnacle \r\nSupervisor", " *");
     }
 
     private void displayClock() {

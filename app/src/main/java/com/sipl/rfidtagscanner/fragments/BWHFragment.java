@@ -53,9 +53,9 @@ public class BWHFragment extends Fragment {
     private final String TAG = "TracingError";
 
     private final CustomToast customToast = new CustomToast();
-    private TextClock tvClock, tvEntryTime, tvExitTime;
+    private TextClock tvExitTime, tvEntryTime;
     private EditText edtEntryTime;
-    private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvExitTimeLayout;
+    private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
     private ProgressBar progressBar;
     private Spinner spinnerWarehouseNo, spinnerRemark;
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
@@ -72,7 +72,6 @@ public class BWHFragment extends Fragment {
     private ArrayAdapter<String> updateWareHouseNoAdapter;
     private String previousWarehouseCode;
     private String inUnloadingTime = null;
-    private String outUnloadingTime = null;
 
     public BWHFragment() {
     }
@@ -83,14 +82,12 @@ public class BWHFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_b_w_h, container, false);
         spinnerWarehouseNo = view.findViewById(R.id.bwh_spinner_warehouse_no);
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
-        tvClock = view.findViewById(R.id.bbwh_tv_clock);
+        tvExitTime = view.findViewById(R.id.bwh_exit_time);
         tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
-        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
         edtEntryTime = view.findViewById(R.id.edt_entry_time2);
         tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
-        tvEntryTimeEdtLayout = view.findViewById(R.id.title_entry_time2);
+        tvEntryTimeEdtLayout = view.findViewById(R.id.bwh_ll_entry_time);
         tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
-        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
 
         edtRfidTag = view.findViewById(R.id.bwh_edt_rfid_tag);
         edtLepNo = view.findViewById(R.id.bwh_edt_lep_number);
@@ -106,10 +103,12 @@ public class BWHFragment extends Fragment {
         this.token = ((MainActivity) requireActivity()).getLoginToken();
         this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
 
-        setTvClock();
-        getLoadingAdviseDetails();
-        updateUIBaseOnWareHouseLocation();
-        callOnCreateApi();
+        setLocalTime();
+        getBWHDetails();
+        updateUIBaseOnVehicleInTime();
+        getWareHouseLocation();
+        getAllRemarks();
+
 
         btnSubmit.setOnClickListener(view12 -> {
             if (validateLoadingData()) {
@@ -125,11 +124,6 @@ public class BWHFragment extends Fragment {
         ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
     }
 
-    private void callOnCreateApi() {
-        getWareHouseLocation();
-        getAllRemarks();
-    }
-
     private boolean validateLoadingData() {
         if (edtRfidTag.length() == 0) {
             edtRfidTag.setError("This field is required");
@@ -139,7 +133,6 @@ public class BWHFragment extends Fragment {
             edtLepNo.setError("This field is required");
             return false;
         }
-
         if (edtTruckNumber.length() == 0) {
             edtTruckNumber.setError("This field is required");
             return false;
@@ -416,9 +409,8 @@ public class BWHFragment extends Fragment {
         });
     }
 
-    private void setTvClock() {
+    private void setLocalTime() {
         try {
-            tvClock.setFormat24Hour("dd-MM-yy hh:mm:ss a");
             tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm:ss a");
             tvExitTime.setFormat24Hour("dd-MM-yy hh:mm:ss a");
         } catch (Exception e) {
@@ -427,7 +419,7 @@ public class BWHFragment extends Fragment {
         }
     }
 
-    private void getLoadingAdviseDetails() {
+    private void getBWHDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         this.selectedLepNoId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
@@ -438,16 +430,14 @@ public class BWHFragment extends Fragment {
         String sourceGrossWeight = sp.getString("sourceGrossWeightSPK", null);
         String previousRmgNo = sp.getString("previousRmgNoSPK", null);
         String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
-        String outUnloadingTime = sp.getString("outUnloadingTimeSPK", null);
         this.inUnloadingTime = inUnloadingTime;
-        this.outUnloadingTime = outUnloadingTime;
         this.previousWarehouseCode = previousRmgNo;
         String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
 
         saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc);
     }
 
-    private void updateUIBaseOnWareHouseLocation() {
+    private void updateUIBaseOnVehicleInTime() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
         String strInUnloadingTime = null;
