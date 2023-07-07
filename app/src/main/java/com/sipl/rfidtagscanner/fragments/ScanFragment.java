@@ -479,7 +479,11 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
                                         previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
                                         PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
-                                        remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                        if (transactionsDto.getRemarkMaster() != null) {
+                                            remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                        } else {
+                                            remarks = null;
+                                        }
                                     }
                                 } else {
                                     previousRmgNo = null;
@@ -487,22 +491,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     remarks = null;
                                 }
 
-                                try {
-                                    Log.i(TAG, "onResponse: in time : " + strInUnloadingTime + " outtime : " + outUnloadingTime);
-                                    Log.i(TAG, "onResponse: previous : " + previousRmgNo + "|  wareHouse : " + wareHouseCode);
-                                } catch (Exception e) {
-                                    Log.e(TAG, "onResponse: Exception in inlounloadin time " + e.getMessage());
-                                    e.printStackTrace();
-                                }
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
-                                  /*  if (destinationLocationByUIcode != null) {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, destinationLocationByUIcode, destinationLocationByUIdesc, null, null, 0, null, outUnloadingTime, strInUnloadingTime);
-                                        ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
-                                    } else {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, 0, null, strInUnloadingTime, outUnloadingTime);
-                                        ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
-                                    }*/
                                     saveWHDetailsCoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks);
                                     ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                 } else {

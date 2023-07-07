@@ -1,6 +1,7 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_RMG_NUMBER;
 
@@ -55,11 +56,10 @@ public class CWHFragment extends Fragment {
     private ArrayAdapter<String> updateRmgNoAdapter;
     private ArrayAdapter<String> remarksAdapter;
     private String inUnloadingTime = null;
-    private String outUnloadingTime = null;
     private EditText edtEntryTime;
     ;
-    private TextClock tvClock, tvEntryTime, tvExitTime;
-    private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvExitTimeLayout;
+    private TextClock tvClock;
+    private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
 
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
     private CustomToast customToast = new CustomToast();
@@ -95,16 +95,13 @@ public class CWHFragment extends Fragment {
         btnReset = view.findViewById(R.id.cwh_btn_reset);
         btnSubmit = view.findViewById(R.id.cwh_btn_submit);
         progressBar = view.findViewById(R.id.cwh_progressBar);
-//        tvClock = view.findViewById(R.id.cwh_tv_clock);
 
         tvClock = view.findViewById(R.id.bwh_tv_clock);
-        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
-//        tvExitTime = view.findViewById(R.id.bwh_tv_exit_time);
+//        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
         edtEntryTime = view.findViewById(R.id.edt_entry_time2);
         tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
         tvEntryTimeEdtLayout = view.findViewById(R.id.bwh_ll_entry_time);
         tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
-//        tvExitTimeLayout = view.findViewById(R.id.title_exit_time);
 
         this.token = ((MainActivity) getActivity()).getLoginToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
@@ -139,7 +136,6 @@ public class CWHFragment extends Fragment {
             tvEntryTimeEdtLayout.setVisibility(View.VISIBLE);
             edtEntryTime.setText(inUnloadingTime);
             tvLoadingTimeLayout.setVisibility(View.VISIBLE);
-//            tvExitTimeLayout.setVisibility(View.VISIBLE);
         } else {
             tvEntryTimeClocKLayout.setVisibility(View.VISIBLE);
         }
@@ -197,7 +193,7 @@ public class CWHFragment extends Fragment {
 
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllUpdateRmgNo : responseCode : " + response.code() + " " + response.raw());
@@ -223,7 +219,6 @@ public class CWHFragment extends Fragment {
                             String strLocationDescWithCode = s + " - " + strLocationDesc.toUpperCase();
                             arrDestinationLocationDesc.add(strLocationDescWithCode);
                             hashMapLocationCode.put(strLocationDescWithCode, s);
-                            Log.i(TAG, "onResponse: " + arrDestinationLocationDesc);
                         }
                         if (arrDestinationLocationDesc.contains(removedPreviousRmgCode)) {
                             arrDestinationLocationDesc.remove(removedPreviousRmgCode);
@@ -250,31 +245,23 @@ public class CWHFragment extends Fragment {
 
                         if (inUnloadingTime != null) {
                             if (previousRMG.equalsIgnoreCase(defaulfWareHouseDesc)) {
-                                Log.i(TAG, "onResponse:  in ifffffffffff");
                                 spinnerUpdateRmgNo.setEnabled(false);
                                 spinnerUpdateRmgNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
-                                spinnerRemark.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
-                                spinnerRemark.setEnabled(false);
                                 spinnerUpdateRmgNo.setSelection(updateRmgNoAdapter.getCount());
                             } else {
-                                Log.i(TAG, "onResponse: 1 else");
                                 int position = -1;
-
                                 if (arrDestinationLocationDesc.contains(defaulfWareHouseDesc)) {
-                                    Log.i(TAG, "onResponse: in contain " + defaulfWareHouseDesc);
                                     for (int i = 0; i < updateRmgNoAdapter.getCount(); i++) {
                                         String item = updateRmgNoAdapter.getItem(i);
                                         if (defaulfWareHouseDesc.trim().equalsIgnoreCase(item.trim())) {
-                                            Log.i(TAG, "onResponse: " + defaulfWareHouseDesc + " " + item);
                                             position = i;
                                             break;
                                         }
                                     }
                                     if (position != -1) {
-                                        Log.i(TAG, "onResponse: in position ");
+                                        spinnerUpdateRmgNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
                                         spinnerUpdateRmgNo.setSelection(position);
                                         spinnerUpdateRmgNo.setEnabled(false);
-                                        spinnerRemark.setEnabled(false);
                                     } else {
                                         Log.i(TAG, "onResponse:  in position else");
                                     }
@@ -290,28 +277,25 @@ public class CWHFragment extends Fragment {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String selectedRmgCode = adapterView.getSelectedItem().toString();
-                                Log.i(TAG, "onItemSelected: selectedRmgNo :" + selectedRmgCode);
 
                                 if (hashMapLocationCode.containsKey(selectedRmgCode)) {
                                     selectedRmgNo = hashMapLocationCode.get(selectedRmgCode);
-                                    Log.i(TAG, "onItemSelected: selectedRmgNo : " + selectedRmgNo);
                                 }
 
                                 if (!selectedRmgCode.equalsIgnoreCase("Update RMG No")) {
                                     spinnerRemark.setEnabled(true);
                                 } else {
                                     spinnerRemark.setEnabled(false);
-
                                 }
                             }
 
                             @Override
                             public void onNothingSelected(AdapterView<?> adapterView) {
-                                Log.i(TAG, "onNothingSelected: noting is selected");
                             }
                         });
                     } catch (Exception e) {
-                        e.getMessage();
+                        Log.e(TAG, "Exception in RMG location : " + e.getMessage());
+                        e.printStackTrace();
                     }
                 }
             }
@@ -319,7 +303,7 @@ public class CWHFragment extends Fragment {
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
+                ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
             }
         });
 
@@ -336,7 +320,7 @@ public class CWHFragment extends Fragment {
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
                 if (!response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
                     return;
                 }
                 Log.i(TAG, "onResponse: getAllRemark : responseCode : " + response.code() + response.raw());
@@ -394,8 +378,8 @@ public class CWHFragment extends Fragment {
                                         }
                                     }
                                     if (position != -1) {
+                                        spinnerRemark.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
                                         spinnerRemark.setSelection(position);
-                                        spinnerRemark.setEnabled(false);
                                         spinnerRemark.setEnabled(false);
                                     }
                                 }
@@ -521,7 +505,7 @@ public class CWHFragment extends Fragment {
         String previousRmgNo = sp.getString("previousRmgNoSPK", null);
         String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
         String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
-        String outUnloadingTime = sp.getString("outUnloadingTimeSPK", null);
+//        String outUnloadingTime = sp.getString("outUnloadingTimeSPK", null);
         String wareHouseCode = sp.getString("wareHouseCodeSPK", null);
         String wareHouseDesc = sp.getString("wareHouseCodeDescSPK", null);
         String remarks = sp.getString("remarksSPK", null);
@@ -533,7 +517,7 @@ public class CWHFragment extends Fragment {
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
-        this.outUnloadingTime = outUnloadingTime;
+//        this.outUnloadingTime = outUnloadingTime;
         saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse);
     }
 
