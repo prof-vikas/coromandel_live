@@ -269,11 +269,11 @@ public class LoadingAdviseFragment extends Fragment {
                 if (response.body().getStatus().equalsIgnoreCase("CREATED")) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK", true);
-                    resetTextField();
+//                    resetTextField();
                 } else {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK", false);
-                    resetTextField();
+//                    resetTextField();
                 }
             }
 
@@ -306,7 +306,6 @@ public class LoadingAdviseFragment extends Fragment {
                            progressBar.setVisibility(View.GONE);
                            Log.i(TAG, "onResponse: response : " + response.body().getStatus());
                            ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
-                           resetTextField();
                        } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
                            sendLoadingAdviseDetails(setData());
                        } else {

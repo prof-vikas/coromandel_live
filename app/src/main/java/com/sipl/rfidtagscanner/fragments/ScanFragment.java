@@ -435,6 +435,29 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     }
 
 
+    private void saveWHDetailsBoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks) {
+        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("rfidTagSPK", rfidTag).apply();
+        editor.putString("lepNoSPK", lepNo).apply();
+        editor.putString("inUnloadingTimeSPK", inUnloadingTime).apply();
+        editor.putString("outUnloadingTimeSPK", outUnloadingTime).apply();
+        editor.putString("lepNoIdSPK", lepNoId).apply();
+        editor.putString("driverNameSPK", driverName).apply();
+        editor.putString("truckNoSPK", truckNo).apply();
+        editor.putString("commoditySPK", commodity).apply();
+        editor.putString("GrossWeightSPK", GrossWeight).apply();
+        editor.putString("previousRmgNoSPK", previousRmgNo).apply();
+        editor.putString("PreviousRmgNoDescSPK", PreviousRmgNoDesc).apply();
+        editor.putString("sourceGrossWeightSPK", sourceGrossWeight).apply();
+        editor.putString("wareHouseCodeSPK", wareHouseCode).apply();
+        editor.putString("wareHouseCodeDescSPK", wareHouseDesc).apply();
+        editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
+        editor.putString("remarksSPK", remarks).apply();
+        editor.apply();
+    }
+
+
     private void getAllWareHouseDetails() {
         if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
             getBothraInUnLoadingDetails();
@@ -549,14 +572,32 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                                String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
-                                String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                                String isWeighBridgeAvailble = String.valueOf(transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable());
-                                String destinationLocationByUIcode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String destinationLocationByUIdesc = transactionsDto.getWarehouse().getStrLocationDesc();
-                                String destinationLocationByUIWEighbridgedesc = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
+                                String previousRmgNo = null;
+                                String PreviousRmgNoDesc = null;
+                                String remarks = null;
+                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
+
+                                if (strInUnloadingTime != null) {
+                                    if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
+                                        previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
+                                        PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
+                                        if (transactionsDto.getRemarkMaster() != null) {
+                                            remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                        } else {
+                                            remarks = null;
+                                        }
+                                    }
+                                } else {
+                                    previousRmgNo = null;
+                                    PreviousRmgNoDesc = null;
+                                    remarks = null;
+                                }
+
+
+
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                     String sourceGrossWeight;
                                     if (transactionsDto.getSourceGrossWeight() != null) {
@@ -564,11 +605,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    if (destinationLocationByUIcode != null) {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, destinationLocationByUIcode, destinationLocationByUIdesc, sourceGrossWeight, destinationLocationByUIWEighbridgedesc, 1, null, outUnloadingTime, strInUnloadingTime);
-                                    } else {
-                                        saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 1, null, outUnloadingTime, strInUnloadingTime);
-                                    }
+                                    Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : "+ previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks);
+                                    saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks);
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
@@ -627,25 +665,62 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                             String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                            String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
+                 /*           String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                             String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                             String isWeighBridgeAvailble = String.valueOf(transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable());
                             String strWareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                             String strWareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();
-                            String strWbAvailable = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());
+                            String strWbAvailable = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());*/
 
-                            String strEntryTime = transactionsDto.getVehicleInTime();
+                        /*    String strEntryTime = transactionsDto.getVehicleInTime();
                             LocalDateTime aLDT = LocalDateTime.parse(strEntryTime);
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                            String entryTime = aLDT.format(formatter);
+                            String entryTime = aLDT.format(formatter);*/
 
-                            if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
+                      /*      if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
                                 String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
                                 if (strWareHouseCode != null) {
                                     saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, strWareHouseCode, strWareHouseCodeDesc, sourceGrossWeight, strWbAvailable, 2, entryTime, null, null);
                                 } else {
                                     saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 2, entryTime, null, null);
                                 }
+                                ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);*/
+
+                            String previousRmgNo = null;
+                            String PreviousRmgNoDesc = null;
+                            String remarks = null;
+                            String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                            String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                            String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                            String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
+
+                            if (strInUnloadingTime != null) {
+                                if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
+                                    previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
+                                    PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
+                                    if (transactionsDto.getRemarkMaster() != null) {
+                                        remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                    } else {
+                                        remarks = null;
+                                    }
+                                }
+                            } else {
+                                previousRmgNo = null;
+                                PreviousRmgNoDesc = null;
+                                remarks = null;
+                            }
+
+
+
+                            if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
+                                String sourceGrossWeight;
+                                if (transactionsDto.getSourceGrossWeight() != null) {
+                                    sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
+                                } else {
+                                    sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
+                                }
+                                Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : "+ previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks);
+                                saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks);
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
                                 ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);

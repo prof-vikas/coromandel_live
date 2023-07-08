@@ -434,11 +434,11 @@ public class CWHFragment extends Fragment {
                         if (response.body().getStatus().equalsIgnoreCase("OK")) {
                             progressBar.setVisibility(View.GONE);
                             ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK", true);
-                            resetFields();
+//                            resetFields();
                         } else {
                             progressBar.setVisibility(View.GONE);
                             ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK", false);
-                            resetFields();
+//                            resetFields();
                         }
                     }
                 }

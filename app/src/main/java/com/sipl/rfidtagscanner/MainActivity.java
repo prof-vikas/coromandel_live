@@ -263,12 +263,14 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(view -> {
             if(isReturnToScanner){
                 dialog.dismiss();
+                loadFragment(new ScanFragment(), 1);
             }else {
                 dialog.dismiss();
             }
         });
         dialog.show();
     }
+
 
     public void alertWithReturnToScanFrag(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanFrag) {
         Dialog dialog = new Dialog(context);
