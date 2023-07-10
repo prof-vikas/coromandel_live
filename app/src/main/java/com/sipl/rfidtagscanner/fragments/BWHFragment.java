@@ -62,6 +62,8 @@ public class BWHFragment extends Fragment {
     private Spinner spinnerWarehouseNo, spinnerRemark;
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
     private Integer selectedLepNoId;
+
+    private String previousRMGCode;
     private String selectedWhNo;
     private Boolean isSelectedWhHasWB;
 
@@ -602,9 +604,7 @@ public class BWHFragment extends Fragment {
             if (!selectedRmgNo.equalsIgnoreCase("Select Warehouse No")) {
                 Log.i(TAG, "setData: in iff conddddddddd is not eql to");
                 selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
-            }/* else {
-                selectedWareHouseNo = new StorageLocationDto(selectedRmgCode);
-            }*/
+            }
             if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
@@ -614,7 +614,8 @@ public class BWHFragment extends Fragment {
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNoId);
         if (inUnloadingTime != null) {
-            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, inUnloadingTime, LocalDateTime.now().toString());
+            StorageLocationDto previousWareHouseNo2 = new StorageLocationDto(previousRMGCode);
+            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo2, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, inUnloadingTime, LocalDateTime.now().toString());
         } else {
             return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, LocalDateTime.now().toString(), null);
         }
@@ -734,6 +735,7 @@ public class BWHFragment extends Fragment {
         Log.i(TAG, "getLoadingAdviseDetails: previous : " + previousRmgNo + " wareHouse : " + wareHouseCode);
         this.defaultWareHouse = wareHouseCode;
         this.remarks = remarks;
+        this.previousRMGCode = previousRmgNo;
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
