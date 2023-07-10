@@ -76,6 +76,7 @@ public class CWHFragment extends Fragment {
     private String defaultWareHouse;
     private String previousRMG;
     private String remarks;
+    private String previousRMGCode;
     private String defaulfWareHouseDesc;
 
     @Override
@@ -473,7 +474,8 @@ public class CWHFragment extends Fragment {
 
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNumberId);
         if (inUnloadingTime != null) {
-            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, inUnloadingTime, LocalDateTime.now().toString());
+            StorageLocationDto previousWareHouseNo2 = new StorageLocationDto(previousRMGCode);
+            return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo2, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, inUnloadingTime, LocalDateTime.now().toString());
         } else {
             return new UpdateRmgRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, LocalDateTime.now().toString(), null);
         }
@@ -516,6 +518,7 @@ public class CWHFragment extends Fragment {
         this.remarks = remarks;
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
+        this.previousRMGCode = previousRmgNo;
         this.inUnloadingTime = inUnloadingTime;
 //        this.outUnloadingTime = outUnloadingTime;
         saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse);
