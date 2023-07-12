@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
     public void loadFragment(Fragment fragment, int flag) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        Log.i(TAG, "loadFragment:  in loadingfragment method");
         if (flag == 0) {
             ft.add(R.id.main_container, fragment);
         } else {
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     public void loadFragment2(Fragment fragment, int flag, String screen) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        Log.i(TAG, "loadFragment2: screen : " + screen);
         setScreenData(screen);
         if (flag == 0) {
             ft.add(R.id.main_container, fragment);
@@ -146,19 +144,14 @@ public class MainActivity extends AppCompatActivity {
     public void showSideBarLoginUsername() {
         View headerView = navigationView.getHeaderView(0);
         TextView login_username = headerView.findViewById(R.id.login_username);
-//        TextView txtHeaderStorageLocation = headerView.findViewById(R.id.login_Storage_Location);
         TextView txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
         LinearLayout headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
-//        LinearLayout headerLayoutStorage = headerView.findViewById(R.id.ll_header_source_code);
         login_username.setText(getLoginUsername());
-//        String loginUserStorageLocation = getLoginUserStorageCode() + " - " + getLoginUserSourceLocationDesc();
-//        txtHeaderStorageLocation.setText(loginUserStorageLocation);
         String loginUserPlantCode = getLoginUserPlantCode() + " - " + getLoginUserPlantLocationDesc();
         txtHeaderPlantCode.setText(loginUserPlantCode);
 
         if (isPlantDetailsRequiredInSideNav) {
             headerLayoutPlant.setVisibility(View.VISIBLE);
-//            headerLayoutStorage.setVisibility(View.VISIBLE);
         }
     }
 
@@ -197,11 +190,6 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("userRolesIdSPK", null);
     }
 
-    public String getLoginUserRoleName() {
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("roleSPK", null);
-    }
-
     public String getLoginUserStorageCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("UserSourceLocationSPK", null);
@@ -227,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("UserSourceLocationDescSPK", null);
     }
 
-    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
+/*    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.custom_alert_dialog_box);
@@ -269,53 +257,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dialog.show();
-    }
+    }*/
 
-
-    public void alertWithReturnToScanFrag(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanFrag) {
+    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.custom_alert_dialog_box);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
+
         TextView error = dialog.findViewById(R.id.dialog_type_error);
         TextView success = dialog.findViewById(R.id.dialog_type_success);
         TextView warning = dialog.findViewById(R.id.dialog_type_warning);
-        if (dialogType.equalsIgnoreCase("error")) {
-            error.setVisibility(View.VISIBLE);
-            success.setVisibility(View.GONE);
-            warning.setVisibility(View.GONE);
-        } else if (dialogType.equalsIgnoreCase("success")) {
-            error.setVisibility(View.GONE);
-            warning.setVisibility(View.GONE);
-            success.setVisibility(View.VISIBLE);
-        } else if (dialogType.equalsIgnoreCase("warning")) {
-            error.setVisibility(View.GONE);
-            success.setVisibility(View.GONE);
-            warning.setVisibility(View.VISIBLE);
-        } else {
-            Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
-        }
+
+        error.setVisibility(dialogType.equalsIgnoreCase("ERROR") ? View.VISIBLE : View.GONE);
+        success.setVisibility(dialogType.equalsIgnoreCase("SUCCESS") ? View.VISIBLE : View.GONE);
+        warning.setVisibility(dialogType.equalsIgnoreCase("WARNING") ? View.VISIBLE : View.GONE);
+
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
-        if (dialogMessage == null) {
-            dialogMessageTxt.setVisibility(View.GONE);
-        }
+        dialogMessageTxt.setVisibility(dialogMessage == null ? View.GONE : View.VISIBLE);
         TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
         TextView btn = dialog.findViewById(R.id.text_btn);
+
         dialogTitleTxt.setText(dialogTitle);
         dialogMessageTxt.setText(dialogMessage);
         btn.setText(dialogBtnText);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isReturnToScanFrag) {
-                    loadFragment(new ScanFragment(), 1);
-                    dialog.dismiss();
-                } else {
-                    dialog.dismiss();
-                }
+
+        btn.setOnClickListener(view -> {
+            if (isReturnToScanner) {
+                dialog.dismiss();
+                loadFragment(new ScanFragment(), 1);
+            } else {
+                dialog.dismiss();
             }
         });
+
         dialog.show();
     }
+
+
 }

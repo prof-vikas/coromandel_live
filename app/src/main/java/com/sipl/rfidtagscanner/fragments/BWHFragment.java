@@ -307,187 +307,6 @@ public class BWHFragment extends Fragment {
         return true;
     }
 
-/*    private void getWareHouseLocation() {
-        showProgressBar();
-        Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
-                getAllWareHouse("Bearer " + token, "bothra");
-        call.enqueue(new Callback<RmgNumberApiResponse>() {
-            @Override
-            public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
-                if (!response.isSuccessful()) {
-                    hideProgressBar();
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
-                    return;
-                }
-                if (response.isSuccessful()) {
-                    List<StorageLocationDto> listWareHouse = response.body().getStorageLocationDtos();
-                    HashMap<String, String> hashMapLocationCode = new HashMap<>();
-          *//*          SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-                    String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
-                    String PreviousRMGRemoved = previousWarehouseCode + " - " + PreviousRmgNoDesc.toLowerCase();*//*
-//                    HashMap<String, Boolean> HmForWBAvailability = new HashMap<>();
-                    ArrayList<String> arrDestinationLocation = new ArrayList<>();
-                    ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
-                    try {
-                        if (listWareHouse == null || listWareHouse.isEmpty()) {
-                            customToast.toastMessage(getActivity(), EMPTY_WAREHOUSE_NUMBER, 0);
-                            return;
-                        }
-                        for (int i = 0; i < listWareHouse.size(); i++) {
-                            String s = listWareHouse.get(i).getStrLocationCode();
-                            String strLocationDesc = listWareHouse.get(i).getStrLocationDesc();
-                            Boolean isWeighBrige = listWareHouse.get(i).getWbAvailable();
-
-                            String strLocationDescWithCode = s + " - " + strLocationDesc.toLowerCase();
-                            arrDestinationLocationDesc.add(strLocationDescWithCode);
-                            hashMapLocationCode.put(strLocationDescWithCode, s);
-//                            HmForWBAvailability.put(strLocationDescWithCode, isWeighBrige);
-                            arrDestinationLocation.add(s);
-                        }
-                    *//*    if (arrDestinationLocationDesc.contains(PreviousRMGRemoved)) {
-                            arrDestinationLocationDesc.remove(PreviousRMGRemoved);
-                        }*//*
-
-                        arrDestinationLocationDesc.add("Select Warehouse No");
-
-                        updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
-
-                                View v = super.getView(position, convertView, parent);
-                                if (position == getCount()) {
-                                    ((TextView) v.findViewById(android.R.id.text1)).setText("");
-                                    ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
-                                }
-                                return v;
-                            }
-
-                            @Override
-                            public int getCount() {
-                                return super.getCount() - 1;
-                            }
-                        };
-                        spinnerWarehouseNo.setAdapter(updateWareHouseNoAdapter);
-                        spinnerWarehouseNo.setSelection(updateWareHouseNoAdapter.getCount());
-
-                        spinnerWarehouseNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                String selectedRmgCode = adapterView.getSelectedItem().toString();
-
-                                if (hashMapLocationCode.containsKey(selectedRmgCode)) {
-                                    selectedWhNo = hashMapLocationCode.get(selectedRmgCode);
-                                }
-                            *//*    if (HmForWBAvailability.containsKey(selectedRmgCode)) {
-                                    isSelectedWhHasWB = HmForWBAvailability.get(selectedRmgCode);
-                                }*//*
-                                if (!selectedRmgCode.equalsIgnoreCase("Select Warehouse No")) {
-                                    spinnerRemark.setEnabled(true);
-                                    spinnerRemark.setClickable(true);
-                                } else {
-                                    spinnerRemark.setEnabled(false);
-                                    spinnerRemark.setClickable(false);
-                                    spinnerRemark.setFocusable(false);
-                                }
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.getMessage();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
-            }
-        });
-    }*/
-
-    /*private void getAllRemarks() {
-        showProgressBar();
-        Call<RemarkApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().
-                getAllBothraRemark("Bearer " + token);
-        call.enqueue(new Callback<RemarkApiResponse>() {
-            @Override
-            public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
-                if (!response.isSuccessful()) {
-                    hideProgressBar();
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
-                    return;
-                }
-                Log.i(TAG, "onResponse: getAllBothraRemark : responseCode : " + response.code());
-
-                if (response.isSuccessful()) {
-                    hideProgressBar();
-                    List<RemarksDto> remarksDtoList = response.body().getRemarksDtos();
-                    HashMap<String, Integer> hashMapRemarks = new HashMap<>();
-                    ArrayList<String> arrRemarks = new ArrayList<>();
-
-                    try {
-                        if (remarksDtoList == null || remarksDtoList.isEmpty()) {
-                            customToast.toastMessage(getActivity(), EMPTY_REMARKS, 0);
-                            return;
-                        }
-                        for (int i = 0; i < remarksDtoList.size(); i++) {
-                            String s = remarksDtoList.get(i).getRemarks();
-                            int id = remarksDtoList.get(i).getId();
-                            hashMapRemarks.put(s, id);
-                            arrRemarks.add(s);
-                        }
-                        arrRemarks.add("Select Remarks");
-
-                        remarkAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrRemarks) {
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
-
-                                View v = super.getView(position, convertView, parent);
-                                if (position == getCount()) {
-                                    ((TextView) v.findViewById(android.R.id.text1)).setText("");
-                                    ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
-                                }
-                                return v;
-                            }
-
-                            @Override
-                            public int getCount() {
-                                return super.getCount() - 1;
-                            }
-                        };
-                        spinnerRemark.setAdapter(remarkAdapter);
-                        spinnerRemark.setSelection(remarkAdapter.getCount());
-                        spinnerRemark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                selectedRemarks = adapterView.getSelectedItem().toString();
-                                if (hashMapRemarks.containsKey(selectedRemarks)) {
-                                    selectedRemarksId = hashMapRemarks.get(selectedRemarks);
-                                }
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
-                hideProgressBar();
-                ((MainActivity) getActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
-            }
-        });
-    }*/
-
     private void getAllRemarks() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RemarkApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
@@ -602,14 +421,12 @@ public class BWHFragment extends Fragment {
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(defaultWareHouse);
         if (selectedRmgNo != null) {
             if (!selectedRmgNo.equalsIgnoreCase("Select Warehouse No")) {
-                Log.i(TAG, "setData: in iff conddddddddd is not eql to");
                 selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
             }
             if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
                 remarksDto = new RemarksDto(selectedRemarksId);
             }
         } else {
-            Log.i(TAG, "setData: in else where setting warehouse in excel");
             selectedWareHouseNo = new StorageLocationDto(defaultWareHouse);
         }
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNoId);
@@ -639,7 +456,6 @@ public class BWHFragment extends Fragment {
                     if (response.body().getStatus().equalsIgnoreCase("OK")) {
                         hideProgressBar();
                         ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
-//                        resetFields();
                     } else {
                         hideProgressBar();
                         ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
@@ -658,8 +474,8 @@ public class BWHFragment extends Fragment {
 
     private void setLocalTime() {
         try {
-            tvEntryTime.setFormat24Hour("dd-MM-yy hh:mm:ss a");
-            tvExitTime.setFormat24Hour("dd-MM-yy hh:mm:ss a");
+            tvEntryTime.setFormat24Hour("dd-MM-yyyy HH:mm:ss");
+            tvExitTime.setFormat24Hour("dd-MM-yyyy HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "Exception in setTvClock : Message : " + e.getMessage());
@@ -673,7 +489,7 @@ public class BWHFragment extends Fragment {
         String strInUnloadingTime = null;
         if (inUnloadingTime != null) {
             LocalDateTime localDateTime = LocalDateTime.parse(inUnloadingTime);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss a");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             strInUnloadingTime = localDateTime.format(formatter);
         }
 

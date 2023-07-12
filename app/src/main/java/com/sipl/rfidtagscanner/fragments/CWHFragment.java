@@ -58,7 +58,7 @@ public class CWHFragment extends Fragment {
     private String inUnloadingTime = null;
     private EditText edtEntryTime;
     ;
-    private TextClock tvClock;
+    private TextClock tvClock, tvEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
 
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
@@ -97,8 +97,8 @@ public class CWHFragment extends Fragment {
         btnSubmit = view.findViewById(R.id.cwh_btn_submit);
         progressBar = view.findViewById(R.id.cwh_progressBar);
 
-        tvClock = view.findViewById(R.id.bwh_tv_clock);
-//        tvEntryTime = view.findViewById(R.id.bwh_tv_entry_time);
+         tvClock = view.findViewById(R.id.bwh_unloading_out_time);
+        tvEntryTime = view.findViewById(R.id.cwh_tv_entry_time);
         edtEntryTime = view.findViewById(R.id.edt_entry_time2);
         tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
         tvEntryTimeEdtLayout = view.findViewById(R.id.bwh_ll_entry_time);
@@ -107,7 +107,8 @@ public class CWHFragment extends Fragment {
         this.token = ((MainActivity) getActivity()).getLoginToken();
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
 
-        currentTime();
+//        currentTime();
+        displayClock();
         getLoadingAdviseDetails();
         updateUIBaseOnWareHouseLocation();
         callOnCreateApi();
@@ -122,13 +123,24 @@ public class CWHFragment extends Fragment {
         return view;
     }
 
+    private void displayClock() {
+        try {
+      /*      tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
+            exitClock.setFormat24Hour("dd-MM-yy hh:mm a");*/
+            tvClock.setFormat24Hour("dd-MM-yyyy HH:mm:ss");
+            tvEntryTime.setFormat24Hour("dd-MM-yyyy HH:mm:ss");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void updateUIBaseOnWareHouseLocation() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         String strInUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
         String inUnloadingTime = null;
         if (strInUnloadingTime != null) {
             LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss a");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             inUnloadingTime = aLDT.format(formatter);
         }
 
@@ -482,13 +494,13 @@ public class CWHFragment extends Fragment {
     }
 
 
-    private void currentTime() {
+/*    private void currentTime() {
         try {
             tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void callOnCreateApi() {
         getAllRmgStorage();

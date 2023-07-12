@@ -245,9 +245,10 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void displayClock() {
         try {
-            tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
-            exitClock.setFormat24Hour("dd-MM-yy hh:mm a");
-
+      /*      tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
+            exitClock.setFormat24Hour("dd-MM-yy hh:mm a");*/
+            tvClock.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
+            exitClock.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
         }
