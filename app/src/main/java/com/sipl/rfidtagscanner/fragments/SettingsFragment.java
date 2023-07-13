@@ -2,10 +2,10 @@ package com.sipl.rfidtagscanner.fragments;
 
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
 import com.sipl.rfidtagscanner.R;

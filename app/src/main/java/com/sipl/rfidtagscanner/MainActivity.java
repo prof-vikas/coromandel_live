@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner;
 
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
@@ -30,6 +31,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
+import com.sipl.rfidtagscanner.fragments.BWHFragment;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
@@ -58,10 +60,8 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
 
-        String userRoles = getLoginUserRole();
-        if (userRoles != null) {
-            loadMenuBasedOnRoles(userRoles);
-            showSideBarLoginUsername();
+        if (getLoginUserRole() != null) {
+            loadMenuBasedOnRoles(getLoginUserRole());
         }
         showSideBarLoginUsername();
 
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     public void loadFragment2(Fragment fragment, int flag, String screen) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        Log.i(TAG, "loadFragment2: screen : " + screen);
         setScreenData(screen);
         if (flag == 0) {
             ft.add(R.id.main_container, fragment);
@@ -104,18 +103,16 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_item_scan_rfid) {
-                Log.i(TAG, "getMenuNavigation: menu_item_scan_rfid" + id);
-                loadFragment2(new ScanFragment(id), 1, null);
+                loadFragment2(new ScanFragment(), 1, null);
             } else if (id == R.id.menu_item_loading_advise) {
-                Log.i(TAG, "getMenuNavigation: menu_item_loading_advise" + id);
-                loadFragment2(new ScanFragment(id), 1, "loadingAdvise");
+                loadFragment2(new ScanFragment(), 1, "loadingAdvise");
             } else if (id == R.id.menu_item_bothra_warehouse) {
-                Log.i(TAG, "getMenuNavigation: menu_item_bothra_warehouse" + id);
-                loadFragment2(new ScanFragment(id), 1, "bothra");
+                loadFragment2(new ScanFragment(), 1, "bothra");
             } else if (id == R.id.menu_item_coromandel_warehouse) {
-                Log.i(TAG, "getMenuNavigation: menu_item_coromandel_warehouse" + id);
-                loadFragment2(new ScanFragment(id), 1, "coromandel");
+                loadFragment2(new ScanFragment(), 1, "coromandel");
             } else if (id == R.id.menu_item_setting) {
+                loadFragment2(new SettingsFragment(), 1, null);
+            } else if (id == R.id.menu_item_setting_admin) {
                 loadFragment2(new SettingsFragment(), 1, "settingAdmin");
             } else if (id == R.id.menu_item_logout) {
                 logout();
@@ -132,12 +129,12 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_admin);
             getMenuNavigation();
-            loadFragment(new ScanFragment(0), 1);
+            loadFragment(new ScanFragment(), 1);
         } else {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);
             getMenuNavigation();
-            loadFragment(new ScanFragment(0), 1);
+            loadFragment(new ScanFragment(), 1);
         }
     }
 
@@ -147,19 +144,14 @@ public class MainActivity extends AppCompatActivity {
     public void showSideBarLoginUsername() {
         View headerView = navigationView.getHeaderView(0);
         TextView login_username = headerView.findViewById(R.id.login_username);
-        TextView txtHeaderStorageLocation = headerView.findViewById(R.id.login_Storage_Location);
         TextView txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
         LinearLayout headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
-        LinearLayout headerLayoutStorage = headerView.findViewById(R.id.ll_header_source_code);
         login_username.setText(getLoginUsername());
-        String loginUserStorageLocation = getLoginUserStorageCode() + " - " + getLoginUserSourceLocationDesc();
-        txtHeaderStorageLocation.setText(loginUserStorageLocation);
         String loginUserPlantCode = getLoginUserPlantCode() + " - " + getLoginUserPlantLocationDesc();
         txtHeaderPlantCode.setText(loginUserPlantCode);
 
         if (isPlantDetailsRequiredInSideNav) {
             headerLayoutPlant.setVisibility(View.VISIBLE);
-            headerLayoutStorage.setVisibility(View.VISIBLE);
         }
     }
 
@@ -174,6 +166,10 @@ public class MainActivity extends AppCompatActivity {
         sp.edit().remove("userPlantLocationDescSPK").apply();
         sp.edit().remove("tokenSPK").apply();
         sp.edit().remove("userLoginStatus").apply();
+
+        SharedPreferences sp1 = getSharedPreferences("logoutMark", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp1.edit();
+        editor.putString("isLogout", "logout").apply();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
@@ -194,11 +190,6 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("userRolesIdSPK", null);
     }
 
-    public String getLoginUserRoleName() {
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("roleSPK", null);
-    }
-
     public String getLoginUserStorageCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("UserSourceLocationSPK", null);
@@ -211,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
     public int getLoginUserId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-//        Log.i(TAG, "getLoginUserId: " + sp.getString("userIDSPK", null));
         return Integer.parseInt(sp.getString("userIDSPK", null));
     }
 
@@ -225,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("UserSourceLocationDescSPK", null);
     }
 
-    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText) {
+/*    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.custom_alert_dialog_box);
@@ -258,37 +248,52 @@ public class MainActivity extends AppCompatActivity {
         dialogTitleTxt.setText(dialogTitle);
         dialogMessageTxt.setText(dialogMessage);
         btn.setText(dialogBtnText);
-        btn.setOnClickListener(view -> dialog.dismiss());
+        btn.setOnClickListener(view -> {
+            if(isReturnToScanner){
+                dialog.dismiss();
+                loadFragment(new ScanFragment(), 1);
+            }else {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }*/
+
+    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
+        Dialog dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setContentView(R.layout.custom_alert_dialog_box);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        TextView error = dialog.findViewById(R.id.dialog_type_error);
+        TextView success = dialog.findViewById(R.id.dialog_type_success);
+        TextView warning = dialog.findViewById(R.id.dialog_type_warning);
+
+        error.setVisibility(dialogType.equalsIgnoreCase("ERROR") ? View.VISIBLE : View.GONE);
+        success.setVisibility(dialogType.equalsIgnoreCase("SUCCESS") ? View.VISIBLE : View.GONE);
+        warning.setVisibility(dialogType.equalsIgnoreCase("WARNING") ? View.VISIBLE : View.GONE);
+
+        TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
+        dialogMessageTxt.setVisibility(dialogMessage == null ? View.GONE : View.VISIBLE);
+        TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
+        TextView btn = dialog.findViewById(R.id.text_btn);
+
+        dialogTitleTxt.setText(dialogTitle);
+        dialogMessageTxt.setText(dialogMessage);
+        btn.setText(dialogBtnText);
+
+        btn.setOnClickListener(view -> {
+            if (isReturnToScanner) {
+                dialog.dismiss();
+                loadFragment(new ScanFragment(), 1);
+            } else {
+                dialog.dismiss();
+            }
+        });
+
         dialog.show();
     }
 
 
-    private void logoutApi() {
-        Log.i(TAG, "validateUser: in validateUser()");
-//        progressBar.setVisibility(View.VISIBLE);
-        UserMasterDto userMasterDto = new UserMasterDto(getLoginUserId());
-        Call<UserValidateResponseDto> call = RetrofitController.getInstances(this).getLoadingAdviseApi().logout(userMasterDto);
-      call.enqueue(new Callback<UserValidateResponseDto>() {
-          @Override
-          public void onResponse(Call<UserValidateResponseDto> call, Response<UserValidateResponseDto> response) {
-              if (!response.isSuccessful()){
-                  alert(MainActivity.this,"ERROR",response.errorBody().toString(),null,"OK");
-              }
-              Log.i(TAG, "onResponse: logout response raw : " + response.raw());
-              if (response.isSuccessful()){
-                  if (response.body().getStatus().equalsIgnoreCase("FOUND")){
-                      Log.i(TAG, "onResponse: " + response.body().getMessage());
-                      logout();
-                  }else {
-                      alert(MainActivity.this,"ERROR", response.body().getMessage(),null,"OK");
-                  }
-              }
-          }
-
-          @Override
-          public void onFailure(Call<UserValidateResponseDto> call, Throwable t) {
-              alert(MainActivity.this,"ERROR", t.getMessage().toString(),null,"OK");
-          }
-      });
-    }
 }

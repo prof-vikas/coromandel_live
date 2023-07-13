@@ -50,7 +50,7 @@ public class RetryInterceptor implements Interceptor {
         if (ioException != null) {
             throw ioException;
         } else {
-            throw new IOException("Unknown error occurred");
+            throw new IOException("fails to connect with server");
         }
     }
 }

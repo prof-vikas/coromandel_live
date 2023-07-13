@@ -13,8 +13,9 @@ public class DriverMasterDto {
     private Boolean isActive;
     private Integer rStat;
     private AuditEntity auditEntity;
+    private Integer driverCodeSequence;
 
-    public DriverMasterDto(Integer id, String driverName, String driverMobileNo, String driverLicenseNo, String driverLicenseExpiryDate, String driverAadharNo, Boolean isActive, Integer rStat, AuditEntity auditEntity) {
+    public DriverMasterDto(Integer id, String driverName, String driverMobileNo, String driverLicenseNo, String driverLicenseExpiryDate, String driverAadharNo, Boolean isActive, Integer rStat, AuditEntity auditEntity, Integer driverCodeSequence) {
         this.id = id;
         this.driverName = driverName;
         this.driverMobileNo = driverMobileNo;
@@ -24,6 +25,7 @@ public class DriverMasterDto {
         this.isActive = isActive;
         this.rStat = rStat;
         this.auditEntity = auditEntity;
+        this.driverCodeSequence = driverCodeSequence;
     }
 
     public Integer getId() {
@@ -96,5 +98,13 @@ public class DriverMasterDto {
 
     public void setAuditEntity(AuditEntity auditEntity) {
         this.auditEntity = auditEntity;
+    }
+
+    public Integer getDriverCodeSequence() {
+        return driverCodeSequence;
+    }
+
+    public void setDriverCodeSequence(Integer driverCodeSequence) {
+        this.driverCodeSequence = driverCodeSequence;
     }
 }

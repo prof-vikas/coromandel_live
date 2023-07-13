@@ -13,11 +13,13 @@ public class UpdateWareHouseNoRequestDto {
     private RfidLepIssueDto rfidLepIssueModel;
     private RemarksDto remarkMaster;
     private Integer transactionFlag;
-//    private String unloadingTime;
     private String vehicleOutTime;
     private String vehicleInTime;
+    private String inUnLoadingTime;
+    private String outUnLoadingTime;
 
-    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag, String vehicleOutTime, String vehicleInTime) {
+
+    public UpdateWareHouseNoRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag, String vehicleOutTime, String vehicleInTime, String inUnLoadingTime, String outUnLoadingTime) {
         this.auditEntity = auditEntity;
         this.priviousWarehouse = priviousWarehouse;
         this.warehouse = warehouse;
@@ -26,6 +28,8 @@ public class UpdateWareHouseNoRequestDto {
         this.transactionFlag = transactionFlag;
         this.vehicleOutTime = vehicleOutTime;
         this.vehicleInTime = vehicleInTime;
+        this.inUnLoadingTime = inUnLoadingTime;
+        this.outUnLoadingTime = outUnLoadingTime;
     }
 
     public AuditEntity getAuditEntity() {
@@ -90,5 +94,21 @@ public class UpdateWareHouseNoRequestDto {
 
     public void setVehicleInTime(String vehicleInTime) {
         this.vehicleInTime = vehicleInTime;
+    }
+
+    public String getInUnLoadingTime() {
+        return inUnLoadingTime;
+    }
+
+    public void setInUnLoadingTime(String inUnLoadingTime) {
+        this.inUnLoadingTime = inUnLoadingTime;
+    }
+
+    public String getOutUnLoadingTime() {
+        return outUnLoadingTime;
+    }
+
+    public void setOutUnLoadingTime(String outUnLoadingTime) {
+        this.outUnLoadingTime = outUnLoadingTime;
     }
 }

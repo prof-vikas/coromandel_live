@@ -1,8 +1,7 @@
 package com.sipl.rfidtagscanner.api;
 
+import static com.sipl.rfidtagscanner.utils.ApiConstants.ADD_OUT_RFID_LEP_ISSUE;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.ADD_RFID_LEP_ISSUE;
-import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_BOTHRA_SUPERVISOR;
-import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_PINNACLE_SUPERVISOR;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_REMARK;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_REMARKS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_ALL_RMG_NUMBER;
@@ -11,7 +10,7 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_BOTHRA_LOADING_ADVI
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_COROMANDEL_LOADING_ADVISE_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS;
-import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_DESTINATION_LOCATION_DETAILS;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LOGIN_USER_DETAIL;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN_WITHOUT_JWT;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGOUT;
@@ -25,11 +24,8 @@ import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
-import com.sipl.rfidtagscanner.dto.response.BothraSupervisorApiResponse;
-import com.sipl.rfidtagscanner.dto.response.DestinationLocationResponseApi;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.LoadingAdvisePostApiResponse;
-import com.sipl.rfidtagscanner.dto.response.PinnacleSupervisorApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
@@ -45,7 +41,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface LoadingAdviseApi {
+public interface ApiController {
 
     //    Login
     @POST(LOGIN)
@@ -54,8 +50,11 @@ public interface LoadingAdviseApi {
     @GET(LOGIN_WITHOUT_JWT + "/{userId}" + "/{password}")
     Call<UserValidateResponseDto> loginWithOutJwt(@Path("userId") String userId, @Path("password") String password);
 
+    @GET(GET_LOGIN_USER_DETAIL + "{username}")
+    Call<UserValidateResponseDto> getLoginUserDetails(@Header("Authorization") String authToken, @Path("username") String userName);
+
     @PUT(LOGOUT)
-    Call<UserValidateResponseDto> logout(UserMasterDto userMasterDto);
+    Call<UserMasterDto> logout(@Body UserMasterDto userMasterDto);
 
 
     //    Loading Advise
@@ -65,17 +64,11 @@ public interface LoadingAdviseApi {
     @GET(GET_BOTHRA_LOADING_ADVISE_DETAILS)
     Call<TransactionsApiResponse> getRfidTagDetailBothraLA(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
 
-    @GET(GET_DESTINATION_LOCATION_DETAILS)
-    Call<DestinationLocationResponseApi> getAllDestinationLocation(@Header("Authorization") String authToken);
-
-    @GET(GET_ALL_PINNACLE_SUPERVISOR)
-    Call<PinnacleSupervisorApiResponse> getAllPinnacleSupervisor(@Header("Authorization") String authToken);
-
-    @GET(GET_ALL_BOTHRA_SUPERVISOR)
-    Call<BothraSupervisorApiResponse> getAllBothraSupervisor(@Header("Authorization") String authToken);
-
     @POST(ADD_RFID_LEP_ISSUE)
     Call<LoadingAdvisePostApiResponse> addRfidLepIssue(@Header("Authorization") String authToken, @Body LoadingAdviseRequestDto loadingAdviseRequestDto);
+
+    @PUT(ADD_OUT_RFID_LEP_ISSUE)
+    Call<TransactionsApiResponse> updateCoromandelLoadingAdvise(@Header("Authorization") String authToken, @Body LoadingAdviseRequestDto loadingAdviseRequestDto);
 
     //  BothraLoadingAdvise
     @PUT(UPDATE_BOTHRA_LOADING_ADVISE)

@@ -2,14 +2,12 @@ package com.sipl.rfidtagscanner.utils;
 
 public class ApiConstants {
 //    Local 90 server
-//    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
+    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
+//    public static final String BASE_URL = "http://10.66.66.05:8082/coromandel-rest-repo/";
 
 
 //    Apache
-//    public static final String BASE_URL = "http://10.210.213.4/coromandel-rest-repo/";
-//    public static final String BASE_URL = "http://localhost:8082/coromandel-rest-repo/";
-//    public static final String BASE_URL = "http://10.66.66.5:8082/coromandel-rest-repo/";
-    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
+//    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
 //    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
 
 
@@ -20,7 +18,9 @@ public class ApiConstants {
 
     // login
     public static final String LOGIN = BASE_URL + "api/v1/auth/login/";
+    public static final String GET_LOGIN_USER_DETAIL = BASE_URL + "users/details/";
     public static final String LOGOUT = BASE_URL + "users/logoutUser";
+
     public static final String LOGIN_WITHOUT_JWT = BASE_URL + "users/validate";
 
     // Loading Advise
@@ -32,6 +32,7 @@ public class ApiConstants {
     public static final String GET_ALL_PINNACLE_SUPERVISOR = BASE_URL + "pinnacle/getAllPinnacleDetails/";
     public static final String GET_ALL_BOTHRA_SUPERVISOR = BASE_URL + "bothra/getAllBothraDetails/";
     public static final String ADD_RFID_LEP_ISSUE = BASE_URL + "transactions/addLoadingTransactions/";
+    public static final String ADD_OUT_RFID_LEP_ISSUE = BASE_URL + "transactions/updatePortLoadingTransactions";
     public static final String UPDATE_BOTHRA_LOADING_ADVISE = BASE_URL + "transactions/updateLoadingTransactions/";
 
     //    Coromandel

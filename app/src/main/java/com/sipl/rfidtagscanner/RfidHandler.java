@@ -217,7 +217,7 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
         Log.d(TAG, (isReaderConnected ? "Connected" : "Not Connected"));
         String s =isReaderConnected ? "RFID handle device is connected" : "RFID handle device is not connected";
         if (!isReaderConnected){
-           scanFragment.onNotConnectedTpHandle(s,isReaderConnected);
+           scanFragment.handleConnectionStatus(s, false);
         }
         updateStatus();
         return isReaderConnected;

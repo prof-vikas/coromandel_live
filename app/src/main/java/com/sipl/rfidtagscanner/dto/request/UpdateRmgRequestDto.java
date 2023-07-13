@@ -13,14 +13,18 @@ public class UpdateRmgRequestDto {
     private RfidLepIssueDto rfidLepIssueModel;
     private RemarksDto remarkMaster;
     private Integer transactionFlag;
+    private String inUnLoadingTime;
+    private String outUnLoadingTime;
 
-    public UpdateRmgRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag) {
+    public UpdateRmgRequestDto(AuditEntity auditEntity, StorageLocationDto priviousWarehouse, StorageLocationDto warehouse, RfidLepIssueDto rfidLepIssueModel, RemarksDto remarkMaster, Integer transactionFlag, String inUnLoadingTime, String outUnLoadingTime) {
         this.auditEntity = auditEntity;
         this.priviousWarehouse = priviousWarehouse;
         this.warehouse = warehouse;
         this.rfidLepIssueModel = rfidLepIssueModel;
         this.remarkMaster = remarkMaster;
         this.transactionFlag = transactionFlag;
+        this.inUnLoadingTime = inUnLoadingTime;
+        this.outUnLoadingTime = outUnLoadingTime;
     }
 
     public AuditEntity getAuditEntity() {
@@ -69,5 +73,21 @@ public class UpdateRmgRequestDto {
 
     public void setTransactionFlag(Integer transactionFlag) {
         this.transactionFlag = transactionFlag;
+    }
+
+    public String getInUnLoadingTime() {
+        return inUnLoadingTime;
+    }
+
+    public void setInUnLoadingTime(String inUnLoadingTime) {
+        this.inUnLoadingTime = inUnLoadingTime;
+    }
+
+    public String getOutUnLoadingTime() {
+        return outUnLoadingTime;
+    }
+
+    public void setOutUnLoadingTime(String outUnLoadingTime) {
+        this.outUnLoadingTime = outUnLoadingTime;
     }
 }
