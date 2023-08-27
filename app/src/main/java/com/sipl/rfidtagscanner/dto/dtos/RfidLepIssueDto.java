@@ -13,9 +13,13 @@ public class RfidLepIssueDto {
     private UserMasterDto userMaster;
     private StorageLocationDto destinationLocation;
     private String lepIssueDateTime;
+    private String relepIssueDateTime;
     private Boolean isActive;
     private Integer printCount;
-    private Integer rstat;
+    private Integer rStat;
+    private String cancelledReason;
+    private Boolean isLepCancelled;
+    private String cancelledBy;
     private Boolean isRfidLepMapped;
     private AuditEntity auditEntity;
 
@@ -23,7 +27,7 @@ public class RfidLepIssueDto {
         this.id = id;
     }
 
-    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, RfidMasterDto rfidMaster, BerthMasterDto berthMaster, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, Boolean isActive, Integer printCount, Integer rstat, Boolean isRfidLepMapped, AuditEntity auditEntity) {
+    public RfidLepIssueDto(Integer id, DailyTransportReportModuleDto dailyTransportReportModule, String lepNumber, RfidMasterDto rfidMaster, BerthMasterDto berthMaster, DriverMasterDto driverMaster, UserMasterDto userMaster, StorageLocationDto destinationLocation, String lepIssueDateTime, String relepIssueDateTime, Boolean isActive, Integer printCount, Integer rStat, String cancelledReason, Boolean isLepCancelled, String cancelledBy, Boolean isRfidLepMapped, AuditEntity auditEntity) {
         this.id = id;
         this.dailyTransportReportModule = dailyTransportReportModule;
         this.lepNumber = lepNumber;
@@ -33,9 +37,13 @@ public class RfidLepIssueDto {
         this.userMaster = userMaster;
         this.destinationLocation = destinationLocation;
         this.lepIssueDateTime = lepIssueDateTime;
+        this.relepIssueDateTime = relepIssueDateTime;
         this.isActive = isActive;
         this.printCount = printCount;
-        this.rstat = rstat;
+        this.rStat = rStat;
+        this.cancelledReason = cancelledReason;
+        this.isLepCancelled = isLepCancelled;
+        this.cancelledBy = cancelledBy;
         this.isRfidLepMapped = isRfidLepMapped;
         this.auditEntity = auditEntity;
     }
@@ -112,6 +120,14 @@ public class RfidLepIssueDto {
         this.lepIssueDateTime = lepIssueDateTime;
     }
 
+    public String getRelepIssueDateTime() {
+        return relepIssueDateTime;
+    }
+
+    public void setRelepIssueDateTime(String relepIssueDateTime) {
+        this.relepIssueDateTime = relepIssueDateTime;
+    }
+
     public Boolean getActive() {
         return isActive;
     }
@@ -128,12 +144,36 @@ public class RfidLepIssueDto {
         this.printCount = printCount;
     }
 
-    public Integer getRstat() {
-        return rstat;
+    public Integer getrStat() {
+        return rStat;
     }
 
-    public void setRstat(Integer rstat) {
-        this.rstat = rstat;
+    public void setrStat(Integer rStat) {
+        this.rStat = rStat;
+    }
+
+    public String getCancelledReason() {
+        return cancelledReason;
+    }
+
+    public void setCancelledReason(String cancelledReason) {
+        this.cancelledReason = cancelledReason;
+    }
+
+    public Boolean getLepCancelled() {
+        return isLepCancelled;
+    }
+
+    public void setLepCancelled(Boolean lepCancelled) {
+        isLepCancelled = lepCancelled;
+    }
+
+    public String getCancelledBy() {
+        return cancelledBy;
+    }
+
+    public void setCancelledBy(String cancelledBy) {
+        this.cancelledBy = cancelledBy;
     }
 
     public Boolean getRfidLepMapped() {

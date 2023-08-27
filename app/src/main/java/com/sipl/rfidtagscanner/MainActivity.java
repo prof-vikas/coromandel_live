@@ -32,6 +32,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
 import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
 import com.sipl.rfidtagscanner.fragments.BWHFragment;
+import com.sipl.rfidtagscanner.fragments.SOSFixForCoromandel;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
@@ -112,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment2(new ScanFragment(), 1, "coromandel");
             } else if (id == R.id.menu_item_setting) {
                 loadFragment2(new SettingsFragment(), 1, null);
+            } else if (id == R.id.menu_updateSOS) {
+                loadFragment2(new SOSFixForCoromandel(), 1, "sosFragment");
             } else if (id == R.id.menu_item_setting_admin) {
                 loadFragment2(new SettingsFragment(), 1, "settingAdmin");
-            } else if (id == R.id.menu_item_logout) {
+            }else if (id == R.id.menu_item_logout) {
                 logout();
             } else {
                 Toast.makeText(MainActivity.this, "click outside of menu", Toast.LENGTH_SHORT).show();
@@ -129,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_admin);
             getMenuNavigation();
-            loadFragment(new ScanFragment(), 1);
+            loadFragment(new SOSFixForCoromandel(), 1);
         } else {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.menu_loading_advise);

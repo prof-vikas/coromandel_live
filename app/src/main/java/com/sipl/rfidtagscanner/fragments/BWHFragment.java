@@ -2,9 +2,9 @@ package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_WARNING;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_RMG_NUMBER;
-import static com.sipl.rfidtagscanner.utils.Config.EMPTY_WAREHOUSE_NUMBER;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -64,23 +64,15 @@ public class BWHFragment extends Fragment {
     private Integer selectedLepNoId;
 
     private String previousRMGCode;
-    private String selectedWhNo;
-    private Boolean isSelectedWhHasWB;
-
-
     private String selectedRemarks;
     private Integer selectedRemarksId;
     private String selectedRmgNo;
-    private String selectedRmgCode;
 
     //    userDetails
     private String loginUserName;
     private String token;
-//    private String selectedRemarks;
-//    private Integer selectedRemarksId;
     private ArrayAdapter<String> remarkAdapter;
     private ArrayAdapter<String> updateWareHouseNoAdapter;
-//    private String previousWarehouseCode;
     private String inUnloadingTime = null;
 
 
@@ -120,10 +112,10 @@ public class BWHFragment extends Fragment {
         this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
 
         setLocalTime();
-//        getBWHDetails();
-        getLoadingAdviseDetails();
+        getBothraWHDetails();
         updateUIBaseOnVehicleInTime();
-        getWareHouseLocation();
+//        getWareHouseLocation();
+        getWarehouseLocation();
         getAllRemarks();
 
 
@@ -142,43 +134,14 @@ public class BWHFragment extends Fragment {
     }
 
     private boolean validateLoadingData() {
-        if (edtRfidTag.length() == 0) {
-            edtRfidTag.setError("This field is required");
-            return false;
-        }
-        if (edtLepNo.length() == 0) {
-            edtLepNo.setError("This field is required");
-            return false;
-        }
-        if (edtTruckNumber.length() == 0) {
-            edtTruckNumber.setError("This field is required");
-            return false;
-        }
-        if (edtDriverName.length() == 0) {
-            edtDriverName.setError("This field is required");
-            return false;
-        }
-        if (edtCommodity.length() == 0) {
-            edtCommodity.setError("This field is required");
-            return false;
-        }
-        if (edtGrossWeight.length() == 0) {
-            edtGrossWeight.setError("This field is required");
-            return false;
-        }
-        if (edtPreviousWareHouseNo.length() == 0) {
-            edtPreviousWareHouseNo.setError("This field is required");
-            return false;
-        }
         if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Select Warehouse No") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
-            Log.i(TAG, "validateLoadingData: " + spinnerWarehouseNo.getSelectedItem().toString() + spinnerRemark.getSelectedItem().toString());
             Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
-    private boolean getWareHouseLocation() {
+/*    private void getWareHouseLocation() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllCoromandelRmgNo("Bearer " + token, "bothra");
@@ -303,9 +266,123 @@ public class BWHFragment extends Fragment {
                 ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
             }
         });
+    }*/
 
-        return true;
+    private void getWarehouseLocation() {
+        progressBar.setVisibility(View.VISIBLE);
+        Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext())
+                .getLoadingAdviseApi()
+                .getAllCoromandelRmgNo("Bearer " + token, "bothra");
+
+        call.enqueue(new Callback<RmgNumberApiResponse>() {
+            @Override
+            public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
+                progressBar.setVisibility(View.GONE);
+
+                if (!response.isSuccessful()) {
+                    String errorBody = response.errorBody() != null ? response.errorBody().toString() : "";
+                    ((MainActivity) requireActivity()).alert(getActivity(), DIALOG_ERROR, errorBody, null, "OK", false);
+                    return;
+                }
+
+                Log.i(TAG, "onResponse: getAllUpdateRmgNo : responseCode : " + response.code() + " " + response.raw());
+
+                if (response.isSuccessful()) {
+                    HashMap<String, String> hashMapLocationCode = new HashMap<>();
+                    List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
+                    ArrayList<String> arrDestinationLocation = new ArrayList<>();
+                    ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
+                    SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+                    String previousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
+                    String removedPreviousRmgCode = defaultWareHouse + " - " + previousRmgNoDesc;
+
+                    try {
+                        if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
+                            customToast.toastMessage(getActivity(), EMPTY_RMG_NUMBER, 0);
+                            return;
+                        }
+
+                        for (StorageLocationDto locationDto : functionalLocationMasterDtoList) {
+                            String s = locationDto.getStrLocationCode();
+                            String strLocationDesc = locationDto.getStrLocationDesc();
+                            arrDestinationLocation.add(s);
+                            String strLocationDescWithCode = s + " - " + strLocationDesc.toUpperCase();
+                            arrDestinationLocationDesc.add(strLocationDescWithCode);
+                            hashMapLocationCode.put(strLocationDescWithCode, s);
+                        }
+
+                        arrDestinationLocationDesc.remove(removedPreviousRmgCode);
+                        arrDestinationLocationDesc.add("Select Warehouse No");
+
+                        updateWareHouseNoAdapter = new ArrayAdapter<String>(getActivity(),
+                                android.R.layout.simple_spinner_dropdown_item, arrDestinationLocationDesc) {
+                            @Override
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                View v = super.getView(position, convertView, parent);
+                                if (position == getCount()) {
+                                    ((TextView) v.findViewById(android.R.id.text1)).setText("");
+                                    ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                                }
+                                return v;
+                            }
+
+                            @Override
+                            public int getCount() {
+                                return super.getCount() - 1;
+                            }
+                        };
+                        spinnerWarehouseNo.setAdapter(updateWareHouseNoAdapter);
+
+                        if (inUnloadingTime != null) {
+                            if (previousRMG.equalsIgnoreCase(defaulfWareHouseDesc)) {
+                                spinnerWarehouseNo.setEnabled(false);
+                                spinnerWarehouseNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
+                                spinnerWarehouseNo.setSelection(updateWareHouseNoAdapter.getCount());
+                            } else {
+                                int position = arrDestinationLocationDesc.indexOf(defaulfWareHouseDesc);
+                                if (position != -1) {
+                                    spinnerWarehouseNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
+                                    spinnerWarehouseNo.setSelection(position);
+                                    spinnerWarehouseNo.setEnabled(false);
+                                } else {
+                                    Log.i(TAG, "onResponse: in position else");
+                                }
+                            }
+                        } else {
+                            spinnerWarehouseNo.setSelection(updateWareHouseNoAdapter.getCount());
+                        }
+
+                        spinnerWarehouseNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                String selectedRmgCode = adapterView.getSelectedItem().toString();
+
+                                if (hashMapLocationCode.containsKey(selectedRmgCode)) {
+                                    selectedRmgNo = hashMapLocationCode.get(selectedRmgCode);
+                                }
+
+                                spinnerRemark.setEnabled(!selectedRmgCode.equalsIgnoreCase("Update RMG No"));
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception in RMG location: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
+            }
+        });
     }
+
 
     private void getAllRemarks() {
         progressBar.setVisibility(View.VISIBLE);
@@ -512,13 +589,10 @@ public class BWHFragment extends Fragment {
         edtGrossWeight.setText(sourceGrossWeight);
 
         if (inUnloadingTime != null) {
-            Log.i(TAG, "saveLoginAdviseData: in if");
             edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
         } else {
-            Log.i(TAG, "saveLoginAdviseData:  in else");
             edtPreviousWareHouseNo.setText(wareHouseCode);
         }
-//        edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
     }
 
     private void showProgressBar() {
@@ -530,7 +604,7 @@ public class BWHFragment extends Fragment {
     }
 
 
-    private void getLoadingAdviseDetails() {
+    private void getBothraWHDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         this.selectedLepNoId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
@@ -538,7 +612,6 @@ public class BWHFragment extends Fragment {
         String driverName = sp.getString("driverNameSPK", null);
         String truckNo = sp.getString("truckNoSPK", null);
         String commodity = sp.getString("commoditySPK", null);
-        String grossWeight = sp.getString("GrossWeightSPK", null);
         String sourceGrossWeight = sp.getString("sourceGrossWeightSPK", null);
         String previousRmgNo = sp.getString("previousRmgNoSPK", null);
         String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
@@ -548,14 +621,17 @@ public class BWHFragment extends Fragment {
         String remarks = sp.getString("remarksSPK", null);
         String wareHouse = wareHouseCode + " - " + wareHouseDesc;
         String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
-        Log.i(TAG, "getLoadingAdviseDetails: previous : " + previousRmgNo + " wareHouse : " + wareHouseCode);
         this.defaultWareHouse = wareHouseCode;
         this.remarks = remarks;
         this.previousRMGCode = previousRmgNo;
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
+        if (rfidTagId != null && lepNo != null && driverName != null && truckNo != null && commodity != null && sourceGrossWeight != null && previousRmgNo != null && PreviousRmgNoDesc != null){
         saveLoginAdviseData(rfidTagId,lepNo,driverName,truckNo,commodity,sourceGrossWeight,previousRmgNo, PreviousRmgNoDesc, wareHouse);
+        }else {
+            ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, "Oops ! Encounter Null value, cannot process forward", null, "OK", true);
+        }
     }
 
 }

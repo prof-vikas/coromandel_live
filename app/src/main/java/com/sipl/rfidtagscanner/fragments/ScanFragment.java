@@ -229,8 +229,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
                             String berthLocation = rfidLepIssueDto.getBerthMaster().getBerthNumber();
                             String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
-                            Log.i(TAG, "onResponse: in rstat : " + response.body().getRfidLepIssueDto().getRstat());
-                            if (rfidLepIssueDto.getRstat() == 0) {
+                            Log.i(TAG, "onResponse: in rstat : " + response.body().getRfidLepIssueDto().getrStat());
+                            if (rfidLepIssueDto.getrStat() == 0) {
                                 getRFIDBothraLA();
                                 return;
                             } else {

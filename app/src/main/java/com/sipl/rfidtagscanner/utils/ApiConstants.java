@@ -3,6 +3,9 @@ package com.sipl.rfidtagscanner.utils;
 public class ApiConstants {
 //    Local 90 server
 //    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
+//    public static final String BASE_URL = "http://10.66.66.05:8081/coromandel-rest-repo/";
+
+//    Domain base URL :
 //    public static final String BASE_URL = "http://10.66.66.05:8082/coromandel-rest-repo/";
 
 
@@ -28,9 +31,6 @@ public class ApiConstants {
     public static final String GET_BOTHRA_LOADING_ADVISE_DETAILS = BASE_URL + "transactions/getTransactionFromFlagAndTagNumber";
 
     // Bothra loading advise
-    public static final String GET_DESTINATION_LOCATION_DETAILS = BASE_URL + "storageLocation/getAllStorageLocation/";
-    public static final String GET_ALL_PINNACLE_SUPERVISOR = BASE_URL + "pinnacle/getAllPinnacleDetails/";
-    public static final String GET_ALL_BOTHRA_SUPERVISOR = BASE_URL + "bothra/getAllBothraDetails/";
     public static final String ADD_RFID_LEP_ISSUE = BASE_URL + "transactions/addLoadingTransactions/";
     public static final String ADD_OUT_RFID_LEP_ISSUE = BASE_URL + "transactions/updatePortLoadingTransactions";
     public static final String UPDATE_BOTHRA_LOADING_ADVISE = BASE_URL + "transactions/updateLoadingTransactions/";
@@ -47,4 +47,6 @@ public class ApiConstants {
     public static final String GET_ALL_REMARK = BASE_URL + "CoWhSupervisor/getAllRemarks/";
     public static final String UPDATE_WAREHOUSE_NUMBER = BASE_URL + "CoWhSupervisor/";
 
+//    SOS
+    public static final String UPDATE_SOS = BASE_URL + "DailyTransportReport/update-isprocessed/";
 }

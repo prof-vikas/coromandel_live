@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.SOSFixForCoromandel">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_margin="20dp"
+       android:orientation="vertical">
+
+       <EditText
+           android:id="@+id/edt_sos_input"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textStyle="bold"
+           android:padding="10dp"
+           android:background="@drawable/rectangle_edt_write_able_field"
+           android:hint="Enter Lep no"/>
+
+       <Button
+           android:id="@+id/btn_sos_submit"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="submit" />
+
+   </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/sos_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:indeterminateDrawable="@drawable/progress_icon" />
+
+</FrameLayout>

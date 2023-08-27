@@ -16,6 +16,7 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN_WITHOUT_JWT;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGOUT;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_BOTHRA_LOADING_ADVISE;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_RMG_NO;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_SOS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_WAREHOUSE_NUMBER;
 
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
@@ -24,6 +25,7 @@ import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
+import com.sipl.rfidtagscanner.dto.response.DailyTransportReportModuleApiResponse;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.LoadingAdvisePostApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
@@ -104,6 +106,10 @@ public interface ApiController {
 
     @PUT(UPDATE_WAREHOUSE_NUMBER)
     Call<TransactionsApiResponse> updateWareHouse(@Header("Authorization") String authToken, @Body UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto);
+
+    @PUT(UPDATE_SOS +"{update-isprocessed}")
+    Call<DailyTransportReportModuleApiResponse> updateSOS(@Header("Authorization") String authToken, @Path("update-isprocessed") String update_isprocessed);
+
 
 }
 
