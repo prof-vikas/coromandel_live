@@ -627,11 +627,11 @@ public class BWHFragment extends Fragment {
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
-        if (rfidTagId != null && lepNo != null && driverName != null && truckNo != null && commodity != null && sourceGrossWeight != null && previousRmgNo != null && PreviousRmgNoDesc != null){
+//        if (rfidTagId != null && lepNo != null && driverName != null && truckNo != null && commodity != null && sourceGrossWeight != null && previousRmgNo != null && PreviousRmgNoDesc != null){
         saveLoginAdviseData(rfidTagId,lepNo,driverName,truckNo,commodity,sourceGrossWeight,previousRmgNo, PreviousRmgNoDesc, wareHouse);
-        }else {
-            ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, "Oops ! Encounter Null value, cannot process forward", null, "OK", true);
-        }
+//        }else {
+//            ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, "Oops ! Encounter Null value, cannot process forward", null, "OK", true);
+//        }
     }
 
 }

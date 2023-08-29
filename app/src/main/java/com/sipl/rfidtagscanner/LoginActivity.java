@@ -296,6 +296,7 @@ public class LoginActivity extends AppCompatActivity {
                     alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, "OK");
                 }
                 if (response.isSuccessful()) {
+                    Log.i(TAG, "onResponse: response.raw : " + response.raw());
                     if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                         progressBar.setVisibility(View.GONE);
                         String role = response.body().getUserDto().getName();
@@ -308,6 +309,7 @@ public class LoginActivity extends AppCompatActivity {
                         String userRoleId = String.valueOf(response.body().getUserDto().getRole().getId());
                         SavedId(response.body().getUserDto().getId());
                         if (token != null && role != null && username != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
+                            Log.i(TAG, "onResponse: username : " + username + " ");
                             savingLoginUserToSharedPref(userID, username, role, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc, userRoleId);
                         } else {
                             alert(LoginActivity.this, DIALOG_ERROR, "Something went wrong with this user credentials", "Try login with other user credentials", "OK");
