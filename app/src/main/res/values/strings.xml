@@ -59,6 +59,8 @@
     <string name="menu_profile">Profile Setting</string>
     <string name="menu_logout">Logout</string>
     <string name="lep_no">LEP Number</string>
+    <string name="other_reason">Other Remark</string>
+    <string name="batch_no">Batch Number</string>
     <string name="driver_mobile_no">Driver Mobile No</string>
     <string name="driver_license_no">Driver License No</string>
     <string name="loading_supervisor">Loading "\n"Supervisor</string>
