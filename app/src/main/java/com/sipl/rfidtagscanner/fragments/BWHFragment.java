@@ -56,38 +56,15 @@ public class BWHFragment extends Fragment {
 
     private final CustomToast customToast = new CustomToast();
     private TextClock tvExitTime, tvEntryTime;
-    private EditText edtEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
     private ProgressBar progressBar;
     private Spinner spinnerWarehouseNo, spinnerRemark;
-    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo;
-    private Integer selectedLepNoId;
-
-    private String previousRMGCode;
-    private String selectedWhNo;
-    private Boolean isSelectedWhHasWB;
-
-
-    private String selectedRemarks;
-    private Integer selectedRemarksId;
-    private String selectedRmgNo;
-    private String selectedRmgCode;
-
-    //    userDetails
-    private String loginUserName;
-    private String token;
-//    private String selectedRemarks;
-//    private Integer selectedRemarksId;
+    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo, edtEntryTime, edtBatchNumber;
+    private Integer selectedLepNoId, selectedRemarksId;
+    private String previousRMGCode, selectedRemarks, selectedRmgNo, loginUserName, token, defaultWareHouse, previousRMG, remarks, defaulfWareHouseDesc;
     private ArrayAdapter<String> remarkAdapter;
     private ArrayAdapter<String> updateWareHouseNoAdapter;
-//    private String previousWarehouseCode;
     private String inUnloadingTime = null;
-
-
-    private String defaultWareHouse;
-    private String previousRMG;
-    private String remarks;
-    private String defaulfWareHouseDesc;
 
     public BWHFragment() {
     }
@@ -104,6 +81,7 @@ public class BWHFragment extends Fragment {
         tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
         tvEntryTimeEdtLayout = view.findViewById(R.id.bwh_ll_entry_time);
         tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
+        edtBatchNumber = view.findViewById(R.id.edt_bwh_batch_no);
 
         edtRfidTag = view.findViewById(R.id.bwh_edt_rfid_tag);
         edtLepNo = view.findViewById(R.id.bwh_edt_lep_number);
@@ -120,12 +98,10 @@ public class BWHFragment extends Fragment {
         this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
 
         setLocalTime();
-//        getBWHDetails();
         getLoadingAdviseDetails();
         updateUIBaseOnVehicleInTime();
         getWareHouseLocation();
         getAllRemarks();
-
 
         btnSubmit.setOnClickListener(view12 -> {
             if (validateLoadingData()) {
@@ -170,8 +146,12 @@ public class BWHFragment extends Fragment {
             edtPreviousWareHouseNo.setError("This field is required");
             return false;
         }
+
+        if (edtBatchNumber.length() == 0) {
+            edtBatchNumber.setError("This field is required");
+            return false;
+        }
         if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Select Warehouse No") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
-            Log.i(TAG, "validateLoadingData: " + spinnerWarehouseNo.getSelectedItem().toString() + spinnerRemark.getSelectedItem().toString());
             Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -258,11 +238,7 @@ public class BWHFragment extends Fragment {
                                         spinnerWarehouseNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
                                         spinnerWarehouseNo.setSelection(position);
                                         spinnerWarehouseNo.setEnabled(false);
-                                    } else {
-                                        Log.i(TAG, "onResponse:  in position else");
                                     }
-                                } else {
-                                    Log.i(TAG, "onResponse: not contain storage location " + defaulfWareHouseDesc);
                                 }
                             }
                         } else {
@@ -503,22 +479,20 @@ public class BWHFragment extends Fragment {
         }
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode) {
-        edtRfidTag.setText(rfidTag);
-        edtLepNo.setText(lepNo);
-        edtTruckNumber.setText(truckNo);
-        edtDriverName.setText(driverName);
-        edtCommodity.setText(commodity);
-        edtGrossWeight.setText(sourceGrossWeight);
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber) {
+        edtRfidTag.setText(rfidTag.toUpperCase());
+        edtLepNo.setText(lepNo.toUpperCase());
+        edtTruckNumber.setText(truckNo.toUpperCase());
+        edtDriverName.setText(driverName.toUpperCase());
+        edtCommodity.setText(commodity.toUpperCase());
+        edtGrossWeight.setText(sourceGrossWeight.toUpperCase());
+        edtBatchNumber.setText(batchNumber.toUpperCase());
 
         if (inUnloadingTime != null) {
-            Log.i(TAG, "saveLoginAdviseData: in if");
-            edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
+            edtPreviousWareHouseNo.setText(previousRmgNo.toUpperCase() + " - " + PreviousRmgNoDesc.toUpperCase());
         } else {
-            Log.i(TAG, "saveLoginAdviseData:  in else");
-            edtPreviousWareHouseNo.setText(wareHouseCode);
+            edtPreviousWareHouseNo.setText(wareHouseCode.toUpperCase());
         }
-//        edtPreviousWareHouseNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
     }
 
     private void showProgressBar() {
@@ -546,16 +520,16 @@ public class BWHFragment extends Fragment {
         String wareHouseCode = sp.getString("wareHouseCodeSPK", null);
         String wareHouseDesc = sp.getString("wareHouseCodeDescSPK", null);
         String remarks = sp.getString("remarksSPK", null);
+        String batchNumber = sp.getString("batchNumberSPK", null);
         String wareHouse = wareHouseCode + " - " + wareHouseDesc;
         String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
-        Log.i(TAG, "getLoadingAdviseDetails: previous : " + previousRmgNo + " wareHouse : " + wareHouseCode);
         this.defaultWareHouse = wareHouseCode;
         this.remarks = remarks;
         this.previousRMGCode = previousRmgNo;
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
-        saveLoginAdviseData(rfidTagId,lepNo,driverName,truckNo,commodity,sourceGrossWeight,previousRmgNo, PreviousRmgNoDesc, wareHouse);
+        saveLoginAdviseData(rfidTagId,lepNo,driverName,truckNo,commodity,sourceGrossWeight,previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
     }
 
 }

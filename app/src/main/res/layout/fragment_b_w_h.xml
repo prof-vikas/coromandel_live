@@ -134,7 +134,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/bwh_edt_batch_no"
+                        android:id="@+id/edt_bwh_batch_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/bwh_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"

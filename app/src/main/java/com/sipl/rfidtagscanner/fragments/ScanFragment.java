@@ -221,47 +221,36 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String driverName = rfidLepIssueDto.getDriverMaster().getDriverName();
                             String driverMobileNo = rfidLepIssueDto.getDriverMaster().getDriverMobileNo();
                             String driverLicenseNo = rfidLepIssueDto.getDriverMaster().getDriverLicenseNo();
-                            String truckNo = rfidLepIssueDto.getDailyTransportReportModule().getTruckNumber();
-                            String sapGrNo = String.valueOf(rfidLepIssueDto.getDailyTransportReportModule().getSapGrNumber());
-                            String vesselName = rfidLepIssueDto.getDailyTransportReportModule().getVesselName();
-                            String truckCapacity = String.valueOf(rfidLepIssueDto.getDailyTransportReportModule().getTruckCapacity());
-                            String commodity = rfidLepIssueDto.getDailyTransportReportModule().getCommodity();
+                            String truckNo = rfidLepIssueDto.getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                            String vesselName = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getVesselName();
+                            String commodity = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                            String batchNumber = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
                             String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
                             String berthLocation = rfidLepIssueDto.getBerthMaster().getBerthNumber();
                             String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
-                            Log.i(TAG, "onResponse: in rstat : " + response.body().getRfidLepIssueDto().getRstat());
+                            String grSrcLoc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
+                            String grSrcLocDesc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
                             if (rfidLepIssueDto.getRstat() == 0) {
                                 getRFIDBothraLA();
                                 return;
-                            } else {
-                                Log.i(TAG, "onResponse: in else");
                             }
 
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
-                            Log.i(TAG, "onResponse: role " + role);
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
-                                Log.i(TAG, "onResponse:  in before saving in shp");
-                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, null, null, null, null, berthLocation);
-                                Log.i(TAG, "onResponse: after saving data");
+                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, null, null, null, null, berthLocation, batchNumber, grSrcLoc, grSrcLocDesc, null);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 return;
                             }
-                            Log.i(TAG, "onResponse:  out of reach");
 
                         } catch (Exception e) {
-                            Log.i(TAG, "onResponse: " + e.getMessage());
-                            e.getMessage();
+                            Log.e(TAG, "onResponse: " + e.getMessage());
                             return;
                         }
-                        Log.i(TAG, "onResponse: getRfidTagDetailCoromandelLA : <<END >>");
                     } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
-                        Log.i(TAG, "onResponse: NOT_FOUND");
                         progressBar.setVisibility(View.GONE);
                         getRFIDBothraLA();
                     } else {
-                        Log.i(TAG, "onResponse: NOT_FOUND &&& else");
                         progressBar.setVisibility(View.GONE);
-                        Log.i(TAG, "onResponse: " + response.raw());
                         ((MainActivity) requireActivity()).alert(requireContext(), "WARNING", response.body().getMessage(), null, "OK", false);
                     }
                 }
@@ -307,18 +296,16 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                                 String driverMobileNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverMobileNo();
                                 String driverLicenseNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo();
-                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                                String sapGrNo = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrNumber());
-                                String vesselName = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVesselName();
-                                String truckCapacity = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity());
-                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                                String vesselName = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getVesselName();
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                                String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
                                 String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
-
-                             /*   String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String wareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
-
+                                String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
+                                String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
+                                String bTareWeight = transactionsDto.getSourceTareWeight().toString();
 
                                 String isgetInLoadingTime;
                                 String getInLoadingTime = null;
@@ -339,7 +326,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, berthNumber);
+                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, berthNumber, batchNumber, grSrcLoc, grSrcLocDesc,bTareWeight);
                                     ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 }
                             } catch (Exception e) {
@@ -365,7 +352,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
 
     }
 
-    private void saveLADetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor, String BerthNumber) {
+    private void saveLADetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String vesselName, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor, String BerthNumber, String batchNumber, String grSrcLoc, String grSrcLocDesc, String bTareWeight) {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -375,9 +362,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("driverMobileNoSPK", driverMobileNo).apply();
         editor.putString("driverLicenseNoSPK", driverLicenseNo).apply();
         editor.putString("truckNoSPK", truckNo).apply();
-        editor.putString("sapGrNoSPK", sapGrNo).apply();
         editor.putString("vesselNameSPK", vesselName).apply();
-        editor.putString("truckCapacitySPK", truckCapacity).apply();
         editor.putString("commoditySPK", commodity).apply();
         editor.putString("strDestinationCodeSPK", strDestinationCode).apply();
         editor.putString("isgetInLoadingTimeSPK", isgetInLoadingTime).apply();
@@ -385,34 +370,15 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("pinnacleSupervisorSPK", pinnacleSupervisor).apply();
         editor.putString("bothraSupervisorSPK", bothraSupervisor).apply();
         editor.putString("BerthNumberSPK", BerthNumber).apply();
-        Log.i(TAG, "saveLADataSharedPref: strDestinationCode : " + strDestinationCode);
-        Log.i(TAG, "saveLADataSharedPref: strDestinationDesc : " + strDestinationDesc);
+        editor.putString("batchNumberSPK", batchNumber).apply();
         editor.putString("strDestinationDescSPK", strDestinationDesc).apply();
+        editor.putString("grSrcLocSPK", grSrcLoc).apply();
+        editor.putString("grSrcLocDescSPK", grSrcLocDesc).apply();
+        editor.putString("bTareWeightSPK", bTareWeight).apply();
         editor.apply();
     }
 
-    private void saveWHDetails(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String isWeighbridgeAvailable, Integer callFrom, String vehicleInTime, String outUnloadingTime, String inUnloadingTime) {
-        SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("rfidTagSPK", rfidTag).apply();
-        editor.putString("lepNoSPK", lepNo).apply();
-        editor.putString("inUnloadingTimeSPK", inUnloadingTime).apply();
-        editor.putString("outUnloadingTimeSPK", outUnloadingTime).apply();
-        editor.putString("lepNoIdSPK", lepNoId).apply();
-        editor.putString("driverNameSPK", driverName).apply();
-        editor.putString("truckNoSPK", truckNo).apply();
-        editor.putString("commoditySPK", commodity).apply();
-        editor.putString("GrossWeightSPK", GrossWeight).apply();
-        editor.putString("previousRmgNoSPK", previousRmgNo).apply();
-        editor.putString("PreviousRmgNoDescSPK", PreviousRmgNoDesc).apply();
-        editor.putString("sourceGrossWeightSPK", sourceGrossWeight).apply();
-        editor.putString("isWeighbridgeAvailableSPK", isWeighbridgeAvailable).apply();
-        editor.putInt("callFromSPK", callFrom).apply();
-        editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
-        editor.apply();
-    }
-
-    private void saveWHDetailsCoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks) {
+    private void saveWHDetailsCoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -431,11 +397,13 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("wareHouseCodeDescSPK", wareHouseDesc).apply();
         editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
         editor.putString("remarksSPK", remarks).apply();
+        editor.putString("batchNumberSPK", batchNumber).apply();
+        Log.i(TAG, "saveWHDetailsCoro: batchNumber : " + batchNumber);
         editor.apply();
     }
 
 
-    private void saveWHDetailsBoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks) {
+    private void saveWHDetailsBoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -454,6 +422,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("wareHouseCodeDescSPK", wareHouseDesc).apply();
         editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
         editor.putString("remarksSPK", remarks).apply();
+        editor.putString("batchNumberSPK", batchNumber).apply();
         editor.apply();
     }
 
@@ -488,8 +457,9 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
                                 String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
-                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                                String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
                                 String previousRmgNo = null;
                                 String PreviousRmgNoDesc = null;
                                 String remarks = null;
@@ -516,7 +486,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
-                                    saveWHDetailsCoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks);
+                                    Log.i(TAG, "onResponse: batchNumber : " + batchNumber);
+                                    saveWHDetailsCoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                     ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
@@ -570,8 +541,9 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
                                 String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                                 String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
-                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                                String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
                                 String previousRmgNo = null;
                                 String PreviousRmgNoDesc = null;
                                 String remarks = null;
@@ -605,8 +577,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : "+ previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks);
-                                    saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks);
+                                    Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : "+ previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks + "\nbatchNumber" + batchNumber);
+                                    saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
@@ -663,28 +635,9 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
                             String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
                             String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
-                            String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                            String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
-                 /*           String previousRmgNo = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
-                            String PreviousRmgNoDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                            String isWeighBridgeAvailble = String.valueOf(transactionsDto.getFunctionalLocationDestinationMaster().getWbAvailable());
-                            String strWareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                            String strWareHouseCodeDesc = transactionsDto.getWarehouse().getStrLocationDesc();
-                            String strWbAvailable = String.valueOf(transactionsDto.getWarehouse().getWbAvailable());*/
-
-                        /*    String strEntryTime = transactionsDto.getVehicleInTime();
-                            LocalDateTime aLDT = LocalDateTime.parse(strEntryTime);
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-                            String entryTime = aLDT.format(formatter);*/
-
-                      /*      if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
-                                String sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
-                                if (strWareHouseCode != null) {
-                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, strWareHouseCode, strWareHouseCodeDesc, sourceGrossWeight, strWbAvailable, 2, entryTime, null, null);
-                                } else {
-                                    saveWHDetails(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, isWeighBridgeAvailble, 2, entryTime, null, null);
-                                }
-                                ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);*/
+                            String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                            String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                            String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
 
                             String previousRmgNo = null;
                             String PreviousRmgNoDesc = null;
@@ -720,7 +673,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                 }
                                 Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : "+ previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks);
-                                saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks);
+                                saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
                                 ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
@@ -777,13 +730,15 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
                             String driverMobileNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverMobileNo();
                             String driverLicenseNo = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverLicenseNo();
-                            String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckNumber();
-                            String sapGrNo = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrNumber());
-                            String vesselName = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVesselName();
-                            String truckCapacity = String.valueOf(transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getTruckCapacity());
-                            String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getCommodity();
+                            String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                            String vesselName = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getVesselName();
+                            String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                            String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
                             String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                             String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
+                            String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
+                            String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
+                            String bTareWeight = transactionsDto.getSourceTareWeight().toString();
 
                             String isgetInLoadingTime;
                             String getInLoadingTime = null;
@@ -802,7 +757,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 isgetInLoadingTime = "false";
                             }
                             if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, null);
+                                saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, null, batchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                             }
                         } catch (Exception e) {

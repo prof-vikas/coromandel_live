@@ -57,11 +57,10 @@ public class CWHFragment extends Fragment {
     private ArrayAdapter<String> remarksAdapter;
     private String inUnloadingTime = null;
     private EditText edtEntryTime, edtOtherRemarks;
-    ;
     private TextClock tvClock, tvEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvOtherRemark;
 
-    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo;
+    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo, edtBatchNumber;
     private CustomToast customToast = new CustomToast();
     private ProgressBar progressBar;
     private Spinner spinnerUpdateRmgNo, spinnerRemark;
@@ -85,12 +84,13 @@ public class CWHFragment extends Fragment {
         edtGrossWeight = view.findViewById(R.id.cwh_edt_gross_weight);
         edtPreviousRmgNo = view.findViewById(R.id.cwh_edt_previous_rmg_no);
         edtOtherRemarks = view.findViewById(R.id.cwh_edt_other);
+        edtBatchNumber = view.findViewById(R.id.cwh_edt_batch_no);
 
         btnReset = view.findViewById(R.id.cwh_btn_reset);
         btnSubmit = view.findViewById(R.id.cwh_btn_submit);
         progressBar = view.findViewById(R.id.cwh_progressBar);
 
-         tvClock = view.findViewById(R.id.bwh_unloading_out_time);
+        tvClock = view.findViewById(R.id.bwh_unloading_out_time);
         tvEntryTime = view.findViewById(R.id.cwh_tv_entry_time);
         edtEntryTime = view.findViewById(R.id.edt_entry_time2);
         tvEntryTimeClocKLayout = view.findViewById(R.id.title_entry_time);
@@ -102,7 +102,7 @@ public class CWHFragment extends Fragment {
         this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
 
         displayClock();
-        getLoadingAdviseDetails();
+        getCWHDetails();
         updateUIBaseOnWareHouseLocation();
         callOnCreateApi();
 
@@ -487,7 +487,7 @@ public class CWHFragment extends Fragment {
         getRemarks();
     }
 
-    private void getLoadingAdviseDetails() {
+    private void getCWHDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         this.selectedLepNumberId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
@@ -502,6 +502,8 @@ public class CWHFragment extends Fragment {
         String wareHouseCode = sp.getString("wareHouseCodeSPK", null);
         String wareHouseDesc = sp.getString("wareHouseCodeDescSPK", null);
         String remarks = sp.getString("remarksSPK", null);
+        String batchNumber = sp.getString("batchNumberSPK", null);
+        Log.i(TAG, "getLoadingAdviseDetails: batchNumber" + batchNumber);
         String wareHouse = wareHouseCode + " - " + wareHouseDesc;
         String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
         this.defaultWareHouse = wareHouseCode;
@@ -510,20 +512,21 @@ public class CWHFragment extends Fragment {
         this.previousRMG = previousRMG;
         this.previousRMGCode = previousRmgNo;
         this.inUnloadingTime = inUnloadingTime;
-        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse);
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String grossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode) {
-        edtRfidTag.setText(rfidTag);
-        edtLepNo.setText(lepNo);
-        edtTruckNumber.setText(truckNo);
-        edtDriverName.setText(driverName);
-        edtCommodity.setText(commodity);
-        edtGrossWeight.setText(grossWeight);
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String grossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber) {
+        edtRfidTag.setText(rfidTag.toUpperCase());
+        edtLepNo.setText(lepNo.toUpperCase());
+        edtTruckNumber.setText(truckNo.toUpperCase());
+        edtDriverName.setText(driverName.toUpperCase());
+        edtCommodity.setText(commodity.toUpperCase());
+        edtGrossWeight.setText(grossWeight.toUpperCase());
+        edtBatchNumber.setText(batchNumber.toUpperCase());
         if (inUnloadingTime != null) {
-            edtPreviousRmgNo.setText(previousRmgNo + " - " + PreviousRmgNoDesc);
+            edtPreviousRmgNo.setText(previousRmgNo.toUpperCase() + " - " + PreviousRmgNoDesc.toUpperCase());
         } else {
-            edtPreviousRmgNo.setText(wareHouseCode);
+            edtPreviousRmgNo.setText(wareHouseCode.toUpperCase());
         }
     }
 }

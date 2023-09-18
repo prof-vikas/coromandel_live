@@ -49,19 +49,18 @@ public class LoadingAdviseFragment extends Fragment {
     private ProgressBar progressBar;
     private EditText edtDestinationLocation, edtBothraSupervisor, edtPinnacleSupervisor;
     private TextView tvDestinationLocation, tvPinnacleSupervisor, tvBothraSupervisor;
-    private EditText edtRfidTagNo, edtBerthNumber, edtLepNo, edtSapGrNo, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtTruckCapacity, edtLoadingSupervisor, edtSourceLocation;
+    private EditText edtRfidTagNo, edtBerthNumber, edtLepNo, edtBatchNumber, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtLoadingSupervisor, edtSourceLocation, edtTareWeight;
 
     //    userDetails
     private String loginUserName;
     private String token;
     private String loginUserStorageLocation;
     private String loginUserStorageLocationDesc;
-    //    private String loginUserPlantCode;
     private int loginUserId;
 
     private String selectedDestinationCode;
     private Integer selectedLepNumberId;
-    private LinearLayout constaintEntryTimeLayout, textclockLayoutexit;
+    private LinearLayout constaintEntryTimeLayout, textclockLayoutexit, llTareWeight;
     private EditText edtConstEntryTime;
     private LinearLayout layoutBothraSupervisor, layoutPinnacleSupervisor, edtBerthNumberLayout;
 
@@ -81,6 +80,7 @@ public class LoadingAdviseFragment extends Fragment {
         exitClock = view.findViewById(R.id.la_exit_tv_clock);
 
         lltvClockLayout = view.findViewById(R.id.title_date_time);
+        llTareWeight = view.findViewById(R.id.title_la_tare_weight);
         constaintEntryTimeLayout = view.findViewById(R.id.title_ll_entry_time);
         edtConstEntryTime = view.findViewById(R.id.ll_edt_entryTime);
 
@@ -90,17 +90,17 @@ public class LoadingAdviseFragment extends Fragment {
         edtSourceLocation = view.findViewById(R.id.la_edt_source_location);
         edtRfidTagNo = view.findViewById(R.id.edt_la_rfid_tag_no);
         edtLepNo = view.findViewById(R.id.la_edt_lep_number);
-        edtSapGrNo = view.findViewById(R.id.edt_la_sap_rg_no);
         edtTruckNumber = view.findViewById(R.id.edt_la_truck_no);
         edtDriverName = view.findViewById(R.id.edt_la_driver_name);
         edtDriverMobileNo = view.findViewById(R.id.edt_la_driver_mobile_no);
         edtDriverLicenseNo = view.findViewById(R.id.edt_la_driver_license_no);
         edtVesselName = view.findViewById(R.id.edt_la_vessel_name);
         edtCommodity = view.findViewById(R.id.edt_la_commodity);
-        edtTruckCapacity = view.findViewById(R.id.edt_la_quantity);
         edtBerthNumber = view.findViewById(R.id.edt_la_berth_number);
         edtLoadingSupervisor = view.findViewById(R.id.edt_la_loading_supervisor);
         edtBerthNumberLayout = view.findViewById(R.id.title_berth_number);
+        edtBatchNumber = view.findViewById(R.id.edt_la_batch_number);
+        edtTareWeight = view.findViewById(R.id.edt_la_tare_weight);
 
         progressBar = view.findViewById(R.id.la_progressBar);
 
@@ -120,7 +120,7 @@ public class LoadingAdviseFragment extends Fragment {
 
         edtLoadingSupervisor.setText(loginUserName);
 
-        edtSourceLocation.setText(loginUserStorageLocation + " - " + loginUserStorageLocationDesc);
+
 
         getBundleData();
 
@@ -164,8 +164,8 @@ public class LoadingAdviseFragment extends Fragment {
             edtLepNo.setError("This field is required");
             return false;
         }
-        if (edtSapGrNo.length() == 0) {
-            edtSapGrNo.setError("This field is required");
+        if (edtBatchNumber.length() == 0) {
+            edtBatchNumber.setError("This field is required");
             return false;
         }
         if (edtTruckNumber.length() == 0) {
@@ -192,10 +192,7 @@ public class LoadingAdviseFragment extends Fragment {
             edtCommodity.setError("This field is required");
             return false;
         }
-        if (edtTruckCapacity.length() == 0) {
-            edtTruckCapacity.setError("This field is required");
-            return false;
-        }
+
         if (edtLoadingSupervisor.length() == 0) {
             edtLoadingSupervisor.setError("This field is required");
             return false;
@@ -245,8 +242,6 @@ public class LoadingAdviseFragment extends Fragment {
 
     private void displayClock() {
         try {
-      /*      tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
-            exitClock.setFormat24Hour("dd-MM-yy hh:mm a");*/
             tvClock.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
             exitClock.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
         } catch (Exception e) {
@@ -270,11 +265,9 @@ public class LoadingAdviseFragment extends Fragment {
                 if (response.body().getStatus().equalsIgnoreCase("CREATED")) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK", true);
-//                    resetTextField();
                 } else {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK", false);
-//                    resetTextField();
                 }
             }
 
@@ -384,16 +377,6 @@ public class LoadingAdviseFragment extends Fragment {
         }
     }
 
-    private UpdateBothraLoadingAdviseDto updateBothraLData() {
-        final Integer BOTHRA_FLAG = 12;
-        StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
-        UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
-        RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
-        StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
-        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
-        return new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, BOTHRA_FLAG, null, String.valueOf(LocalDateTime.now()));
-    }
-
     private void updateUIBasedOnUser() {
         if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
             layoutBothraSupervisor.setVisibility(View.VISIBLE);
@@ -402,6 +385,7 @@ public class LoadingAdviseFragment extends Fragment {
         } else {
             layoutBothraSupervisor.setVisibility(View.GONE);
             layoutPinnacleSupervisor.setVisibility(View.GONE);
+            llTareWeight.setVisibility(View.VISIBLE);
             edtBerthNumberLayout.setVisibility(View.GONE);
         }
     }
@@ -415,7 +399,6 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void getLoadingAdviseDetails() {
-        Log.i(TAG, "getLoadingAdviseDetails: the method where get is get from saved pref");
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         String lepNoId = sp.getString("lepNoIdSPK", null);
         if (lepNoId != null) {
@@ -433,22 +416,24 @@ public class LoadingAdviseFragment extends Fragment {
         String commodity = sp.getString("commoditySPK", null);
         String strDestinationCode = sp.getString("strDestinationCodeSPK", null);
         String strDestinationDesc = sp.getString("strDestinationDescSPK", null);
-        String strPinnaclesupervisor = sp.getString("pinnacleSupervisorSPK", null);
+        String strPinnacleSupervisor = sp.getString("pinnacleSupervisorSPK", null);
         String strBothraSupervisor = sp.getString("bothraSupervisorSPK", null);
         String strBerthNumber = sp.getString("BerthNumberSPK", null);
+        String strBatchNumber = sp.getString("batchNumberSPK", null);
+        String grSrcLoc = sp.getString("grSrcLocSPK", null);
+        String grSrcLocDesc = sp.getString("grSrcLocDescSPK", null);
+        String bTareWeight = sp.getString("bTareWeightSPK", null);
         this.strisgetInLoadingTime = sp.getString("isgetInLoadingTimeSPK", "false");
-        Log.i(TAG, "getLoadingAdviseDetails: strisgetInLoadingTime : " + strisgetInLoadingTime);
         String getInTime = null;
 
         if (strisgetInLoadingTime.equalsIgnoreCase("true")) {
             getInTime = sp.getString("getInloadingTimeSPK", null);
-            Log.i(TAG, "getLoadingAdviseDetails: in if statment : getInTime : " + getInTime);
             constaintEntryTimeLayout.setVisibility(View.VISIBLE);
             lltvClockLayout.setVisibility(View.GONE);
             edtConstEntryTime.setText(getInTime);
             edtConstEntryTime.setEnabled(false);
             edtConstEntryTime.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
-            edtPinnacleSupervisor.setText(strPinnaclesupervisor);
+            edtPinnacleSupervisor.setText(strPinnacleSupervisor);
             edtPinnacleSupervisor.setEnabled(false);
             edtPinnacleSupervisor.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
             edtBothraSupervisor.setText(strBothraSupervisor);
@@ -458,26 +443,28 @@ public class LoadingAdviseFragment extends Fragment {
 
 
         }
-        Log.i(TAG, "getLoadingAdviseDetails: strisgetInLoadingTime : " + strisgetInLoadingTime);
         String destinationLocation = strDestinationCode + " - " + strDestinationDesc;
         this.selectedDestinationCode = strDestinationCode;
-        saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, strBerthNumber);
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, strBerthNumber, strBatchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String destinationLocation, String berthNumber) {
-        edtRfidTagNo.setText(rfidTag);
-        edtLepNo.setText(lepNo);
-        edtSapGrNo.setText(sapGrNo);
-        edtTruckNumber.setText(truckNo);
-        edtDriverName.setText(driverName);
-        edtDriverMobileNo.setText(driverMobileNo);
-        edtDriverLicenseNo.setText(driverLicenseNo);
-        edtVesselName.setText(vesselName);
-        edtCommodity.setText(commodity);
-        edtTruckCapacity.setText(truckCapacity);
-        edtDestinationLocation.setText(destinationLocation);
-        edtBerthNumber.setText(berthNumber);
-
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String destinationLocation, String berthNumber, String batchNumber, String grSrcLoc, String grSrcLocDesc, String bTareWeight) {
+        edtRfidTagNo.setText(rfidTag.toUpperCase());
+        edtLepNo.setText(lepNo.toUpperCase());
+        edtBatchNumber.setText(batchNumber.toUpperCase());
+        edtTruckNumber.setText(truckNo.toUpperCase());
+        edtDriverName.setText(driverName.toUpperCase());
+        edtDriverMobileNo.setText(driverMobileNo.toUpperCase());
+        edtDriverLicenseNo.setText(driverLicenseNo.toUpperCase());
+        edtVesselName.setText(vesselName.toUpperCase());
+        edtCommodity.setText(commodity.toUpperCase());
+        edtDestinationLocation.setText(destinationLocation.toUpperCase());
+        edtSourceLocation.setText(grSrcLoc.toUpperCase() + " - " + grSrcLocDesc.toUpperCase());
+        edtTareWeight.setText(bTareWeight);
+//        edtSourceLocation.setText(loginUserStorageLocation + " - " + loginUserStorageLocationDesc);
+        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
+            edtBerthNumber.setText(berthNumber.toUpperCase());
+        }
 
     }
 }

@@ -294,7 +294,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="@string/Previous_rmg_no"
+                        android:text="@string/previous_wh_no"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
@@ -328,11 +328,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="@string/update_rmg_no"
+                        android:text="@string/update_wh_no"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
-
 
                     <Spinner
                         android:id="@+id/cwh_spinner_update_rmg_no"
