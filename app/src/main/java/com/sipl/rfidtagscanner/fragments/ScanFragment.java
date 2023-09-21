@@ -46,6 +46,7 @@ import com.sipl.rfidtagscanner.interf.RFIDDataModel;
 import com.sipl.rfidtagscanner.interf.RfidUiDataDto;
 import com.zebra.rfid.api3.TagData;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     private TextView errorHandle;
     private LinearLayout error_layout;
     private String admin_selected_nav_screen = null;
+    private Boolean isLoadingDifferenceEnable;
 
     public ScanFragment() {
     }
@@ -98,6 +100,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
         getWareHouseStorage();
         checkInitialRFIDEnableStatus();
+        this.isLoadingDifferenceEnable = isLoadingDifferenceEnable();
 
         btnVerify.setOnClickListener(view1 -> {
             if (edtRfidTagId.length() != 0) {
@@ -231,7 +234,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String grSrcLoc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
                             String grSrcLocDesc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
                             if (rfidLepIssueDto.getRstat() == 0) {
-                                getRFIDBothraLA();
+                                getCoromandelRfidTagDetailsForOutTime();
                                 return;
                             }
 
@@ -248,7 +251,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                         }
                     } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
                         progressBar.setVisibility(View.GONE);
-                        getRFIDBothraLA();
+                        getCoromandelRfidTagDetailsForOutTime();
                     } else {
                         progressBar.setVisibility(View.GONE);
                         ((MainActivity) requireActivity()).alert(requireContext(), "WARNING", response.body().getMessage(), null, "OK", false);
@@ -269,8 +272,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         }
     }
 
-    private void getRFIDBothraLA() {
-        Log.i(TAG, "getRFIDCoromandelLa_2(): <<Start>>");
+    private void getCoromandelRfidTagDetailsForOutTime() {
+        Log.i(TAG, "getCoromandelRfidTagDetailsForOutTime(): <<Start>>");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "1", "0", edtRfidTagId.getText().toString());
@@ -282,7 +285,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                         ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
                         return;
                     }
-                    Log.i(TAG, "onResponse: getRFIDBothraLA : response.raw() : " + response.raw());
+                    Log.i(TAG, "onResponse: getCoromandelRfidTagDetailsForOutTime : response.raw() : " + response.raw());
                     if (response.isSuccessful()) {
                         if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
                             vibrate();
@@ -311,11 +314,15 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String getInLoadingTime = null;
                                 String pinnacleSupervisor = null;
                                 String bothraSupervisor = null;
+                                LocalDateTime currentDateTime = LocalDateTime.now();
 
                                 if (transactionsDto.getInLoadingTime() != null) {
                                     isgetInLoadingTime = "true";
                                     String entryTime = transactionsDto.getInLoadingTime();
                                     LocalDateTime aLDT = LocalDateTime.parse(entryTime);
+
+                                    Duration duration = Duration.between(currentDateTime, aLDT);
+
                                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                                     getInLoadingTime = aLDT.format(formatter);
                                     pinnacleSupervisor = transactionsDto.getStrPinnacleLoadingSupervisor();
@@ -330,7 +337,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 }
                             } catch (Exception e) {
-                                Log.e(TAG, "onResponse: Exception in getRFIDCoromandelSecondURL" + e.getMessage());
+                                Log.e(TAG, "onResponse: Exception in getCoromandelRfidTagDetailsForOutTime" + e.getMessage());
                                 e.printStackTrace();
                             }
                         } else {
@@ -348,8 +355,12 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
             });
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e(TAG, "getCoromandelRfidTagDetailsForOutTime: " + e.getMessage() );
         }
+    }
 
+    private void getErrorMessage(){
+        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, "Difference between Loading in time and Loading out time is less than 3 minute", "Please wait for 3 minute and then try again", "OK", false);
     }
 
     private void saveLADetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String vesselName, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor, String BerthNumber, String batchNumber, String grSrcLoc, String grSrcLocDesc, String bTareWeight) {
@@ -887,6 +898,11 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     public String getScreenDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("adminScreen", MODE_PRIVATE);
         return sp.getString("screen", null);
+    }
+
+    private boolean isLoadingDifferenceEnable(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        return sharedPreferences.getBoolean("enable_loading_difference", true);
     }
 
 }

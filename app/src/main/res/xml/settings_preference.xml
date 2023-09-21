@@ -44,4 +44,20 @@
                 app:iconSpaceReserved="false" />
         </PreferenceCategory>-->
 
+
+    <PreferenceCategory
+        android:title="Loading Difference"
+        android:layout="@layout/preferences_category"
+        app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:key="enable_loading_difference"
+            android:title="Enable Loading Difference"
+            android:summary=""
+            android:defaultValue="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            app:iconSpaceReserved="false"
+            app:summary="" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
