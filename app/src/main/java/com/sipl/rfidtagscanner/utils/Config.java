@@ -12,6 +12,7 @@ public class Config {
     public static final String ROLES_CWH = "18";
     public static final String ROLES_LAO = "7";
     public static final String ROLES_ADMIN_SUPER = "";
+
     //TODO below 4 is need to use delete 1 in admin plant
     public static final String ROLES_ADMIN_PLANT = "1";
 //    public static final String ROLES_ADMIN_PLANT = "4";
@@ -20,6 +21,15 @@ public class Config {
     public static final String DIALOG_ERROR = "ERROR";
     public static final String DIALOG_WARNING = "WARNING";
     public static final String DIALOG_SUCCESS = "SUCCESS";
+
+    //    Button name
+    public static final String BTN_OK = "OK";
+
+
+    //Response status
+    public static final String RESPONSE_OK = "OK";
+    public static final String RESPONSE_FOUND = "FOUND";
+
 
     public static final String EMPTY_RMG_NUMBER = "No RMG Number available";
     public static final String EMPTY_REMARKS = "No remarks available";

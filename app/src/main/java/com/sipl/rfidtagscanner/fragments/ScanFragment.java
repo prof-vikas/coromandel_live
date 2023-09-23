@@ -105,7 +105,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         btnVerify.setOnClickListener(view1 -> {
             if (edtRfidTagId.length() != 0) {
                 vibrate();
-                getRFIDDetails();
+                getRfidDetails();
             } else {
                 edtRfidTagId.setError("This field is required");
             }
@@ -185,35 +185,38 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     /*
      * Method call on verify
      * */
-    private void getRFIDDetails() {
+    private void getRfidDetails() {
+        Log.i(TAG, "getRfidDetails: phase 1 : ");
         if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (admin_selected_nav_screen.equalsIgnoreCase("loadingAdvise"))) {
             if (arrDestinationLocation.contains(loginUserStorageLocation)) {
+                Log.i(TAG, "getRfidDetails: phase 1 : Bothra LA");
                 getRfidTagDetailBothraLA();
             } else {
+                Log.i(TAG, "getRfidDetails: phase 1 : CIL LA");
                 getRfidDetailCoromandelLA();
             }
         } else {
+            Log.i(TAG, "getRfidDetails: phase 1 : WareHouse ALL");
             getAllWareHouseDetails();
         }
     }
 
     private void getRfidDetailCoromandelLA() {
-        Log.i(TAG, "getRfidTagDetailCoromandelLA: ");
+        Log.i(TAG, "getRfidTagDetailCoromandelLA: Phase 2 : CIL LA :");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<RfidLepApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailCoromandelLA("Bearer " + loginUserToken, edtRfidTagId.getText().toString());
             call.enqueue(new Callback<RfidLepApiResponse>() {
                 @Override
                 public void onResponse(Call<RfidLepApiResponse> call, Response<RfidLepApiResponse> response) {
+                    Log.i(TAG, "onResponse: response.raw : getRfidTagDetailCoromandelLA : " + response.raw());
                     if (!response.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
                         ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                         return;
                     }
-                    Log.i(TAG, "onResponse: response.raw : getRfidTagDetailCoromandelLA : " + response.raw());
 
                     if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
-                        Log.i(TAG, "onResponse: getRfidTagDetailCoromandelLA : <<Start >>");
                         vibrate();
                         progressBar.setVisibility(View.GONE);
                         RfidLepIssueDto rfidLepIssueDto = response.body().getRfidLepIssueDto();
@@ -231,12 +234,15 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String destinationLocation = rfidLepIssueDto.getDestinationLocation().getStrLocationCode();
                             String berthLocation = rfidLepIssueDto.getBerthMaster().getBerthNumber();
                             String destinationLocationDesc = rfidLepIssueDto.getDestinationLocation().getStrLocationDesc();
-                            String grSrcLoc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
-                            String grSrcLocDesc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
+                            String grSrcLoc = rfidLepIssueDto.getDailyTransportReportModule().getSourceLocationCode();
+                            String grSrcLocDesc = rfidLepIssueDto.getDailyTransportReportModule().getSourceDescription();
+//                            String grSrcLoc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
+//                            String grSrcLocDesc = rfidLepIssueDto.getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
                             if (rfidLepIssueDto.getRstat() == 0) {
                                 getCoromandelRfidTagDetailsForOutTime();
                                 return;
                             }
+
 
                             String role = ((MainActivity) requireActivity()).getLoginUserRole();
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
@@ -273,7 +279,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     }
 
     private void getCoromandelRfidTagDetailsForOutTime() {
-        Log.i(TAG, "getCoromandelRfidTagDetailsForOutTime(): <<Start>>");
+        Log.i(TAG, "getCoromandelRfidTagDetailsForOutTime(): <<Start>> : ");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "1", "0", edtRfidTagId.getText().toString());
@@ -306,22 +312,29 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                                 String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
-                                String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
-                                String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
-                                String bTareWeight = transactionsDto.getSourceTareWeight().toString();
+//                                String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
+//                                String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
+                                String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSourceLocationCode();
+                                String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSourceDescription();
+//                                String bTareWeight = transactionsDto.getSourceTareWeight().toString();
+                                String bTareWeight = null;
 
                                 String isgetInLoadingTime;
                                 String getInLoadingTime = null;
                                 String pinnacleSupervisor = null;
                                 String bothraSupervisor = null;
-                                LocalDateTime currentDateTime = LocalDateTime.now();
 
                                 if (transactionsDto.getInLoadingTime() != null) {
                                     isgetInLoadingTime = "true";
                                     String entryTime = transactionsDto.getInLoadingTime();
-                                    LocalDateTime aLDT = LocalDateTime.parse(entryTime);
 
-                                    Duration duration = Duration.between(currentDateTime, aLDT);
+                                    if (isLoadingDifferenceEnable) {
+                                        if (!getCalculateDate(entryTime, "Buffer time between loading In - loading Out is 3 min")) {
+                                            return;
+                                        }
+                                    }
+
+                                    LocalDateTime aLDT = LocalDateTime.parse(entryTime);
 
                                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                                     getInLoadingTime = aLDT.format(formatter);
@@ -333,7 +346,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_LAO)) {
-                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, berthNumber, batchNumber, grSrcLoc, grSrcLocDesc,bTareWeight);
+                                    saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, isgetInLoadingTime, getInLoadingTime, pinnacleSupervisor, bothraSupervisor, berthNumber, batchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
                                     ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
                                 }
                             } catch (Exception e) {
@@ -355,12 +368,12 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "getCoromandelRfidTagDetailsForOutTime: " + e.getMessage() );
+            Log.e(TAG, "getCoromandelRfidTagDetailsForOutTime: " + e.getMessage());
         }
     }
 
-    private void getErrorMessage(){
-        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, "Difference between Loading in time and Loading out time is less than 3 minute", "Please wait for 3 minute and then try again", "OK", false);
+    private void getErrorMessage(long remainingTime, String initialMessage) {
+        ((MainActivity) getActivity()).alert(getActivity(), DIALOG_WARNING, initialMessage, "Please wait for " + remainingTime + " second and then try again", "OK", false);
     }
 
     private void saveLADetails(String rfidTag, String lepNo, String lepNoId, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String vesselName, String commodity, String strDestinationCode, String strDestinationDesc, String isgetInLoadingTime, String getInloadingTime, String pinnacleSupervisor, String bothraSupervisor, String BerthNumber, String batchNumber, String grSrcLoc, String grSrcLocDesc, String bTareWeight) {
@@ -389,13 +402,12 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.apply();
     }
 
-    private void saveWHDetailsCoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
+    private void saveWHDetailsCoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
         editor.putString("lepNoSPK", lepNo).apply();
         editor.putString("inUnloadingTimeSPK", inUnloadingTime).apply();
-        editor.putString("outUnloadingTimeSPK", outUnloadingTime).apply();
         editor.putString("lepNoIdSPK", lepNoId).apply();
         editor.putString("driverNameSPK", driverName).apply();
         editor.putString("truckNoSPK", truckNo).apply();
@@ -413,14 +425,13 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.apply();
     }
 
-
-    private void saveWHDetailsBoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String outUnloadingTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
+    private void saveWHDetailsBoro(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
         editor.putString("lepNoSPK", lepNo).apply();
         editor.putString("inUnloadingTimeSPK", inUnloadingTime).apply();
-        editor.putString("outUnloadingTimeSPK", outUnloadingTime).apply();
+//        editor.putString("outUnloadingTimeSPK", outUnloadingTime).apply();
         editor.putString("lepNoIdSPK", lepNoId).apply();
         editor.putString("driverNameSPK", driverName).apply();
         editor.putString("truckNoSPK", truckNo).apply();
@@ -437,16 +448,18 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.apply();
     }
 
-
     private void getAllWareHouseDetails() {
         if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
+            Log.i(TAG, "getAllWareHouseDetails: Phase 2 : Warehouse");
             getBothraInUnLoadingDetails();
         } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("coromandel")))) {
+            Log.i(TAG, "getAllWareHouseDetails: Phase 2 : Warehouse");
             getCoromandelWareHouseDetails();
         }
     }
 
     private void getCoromandelWareHouseDetails() {
+        Log.i(TAG, "getCoromandelWareHouseDetails: Phase 3 : <<Start>>");
         showProgress();
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getCoromandelWHDetails("Bearer " + loginUserToken, "4", "3", edtRfidTagId.getText().toString());
@@ -471,34 +484,32 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                                 String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
-                                String previousRmgNo = null;
-                                String PreviousRmgNoDesc = null;
-                                String remarks = null;
                                 String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
-                                String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
+                                String previousRmgNo = null;
+                                String PreviousRmgNoDesc = null;
+                                String remarks = null;
 
                                 if (strInUnloadingTime != null) {
+                                    if (isLoadingDifferenceEnable) {
+                                        if (!getCalculateDate(strInUnloadingTime, "Buffer time between loading In - loading Out is 3 min")) {
+                                            return;
+                                        }
+                                    }
                                     if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
                                         previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
                                         PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
                                         if (transactionsDto.getRemarkMaster() != null) {
                                             remarks = transactionsDto.getRemarkMaster().getRemarks();
-                                        } else {
-                                            remarks = null;
                                         }
                                     }
-                                } else {
-                                    previousRmgNo = null;
-                                    PreviousRmgNoDesc = null;
-                                    remarks = null;
                                 }
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     Log.i(TAG, "onResponse: batchNumber : " + batchNumber);
-                                    saveWHDetailsCoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
+                                    saveWHDetailsCoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                     ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
@@ -531,6 +542,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     }
 
     private void getBothraInUnLoadingDetails() {
+        Log.i(TAG, "getBothraInUnLoadingDetails: Phase 3 : BWH In");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getBothraWHDetails("Bearer " + loginUserToken, "8", "7", edtRfidTagId.getText().toString());
@@ -561,24 +573,22 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
-                                String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
                                 if (strInUnloadingTime != null) {
+
+                                    if (isLoadingDifferenceEnable) {
+                                        if (!getCalculateDate(strInUnloadingTime, "Buffer time between Unloading In - Unloading Out is 3 min")) {
+                                            return;
+                                        }
+                                    }
                                     if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
                                         previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
                                         PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
                                         if (transactionsDto.getRemarkMaster() != null) {
                                             remarks = transactionsDto.getRemarkMaster().getRemarks();
-                                        } else {
-                                            remarks = null;
                                         }
                                     }
-                                } else {
-                                    previousRmgNo = null;
-                                    PreviousRmgNoDesc = null;
-                                    remarks = null;
                                 }
-
 
 
                                 if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
@@ -588,8 +598,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : "+ previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks + "\nbatchNumber" + batchNumber);
-                                    saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
+                                    Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : " + previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks + "\nbatchNumber" + batchNumber);
+                                    saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                     ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
@@ -625,6 +635,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
      * This method is call to fetch RFID details for vehicle out time and save data in shared preferences
      * */
     private void getBothraOutUnLoadingDetails() {
+        Log.i(TAG, "getBothraOutUnLoadingDetails: Phase 3 : BWH ");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getBothraWHDetailsForExit("Bearer " + loginUserToken, "8", edtRfidTagId.getText().toString());
@@ -659,21 +670,19 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String outUnloadingTime = transactionsDto.getOutUnLoadingTime();
 
                             if (strInUnloadingTime != null) {
+                                if (isLoadingDifferenceEnable) {
+                                    if (!getCalculateDate(strInUnloadingTime, "Buffer time between Unloading In - Unloading Out is 3 min")) {
+                                        return;
+                                    }
+                                }
                                 if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
                                     previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
                                     PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
                                     if (transactionsDto.getRemarkMaster() != null) {
                                         remarks = transactionsDto.getRemarkMaster().getRemarks();
-                                    } else {
-                                        remarks = null;
                                     }
                                 }
-                            } else {
-                                previousRmgNo = null;
-                                PreviousRmgNoDesc = null;
-                                remarks = null;
                             }
-
 
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
@@ -683,8 +692,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 } else {
                                     sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                 }
-                                Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : "+ previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks);
-                                saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, outUnloadingTime, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
+                                Log.i(TAG, "onResponse: lepno : " + lepNo + "\nlepNoId : " + lepNoId + "\nrfidTag : " + rfidTag + "\ndriverName : " + driverName + "truckNo : " + truckNo + "\ncommodity : " + commodity + "\npreviousRmg : " + previousRmgNo + "\nPreviousRmgNoDesc : " + PreviousRmgNoDesc + "\nSourceGrossWeight : " + sourceGrossWeight + "\noutUnloadingTime : " + outUnloadingTime + "\nstrInUnloadingTime : " + strInUnloadingTime + "\nwareHouseCode : " + wareHouseCode + "\nwareHouseDesc : " + wareHouseDesc + "\nremarks : " + remarks);
+                                saveWHDetailsBoro(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                 ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
                             } else {
                                 ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "Invalid roles", null, "OK", false);
@@ -716,9 +725,10 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     }
 
     /*
-     * Get all rfid tag details for bothra loading advise
+     * Get rfid tag details for bothra loading advise
      * */
     private void getRfidTagDetailBothraLA() {
+        Log.i(TAG, "getRfidTagDetailBothraLA: Phase 2 : Bothra LA" );
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "12", "11", edtRfidTagId.getText().toString());
@@ -747,9 +757,12 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
                             String destinationLocation = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationCode();
                             String destinationLocationDesc = transactionsDto.getFunctionalLocationDestinationMaster().getStrLocationDesc();
-                            String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
-                            String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
+//                            String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrSloc();
+//                            String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getGrDesc();
+                            String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSourceLocationCode();
+                            String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSourceDescription();
                             String bTareWeight = transactionsDto.getSourceTareWeight().toString();
+//                            String bTareWeight = null;
 
                             String isgetInLoadingTime;
                             String getInLoadingTime = null;
@@ -759,6 +772,11 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             if (transactionsDto.getInLoadingTime() != null) {
                                 isgetInLoadingTime = "true";
                                 String entryTime = transactionsDto.getInLoadingTime();
+                                if (isLoadingDifferenceEnable) {
+                                    if (!getCalculateDate(entryTime, "Buffer time between Loading In - Loading Out is 3 min")) {
+                                        return;
+                                    }
+                                }
                                 LocalDateTime aLDT = LocalDateTime.parse(entryTime);
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                                 getInLoadingTime = aLDT.format(formatter);
@@ -788,6 +806,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                 }
             });
         } catch (Exception e) {
+            Log.e(TAG, "getRfidTagDetailBothraLA: " + e.getMessage() );
             e.printStackTrace();
         }
     }
@@ -900,9 +919,49 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         return sp.getString("screen", null);
     }
 
-    private boolean isLoadingDifferenceEnable(){
+    private boolean isLoadingDifferenceEnable() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         return sharedPreferences.getBoolean("enable_loading_difference", true);
     }
 
+/*    private boolean getCalculateDate(String strPrimaryTime){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        LocalDateTime entryTime = LocalDateTime.parse(strPrimaryTime, formatter);
+        String currentDateTimeForCalculation = LocalDateTime.now().format(formatter);
+        LocalDateTime secondaryTime = null;
+        try {
+            secondaryTime = LocalDateTime.parse(currentDateTimeForCalculation, formatter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Duration duration = Duration.between(entryTime, secondaryTime);
+        long totalSeconds = duration.getSeconds();
+        if (totalSeconds < 180){
+            long remainingTime = 180 - totalSeconds;
+            getErrorMessage(remainingTime);
+            return false;
+        }else return true;
+    }*/
+
+    private boolean getCalculateDate(String strPrimaryTime, String initialMessage) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
+
+        try {
+            LocalDateTime entryTime = LocalDateTime.parse(strPrimaryTime, formatter);
+            LocalDateTime secondaryTime = LocalDateTime.now();
+            Duration duration = Duration.between(entryTime, secondaryTime);
+            long totalSeconds = duration.getSeconds();
+
+            if (totalSeconds < 180) {
+                long remainingTime = 180 - totalSeconds;
+                getErrorMessage(remainingTime, initialMessage);
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

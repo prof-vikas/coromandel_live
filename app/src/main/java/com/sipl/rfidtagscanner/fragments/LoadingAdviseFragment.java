@@ -459,7 +459,11 @@ public class LoadingAdviseFragment extends Fragment {
         edtVesselName.setText(vesselName.toUpperCase());
         edtCommodity.setText(commodity.toUpperCase());
         edtDestinationLocation.setText(destinationLocation.toUpperCase());
-        edtSourceLocation.setText(grSrcLoc.toUpperCase() + " - " + grSrcLocDesc.toUpperCase());
+        if (grSrcLoc != null && grSrcLocDesc != null) {
+            edtSourceLocation.setText(grSrcLoc.toUpperCase() + " - " + grSrcLocDesc.toUpperCase());
+        }else{
+            edtSourceLocation.setText(null);
+        }
         edtTareWeight.setText(bTareWeight);
 //        edtSourceLocation.setText(loginUserStorageLocation + " - " + loginUserStorageLocationDesc);
         if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {

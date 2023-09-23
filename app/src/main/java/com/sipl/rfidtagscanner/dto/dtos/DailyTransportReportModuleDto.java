@@ -5,7 +5,7 @@ import com.sipl.rfidtagscanner.entites.AuditEntity;
 
 public class DailyTransportReportModuleDto {
 
-    private Integer id;
+  /*  private Integer id;
     private SapGrnDetailsDto sapGrnDetailsEntity;
     private VehicleMasterDto vehicleMaster;
     private Boolean isActive;
@@ -13,12 +13,28 @@ public class DailyTransportReportModuleDto {
     private Boolean isAssigned;
     private Boolean isProcessed;
     private AuditEntity auditEntity;
+    private String remark;*/
+
+    private Integer id;
+    private SapGrnDetailsDto sapGrnDetailsEntity;
+    private VehicleMasterDto vehicleMaster;
+    private String batch;
+    private String sourceLocationCode;
+    private String sourceDescription;
+    private Boolean isActive;
+    private Integer rStat;
+    private Boolean isAssigned;
+    private Boolean isProcessed;
+    private AuditEntity auditEntity;
     private String remark;
 
-    public DailyTransportReportModuleDto(Integer id, SapGrnDetailsDto sapGrnDetailsEntity, VehicleMasterDto vehicleMaster, Boolean isActive, Integer rStat, Boolean isAssigned, Boolean isProcessed, AuditEntity auditEntity, String remark) {
+    public DailyTransportReportModuleDto(Integer id, SapGrnDetailsDto sapGrnDetailsEntity, VehicleMasterDto vehicleMaster, String batch, String sourceLocationCode, String sourceDescription, Boolean isActive, Integer rStat, Boolean isAssigned, Boolean isProcessed, AuditEntity auditEntity, String remark) {
         this.id = id;
         this.sapGrnDetailsEntity = sapGrnDetailsEntity;
         this.vehicleMaster = vehicleMaster;
+        this.batch = batch;
+        this.sourceLocationCode = sourceLocationCode;
+        this.sourceDescription = sourceDescription;
         this.isActive = isActive;
         this.rStat = rStat;
         this.isAssigned = isAssigned;
@@ -49,6 +65,30 @@ public class DailyTransportReportModuleDto {
 
     public void setVehicleMaster(VehicleMasterDto vehicleMaster) {
         this.vehicleMaster = vehicleMaster;
+    }
+
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    public String getSourceLocationCode() {
+        return sourceLocationCode;
+    }
+
+    public void setSourceLocationCode(String sourceLocationCode) {
+        this.sourceLocationCode = sourceLocationCode;
+    }
+
+    public String getSourceDescription() {
+        return sourceDescription;
+    }
+
+    public void setSourceDescription(String sourceDescription) {
+        this.sourceDescription = sourceDescription;
     }
 
     public Boolean getActive() {
