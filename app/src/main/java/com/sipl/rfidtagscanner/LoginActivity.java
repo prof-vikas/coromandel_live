@@ -135,16 +135,17 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i(TAG, "onResponse: SignIn URL : " + response.raw());
                     if (!response.isSuccessful()) {
                         hideProgress();
-                        alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, BTN_OK);
+                        alert(LoginActivity.this, DIALOG_ERROR, response.errorBody() !=null ? response.errorBody().toString() : "An error occurred while log in", null, BTN_OK);
                     }
-                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_OK)) {
-                        String token = response.body().getToken();
-                        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("userIDSPK", token).apply();
-                        getUserDetails(token);
+                    if (response.body() != null && response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase(RESPONSE_OK)) {
+                        String token = response.body().getToken() != null ? response.body().getToken() : null;
+                        if (token != null) {
+                            getUserDetails(token);
+                        } else {
+                            alert(LoginActivity.this, DIALOG_ERROR, "An error occurs when attempting to log in with this user", null, BTN_OK);
+                        }
                     } else {
-                        alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, BTN_OK);
+                        alert(LoginActivity.this, DIALOG_ERROR, response.body() != null && response.body().getMessage() != null ? response.body().getMessage() : "An error occurs when attempting to log in with this user", null, BTN_OK);
                     }
                 }
 
@@ -157,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void savingLoginUserToSharedPref(String userID, String username, String token, String userSourceLocation, String userSourceLocationDesc, String userPlantLocation, String userPlantLocationDesc, String userRolesId) {
+    private void saveCredentialInSharedPref(String userID, String username, String token, String userSourceLocation, String userSourceLocationDesc, String userPlantLocation, String userPlantLocationDesc, String userRolesId) {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("tokenSPK", token).apply();
@@ -229,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
                             userRoleId.equalsIgnoreCase(ROLES_CWH) ||
                             userRoleId.equalsIgnoreCase(ROLES_BWH) ||
                             userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT)) {
-                        savingLoginUserToSharedPref(id, userID, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
+                        saveCredentialInSharedPref(id, userID, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
                     } else {
                         alert(LoginActivity.this, DIALOG_ERROR, "Insufficient permissions for user's current role", null, BTN_OK);
                     }
@@ -259,20 +260,20 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.body() != null && response.body().getUserDto() != null) {
                         UserMasterDto userMasterDto = response.body().getUserDto();
                         if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
-                            String username = userMasterDto.getName();
-                            String userID = String.valueOf(userMasterDto.getId());
-                            String userSourceLocation = userMasterDto.getStorageLocation().getStrLocationCode();
-                            String userSourceLocationDesc = userMasterDto.getStorageLocation().getStrLocationDesc();
-                            String userPlantLocation = userMasterDto.getPlantMaster().getPlantCode();
-                            String userPlantLocationDesc = userMasterDto.getPlantMaster().getPlantDesc();
-                            String userRoleId = String.valueOf(userMasterDto.getRole().getId());
-                            if (token != null && username != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
-                                savingLoginUserToSharedPref(userID, username, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc, userRoleId);
+                            String username = userMasterDto.getName() != null ? userMasterDto.getName() : null;
+                            String userID = userMasterDto.getId() != null ? userMasterDto.getId().toString() : null;
+                            String userSourceLocation = userMasterDto.getStorageLocation() != null && userMasterDto.getStorageLocation().getStrLocationCode() != null ? userMasterDto.getStorageLocation().getStrLocationCode() : null;
+                            String userSourceLocationDesc = userMasterDto.getStorageLocation() != null && userMasterDto.getStorageLocation().getStrLocationDesc() != null ? userMasterDto.getStorageLocation().getStrLocationDesc() : null;
+                            String userPlantLocation = userMasterDto.getPlantMaster() != null && userMasterDto.getPlantMaster().getPlantCode() != null ? userMasterDto.getPlantMaster().getPlantCode() : null;
+                            String userPlantLocationDesc = userMasterDto.getPlantMaster() != null && userMasterDto.getPlantMaster().getPlantDesc() != null ? userMasterDto.getPlantMaster().getPlantDesc() : null;
+                            String userRoleId = userMasterDto.getRole() != null && userMasterDto.getRole().getId() != null ? userMasterDto.getRole().getId().toString() : null;
+                            if (userID != null && userRoleId != null && username != null && userSourceLocation != null && userPlantLocation != null && userSourceLocationDesc != null && userPlantLocationDesc != null) {
+                                saveCredentialInSharedPref(userID, username, token, userSourceLocation, userSourceLocationDesc, userPlantLocation, userPlantLocationDesc, userRoleId);
                             } else {
-                                alert(LoginActivity.this, DIALOG_ERROR, "Something went wrong with this user credentials", "Try login with other user credentials", BTN_OK);
+                                alert(LoginActivity.this, DIALOG_ERROR, "An error occurs when attempting to log in with this user", "Try login with other user credentials", BTN_OK);
                             }
                         } else {
-                            alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, BTN_OK);
+                            alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage() != null ? response.body().getMessage() : "An error occurs when attempting to log in with this user", null, BTN_OK);
                         }
                     }
                 } catch (Exception e) {

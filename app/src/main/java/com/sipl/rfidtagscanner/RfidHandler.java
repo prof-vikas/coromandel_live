@@ -42,9 +42,7 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
     private final RFIDDataModel rfidDataModel;
     private Readers readers;
     private EventHandler eventHandler;
-    private boolean isReaderConnected;
-    private boolean isConnected;
-    private boolean triggerPressed;
+    private boolean isReaderConnected, isConnected, triggerPressed;
     private TagData[] tagData;
     private ScanFragment scanFragment;
 
@@ -61,17 +59,14 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
     }
 
     private synchronized void updateAvailableReaders() {
-        Log.d(TAG, "updateAvailableReaders");
         Readers.attach(this);
         try {
             ReaderDevice readerDevice = getAvailableReaders();
             if (readerDevice != null) {
                 reader = readerDevice.getRFIDReader();
-//                scanFragment.onTextUpdated(readerDevice.getName(), readerDevice.getSerialNumber(), "Connected");
-                Log.i(TAG, "updateAvailableReaders: " + readerDevice.getSerialNumber() + readerDevice.getSerialNumber());
             }
         } catch (Exception e) {
-            Log.d(TAG, "Exception at updateAvailableReaders" + e.getMessage());
+            Log.e(TAG, "Exception at updateAvailableReaders" + e.getMessage());
         }
     }
 
@@ -81,8 +76,6 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
             ArrayList<ReaderDevice> readersArrayList = readers.GetAvailableRFIDReaderList();
             if (readersArrayList.size() > 0) {
                 return readersArrayList.get(0);
-            }else {
-                Log.i(TAG, "getAvailableReaders: no reader is avaiable " + readersArrayList.size());
             }
             return null;
         } catch (InvalidUsageException e) {
@@ -101,12 +94,10 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
 
     @Override
     public void RFIDReaderDisappeared(ReaderDevice readerDevice) {
-        Log.d(TAG, "RFIDReaderDisappeared " + readerDevice.getName());
         isReaderConnected();
         isConnected = false;
         if (readerDevice.getName().equals(reader.getHostName())) disconnect();
         updateStatus();
-//        scanFragment.onTextUpdated("---", "---", "Disconnected");
     }
 
     private synchronized String connectDevice() {
@@ -177,12 +168,10 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
     }
 
     public synchronized void disconnect() {
-        Log.d(TAG, "disconnect " + reader);
         try {
             if (reader != null) {
                 reader.Events.removeEventsListener(eventHandler);
                 reader.disconnect();
-//                scanFragment.onTextUpdated("---", "---", "Disconnected");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -217,24 +206,21 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
         Log.d(TAG, (isReaderConnected ? "Connected" : "Not Connected"));
         String s =isReaderConnected ? "RFID handle device is connected" : "RFID handle device is not connected";
         if (!isReaderConnected){
-           scanFragment.handleConnectionStatus(s, false);
+           scanFragment.readerConnectionStatus(s, false);
         }
         updateStatus();
         return isReaderConnected;
     }
 
     public void onResume() {
-        Log.d(TAG, "onResume");
         connectDevice();
     }
 
     public void onPause() {
-        Log.d(TAG, "onPause");
         disconnect();
     }
 
     public void onDestroy() {
-        Log.d(TAG, "onDestroy");
         dispose();
     }
 
@@ -254,14 +240,11 @@ public class RfidHandler implements Readers.RFIDReaderEventHandler {
     private class ConnectionTask {
         public ConnectionTask() {
             Executors.newSingleThreadExecutor().execute(() -> {
-                Log.d(TAG, "ConnectionTask Sample");
                 updateAvailableReaders();
                 if (reader != null) {
                     String str = connectDevice();
-                    Log.i(TAG, "ConnectionTask -> " + str);
                     return;
                 }
-                Log.e(TAG, "Failed to find or connect reader");
             });
         }
     }

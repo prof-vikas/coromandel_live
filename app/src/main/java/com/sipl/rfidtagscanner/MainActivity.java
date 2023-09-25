@@ -1,11 +1,10 @@
 package com.sipl.rfidtagscanner;
 
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_WARNING;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
 import android.app.Dialog;
@@ -13,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,19 +27,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
-import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
-import com.sipl.rfidtagscanner.fragments.BWHFragment;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "TestingArea";
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
@@ -60,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
 
-        if (getLoginUserRole() != null) {
-            loadMenuBasedOnRoles(getLoginUserRole());
+        if (getRoleId() != null) {
+            loadMenuBasedOnRoles(getRoleId());
         }
         showSideBarLoginUsername();
 
@@ -146,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         TextView login_username = headerView.findViewById(R.id.login_username);
         TextView txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
         LinearLayout headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
-        login_username.setText(getLoginUsername());
-        String loginUserPlantCode = getLoginUserPlantCode() + " - " + getLoginUserPlantLocationDesc();
+        login_username.setText(getUsername());
+        String loginUserPlantCode = getUserPlantCode() + " - " + getUserPlantLocationDesc();
         txtHeaderPlantCode.setText(loginUserPlantCode);
 
         if (isPlantDetailsRequiredInSideNav) {
@@ -175,89 +165,45 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public String getLoginUsername() {
+    public String getUsername() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("usernameSPK", null);
     }
 
-    public String getLoginToken() {
+    public String getToken() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("tokenSPK", null);
     }
 
-    public String getLoginUserRole() {
+    public String getRoleId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("userRolesIdSPK", null);
     }
 
-    public String getLoginUserStorageCode() {
+    public String getUserSourceLocationCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("UserSourceLocationSPK", null);
     }
 
-    public String getLoginUserPlantCode() {
+    public String getUserPlantCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("userPlantLocationSPK", null);
     }
 
-    public int getLoginUserId() {
+    public int getUserId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return Integer.parseInt(sp.getString("userIDSPK", null));
     }
 
-    public String getLoginUserPlantLocationDesc() {
+    public String getUserPlantLocationDesc() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("userPlantLocationDescSPK", null);
     }
 
-    public String getLoginUserSourceLocationDesc() {
+    public String getUserSourceLocationDesc() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("UserSourceLocationDescSPK", null);
     }
-
-/*    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
-        Dialog dialog = new Dialog(context);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setContentView(R.layout.custom_alert_dialog_box);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        TextView error = dialog.findViewById(R.id.dialog_type_error);
-        TextView success = dialog.findViewById(R.id.dialog_type_success);
-        TextView warning = dialog.findViewById(R.id.dialog_type_warning);
-        if (dialogType.equalsIgnoreCase("error")) {
-            error.setVisibility(View.VISIBLE);
-            success.setVisibility(View.GONE);
-            warning.setVisibility(View.GONE);
-        } else if (dialogType.equalsIgnoreCase("success")) {
-            error.setVisibility(View.GONE);
-            warning.setVisibility(View.GONE);
-            success.setVisibility(View.VISIBLE);
-        } else if (dialogType.equalsIgnoreCase("warning")) {
-            error.setVisibility(View.GONE);
-            success.setVisibility(View.GONE);
-            warning.setVisibility(View.VISIBLE);
-        } else {
-            Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
-        }
-        TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
-        if (dialogMessage == null) {
-            dialogMessageTxt.setVisibility(View.GONE);
-        }
-        TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
-        TextView btn = dialog.findViewById(R.id.text_btn);
-        dialogTitleTxt.setText(dialogTitle);
-        dialogMessageTxt.setText(dialogMessage);
-        btn.setText(dialogBtnText);
-        btn.setOnClickListener(view -> {
-            if(isReturnToScanner){
-                dialog.dismiss();
-                loadFragment(new ScanFragment(), 1);
-            }else {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }*/
 
     public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);
@@ -270,9 +216,9 @@ public class MainActivity extends AppCompatActivity {
         TextView success = dialog.findViewById(R.id.dialog_type_success);
         TextView warning = dialog.findViewById(R.id.dialog_type_warning);
 
-        error.setVisibility(dialogType.equalsIgnoreCase("ERROR") ? View.VISIBLE : View.GONE);
-        success.setVisibility(dialogType.equalsIgnoreCase("SUCCESS") ? View.VISIBLE : View.GONE);
-        warning.setVisibility(dialogType.equalsIgnoreCase("WARNING") ? View.VISIBLE : View.GONE);
+        error.setVisibility(dialogType.equalsIgnoreCase(DIALOG_ERROR) ? View.VISIBLE : View.GONE);
+        success.setVisibility(dialogType.equalsIgnoreCase(DIALOG_SUCCESS) ? View.VISIBLE : View.GONE);
+        warning.setVisibility(dialogType.equalsIgnoreCase(DIALOG_WARNING) ? View.VISIBLE : View.GONE);
 
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
         dialogMessageTxt.setVisibility(dialogMessage == null ? View.GONE : View.VISIBLE);
@@ -291,9 +237,6 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
         dialog.show();
     }
-
-
 }

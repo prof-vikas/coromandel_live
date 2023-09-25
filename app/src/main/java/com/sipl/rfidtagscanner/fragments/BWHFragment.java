@@ -1,10 +1,9 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
-import static com.sipl.rfidtagscanner.utils.Config.EMPTY_RMG_NUMBER;
-import static com.sipl.rfidtagscanner.utils.Config.EMPTY_WAREHOUSE_NUMBER;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,6 +26,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
+import com.sipl.rfidtagscanner.LoginActivity;
 import com.sipl.rfidtagscanner.MainActivity;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
@@ -37,6 +38,7 @@ import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
+import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
 import com.sipl.rfidtagscanner.utils.CustomToast;
 
 import java.time.LocalDateTime;
@@ -61,10 +63,8 @@ public class BWHFragment extends Fragment {
     private Spinner spinnerWarehouseNo, spinnerRemark;
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo, edtEntryTime, edtBatchNumber;
     private Integer selectedLepNoId, selectedRemarksId;
-    private String previousRMGCode, selectedRemarks, selectedRmgNo, loginUserName, token, defaultWareHouse, previousRMG, remarks, defaulfWareHouseDesc;
-    private ArrayAdapter<String> remarkAdapter;
-    private ArrayAdapter<String> updateWareHouseNoAdapter;
-    private String inUnloadingTime = null;
+    private String previousRMGCode, inUnloadingTime, selectedRemarks, selectedRmgNo, loginUserName, token, defaultWareHouse, previousRMG, remarks, defaulfWareHouseDesc;
+    private ArrayAdapter<String> remarkAdapter, updateWareHouseNoAdapter;
 
     public BWHFragment() {
     }
@@ -94,13 +94,13 @@ public class BWHFragment extends Fragment {
         Button btnReset = view.findViewById(R.id.bwh_btn_reset);
         Button btnSubmit = view.findViewById(R.id.bwh_btn_submit);
 
-        this.token = ((MainActivity) requireActivity()).getLoginToken();
-        this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
+        this.token = ((MainActivity) requireActivity()).getToken();
+        this.loginUserName = ((MainActivity) requireActivity()).getUsername();
 
         setLocalTime();
-        getLoadingAdviseDetails();
+        getBWHDetails();
         updateUIBaseOnVehicleInTime();
-        getWareHouseLocation();
+        getBssLocation();
         getAllRemarks();
 
         btnSubmit.setOnClickListener(view12 -> {
@@ -158,43 +158,38 @@ public class BWHFragment extends Fragment {
         return true;
     }
 
-    private boolean getWareHouseLocation() {
-        progressBar.setVisibility(View.VISIBLE);
+    private boolean getBssLocation() {
+        showProgress();
         Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllCoromandelRmgNo("Bearer " + token, "bothra");
 
         call.enqueue(new Callback<RmgNumberApiResponse>() {
             @Override
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
-
+                hideProgress();
                 if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "An error occurs when attempting to get location information", null, "OK", false);
                     return;
                 }
-                Log.i(TAG, "onResponse: getAllUpdateRmgNo : responseCode : " + response.code() + " " + response.raw());
+                Log.i(TAG, "onResponse: getBssLocation : responseCode : " + response.code() + " " + response.raw());
 
-                if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    HashMap<String, String> hashMapLocationCode = new HashMap<>();
-                    List<StorageLocationDto> functionalLocationMasterDtoList = response.body().getStorageLocationDtos();
-                    ArrayList<String> arrDestinationLocation = new ArrayList<>();
-                    ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
-                    SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
-                    String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
-                    String removedPreviousRmgCode = defaultWareHouse + " - " + PreviousRmgNoDesc;
-                    try {
-                        if (functionalLocationMasterDtoList == null || functionalLocationMasterDtoList.isEmpty()) {
-                            customToast.toastMessage(getActivity(), EMPTY_RMG_NUMBER, 0);
-                            return;
-                        }
-                        for (int i = 0; i < functionalLocationMasterDtoList.size(); i++) {
-                            String s = functionalLocationMasterDtoList.get(i).getStrLocationCode();
-                            String strLocationDesc = functionalLocationMasterDtoList.get(i).getStrLocationDesc();
-                            arrDestinationLocation.add(s);
-                            String strLocationDescWithCode = s + " - " + strLocationDesc.toUpperCase();
+                HashMap<String, String> hashMapLocationCode = new HashMap<>();
+                ArrayList<String> arrDestinationLocation = new ArrayList<>();
+                ArrayList<String> arrDestinationLocationDesc = new ArrayList<>();
+                SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
+                String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
+                String removedPreviousRmgCode = defaultWareHouse + " - " + PreviousRmgNoDesc;
+
+                try {
+                    if (response.body() != null && response.body().getStorageLocationDtos() != null) {
+                        List<StorageLocationDto> bssLocationList = response.body().getStorageLocationDtos();
+                        for (int i = 0; i < bssLocationList.size(); i++) {
+                            String locationCode = bssLocationList.get(i).getStrLocationCode();
+                            String strLocationDesc = bssLocationList.get(i).getStrLocationDesc();
+                            arrDestinationLocation.add(locationCode);
+                            String strLocationDescWithCode = locationCode + " - " + strLocationDesc.toUpperCase();
                             arrDestinationLocationDesc.add(strLocationDescWithCode);
-                            hashMapLocationCode.put(strLocationDescWithCode, s);
+                            hashMapLocationCode.put(strLocationDescWithCode, locationCode);
                         }
                         if (arrDestinationLocationDesc.contains(removedPreviousRmgCode)) {
                             arrDestinationLocationDesc.remove(removedPreviousRmgCode);
@@ -266,17 +261,19 @@ public class BWHFragment extends Fragment {
                             public void onNothingSelected(AdapterView<?> adapterView) {
                             }
                         });
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception in RMG location : " + e.getMessage());
-                        e.printStackTrace();
+                    } else {
+                        ((MainActivity)requireActivity()).alert(requireActivity(),DIALOG_ERROR, "No BSS location found", null, BTN_OK,false);
                     }
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception in getBssLocation : " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<RmgNumberApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, "OK", false);
+                hideProgress();
+                ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, "OK", false);
             }
         });
 
@@ -417,23 +414,21 @@ public class BWHFragment extends Fragment {
 
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
         Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
-        showProgressBar();
+        showProgress();
         Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+               hideProgress();
                 if (!response.isSuccessful()) {
-                    hideProgressBar();
                     ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK", false);
                 }
                 Log.i(TAG, "onResponse: updateWareHouseNo : " + response.raw());
 
                 if (response.isSuccessful()) {
                     if (response.body().getStatus().equalsIgnoreCase("OK")) {
-                        hideProgressBar();
                         ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
                     } else {
-                        hideProgressBar();
                         ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
                     }
                 }
@@ -441,7 +436,7 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                hideProgressBar();
+                hideProgress();
                 ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
                 t.printStackTrace();
             }
@@ -495,16 +490,7 @@ public class BWHFragment extends Fragment {
         }
     }
 
-    private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-
-    private void getLoadingAdviseDetails() {
+    private void getBWHDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         this.selectedLepNoId = Integer.valueOf(sp.getString("lepNoIdSPK", null));
         String rfidTagId = sp.getString("rfidTagSPK", null);
@@ -529,7 +515,18 @@ public class BWHFragment extends Fragment {
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
-        saveLoginAdviseData(rfidTagId,lepNo,driverName,truckNo,commodity,sourceGrossWeight,previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
+    }
+
+    private void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
 }

@@ -112,11 +112,11 @@ public class LoadingAdviseFragment extends Fragment {
         layoutBothraSupervisor = view.findViewById(R.id.title_bothra_supervisor);
         layoutPinnacleSupervisor = view.findViewById(R.id.title_pinnacle_supervisor);
 
-        this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
-        this.loginUserId = ((MainActivity) requireActivity()).getLoginUserId();
-        this.loginUserStorageLocation = ((MainActivity) requireActivity()).getLoginUserStorageCode();
-        this.loginUserStorageLocationDesc = ((MainActivity) requireActivity()).getLoginUserSourceLocationDesc();
-        this.token = ((MainActivity) requireActivity()).getLoginToken();
+        this.loginUserName = ((MainActivity) requireActivity()).getUsername();
+        this.loginUserId = ((MainActivity) requireActivity()).getUserId();
+        this.loginUserStorageLocation = ((MainActivity) requireActivity()).getUserSourceLocationCode();
+        this.loginUserStorageLocationDesc = ((MainActivity) requireActivity()).getUserSourceLocationDesc();
+        this.token = ((MainActivity) requireActivity()).getToken();
 
         edtLoadingSupervisor.setText(loginUserName);
 

@@ -98,8 +98,8 @@ public class CWHFragment extends Fragment {
         tvLoadingTimeLayout = view.findViewById(R.id.title_unloading_time);
         tvOtherRemark = view.findViewById(R.id.cwh_other);
 
-        this.token = ((MainActivity) getActivity()).getLoginToken();
-        this.loginUserName = ((MainActivity) getActivity()).getLoginUsername();
+        this.token = ((MainActivity) getActivity()).getToken();
+        this.loginUserName = ((MainActivity) getActivity()).getUsername();
 
         displayClock();
         getCWHDetails();

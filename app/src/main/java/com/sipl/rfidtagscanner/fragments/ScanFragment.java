@@ -92,10 +92,10 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         errorHandle = view.findViewById(R.id.sf_error);
         error_layout = view.findViewById(R.id.error_layout);
         progressBar = view.findViewById(R.id.login_progressBar);
-        this.loginUserRole = ((MainActivity) getActivity()).getLoginUserRole();
-        this.loginUserToken = ((MainActivity) getActivity()).getLoginToken();
+        this.loginUserRole = ((MainActivity) getActivity()).getRoleId();
+        this.loginUserToken = ((MainActivity) getActivity()).getToken();
         this.admin_selected_nav_screen = getScreenDetails();
-        this.loginUserStorageLocation = ((MainActivity) getActivity()).getLoginUserStorageCode();
+        this.loginUserStorageLocation = ((MainActivity) getActivity()).getUserSourceLocationCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
         getWareHouseStorage();
@@ -244,7 +244,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             }
 
 
-                            String role = ((MainActivity) requireActivity()).getLoginUserRole();
+                            String role = ((MainActivity) requireActivity()).getRoleId();
                             if (role.equalsIgnoreCase(ROLES_LAO)) {
                                 saveLADetails(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, null, null, null, null, berthLocation, batchNumber, grSrcLoc, grSrcLocDesc, null);
                                 ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
@@ -896,7 +896,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     }
 
     @Override
-    public void handleConnectionStatus(String name, Boolean status) {
+    public void readerConnectionStatus(String name, Boolean status) {
         SettingsFragment s = new SettingsFragment();
         if (!status) {
             s.updateSwitchPreferenceValue(false);
