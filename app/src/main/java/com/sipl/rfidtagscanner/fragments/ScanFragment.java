@@ -62,6 +62,11 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     private ArrayList<String> arrDestinationLocation;
     private ProgressBar progressBar;
     private EditText edtRfidTagId;
+    private RfidHandler rfidHandler;
+    private String loginUserRole, loginUserToken, loginUserStorageLocation, adminSelectedNavScreen;
+    private TextView errorHandle;
+    private LinearLayout error_layout;
+    private Boolean isLoadingDifferenceEnable;
     private final Observer<RfidUiDataDto> currentRFIDObserver = rfidUiDataDto -> {
         if (rfidUiDataDto.isReaderConnected()) {
             TagData[] tagDataArray = rfidUiDataDto.getTagData();
@@ -72,14 +77,6 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
             }
         }
     };
-    private RfidHandler rfidHandler;
-    private String loginUserRole;
-    private String loginUserToken;
-    private String loginUserStorageLocation;
-    private TextView errorHandle;
-    private LinearLayout error_layout;
-    private String admin_selected_nav_screen = null;
-    private Boolean isLoadingDifferenceEnable;
 
     public ScanFragment() {
     }
@@ -94,7 +91,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         progressBar = view.findViewById(R.id.login_progressBar);
         this.loginUserRole = ((MainActivity) getActivity()).getRoleId();
         this.loginUserToken = ((MainActivity) getActivity()).getToken();
-        this.admin_selected_nav_screen = getScreenDetails();
+        this.adminSelectedNavScreen = getScreenDetails();
         this.loginUserStorageLocation = ((MainActivity) getActivity()).getUserSourceLocationCode();
 
         Button btnVerify = view.findViewById(R.id.sf_btn_verify);
@@ -186,23 +183,18 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
      * Method call on verify
      * */
     private void getRfidDetails() {
-        Log.i(TAG, "getRfidDetails: phase 1 : ");
-        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (admin_selected_nav_screen.equalsIgnoreCase("loadingAdvise"))) {
+        if (loginUserRole.equalsIgnoreCase(ROLES_LAO) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT)) && (adminSelectedNavScreen.equalsIgnoreCase("loadingAdvise"))) {
             if (arrDestinationLocation.contains(loginUserStorageLocation)) {
-                Log.i(TAG, "getRfidDetails: phase 1 : Bothra LA");
                 getRfidTagDetailBothraLA();
             } else {
-                Log.i(TAG, "getRfidDetails: phase 1 : CIL LA");
                 getRfidDetailCoromandelLA();
             }
         } else {
-            Log.i(TAG, "getRfidDetails: phase 1 : WareHouse ALL");
             getAllWareHouseDetails();
         }
     }
 
     private void getRfidDetailCoromandelLA() {
-        Log.i(TAG, "getRfidTagDetailCoromandelLA: Phase 2 : CIL LA :");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<RfidLepApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailCoromandelLA("Bearer " + loginUserToken, edtRfidTagId.getText().toString());
@@ -279,7 +271,6 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     }
 
     private void getCoromandelRfidTagDetailsForOutTime() {
-        Log.i(TAG, "getCoromandelRfidTagDetailsForOutTime(): <<Start>> : ");
         progressBar.setVisibility(View.VISIBLE);
         try {
             Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().getRfidTagDetailBothraLA("Bearer " + loginUserToken, "1", "0", edtRfidTagId.getText().toString());
@@ -449,10 +440,10 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
     }
 
     private void getAllWareHouseDetails() {
-        if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("bothra")))) {
+        if (loginUserRole.equalsIgnoreCase(ROLES_BWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (adminSelectedNavScreen.equalsIgnoreCase("bothra")))) {
             Log.i(TAG, "getAllWareHouseDetails: Phase 2 : Warehouse");
             getBothraInUnLoadingDetails();
-        } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (admin_selected_nav_screen.equalsIgnoreCase("coromandel")))) {
+        } else if (loginUserRole.equalsIgnoreCase(ROLES_CWH) || (loginUserRole.equalsIgnoreCase(ROLES_ADMIN_PLANT) && (adminSelectedNavScreen.equalsIgnoreCase("coromandel")))) {
             Log.i(TAG, "getAllWareHouseDetails: Phase 2 : Warehouse");
             getCoromandelWareHouseDetails();
         }

@@ -3,7 +3,8 @@ package com.sipl.rfidtagscanner.fragments;
 import static android.content.Context.MODE_PRIVATE;
 import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
-import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
+import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_OK;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,7 +27,6 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
-import com.sipl.rfidtagscanner.LoginActivity;
 import com.sipl.rfidtagscanner.MainActivity;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
@@ -39,13 +39,13 @@ import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
-import com.sipl.rfidtagscanner.utils.CustomToast;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,7 +56,6 @@ public class BWHFragment extends Fragment {
 
     private final String TAG = "TracingError";
 
-    private final CustomToast customToast = new CustomToast();
     private TextClock tvExitTime, tvEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
     private ProgressBar progressBar;
@@ -158,7 +157,7 @@ public class BWHFragment extends Fragment {
         return true;
     }
 
-    private boolean getBssLocation() {
+    private void getBssLocation() {
         showProgress();
         Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllCoromandelRmgNo("Bearer " + token, "bothra");
@@ -168,10 +167,10 @@ public class BWHFragment extends Fragment {
             public void onResponse(Call<RmgNumberApiResponse> call, Response<RmgNumberApiResponse> response) {
                 hideProgress();
                 if (!response.isSuccessful()) {
-                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "An error occurs when attempting to get location information", null, "OK", false);
+                    ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "An error occurs when attempting to get location information", null, "OK", false);
                     return;
                 }
-                Log.i(TAG, "onResponse: getBssLocation : responseCode : " + response.code() + " " + response.raw());
+                Log.i(TAG, "onResponse: getBssLocation :  " + response.raw());
 
                 HashMap<String, String> hashMapLocationCode = new HashMap<>();
                 ArrayList<String> arrDestinationLocation = new ArrayList<>();
@@ -244,8 +243,6 @@ public class BWHFragment extends Fragment {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String selectedRmgCode = adapterView.getSelectedItem().toString();
-
-
                                 if (hashMapLocationCode.containsKey(selectedRmgCode)) {
                                     selectedRmgNo = hashMapLocationCode.get(selectedRmgCode);
                                 }
@@ -262,7 +259,7 @@ public class BWHFragment extends Fragment {
                             }
                         });
                     } else {
-                        ((MainActivity)requireActivity()).alert(requireActivity(),DIALOG_ERROR, "No BSS location found", null, BTN_OK,false);
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, "No BSS location found", null, BTN_OK, false);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Exception in getBssLocation : " + e.getMessage());
@@ -276,34 +273,27 @@ public class BWHFragment extends Fragment {
                 ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, "OK", false);
             }
         });
-
-        return true;
     }
 
     private void getAllRemarks() {
-        progressBar.setVisibility(View.VISIBLE);
+        showProgress();
         Call<RemarkApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllCoromandelRemark("Bearer " + token);
 
         call.enqueue(new Callback<RemarkApiResponse>() {
             @Override
             public void onResponse(Call<RemarkApiResponse> call, Response<RemarkApiResponse> response) {
+                hideProgress();
                 if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody().toString(), null, "OK", false);
-                    return;
+                    ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "An error occurs when attempting to get remarks", null, BTN_OK, false);
                 }
                 Log.i(TAG, "onResponse: getAllRemark : responseCode : " + response.code() + response.raw());
-                if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
+
+                if (response.body() != null) {
                     List<RemarksDto> remarksDtoList = response.body().getRemarksDtos();
                     HashMap<String, Integer> hashMapRemarks = new HashMap<>();
                     ArrayList<String> arrRemarks = new ArrayList<>();
                     try {
-                        if (remarksDtoList == null || remarksDtoList.isEmpty()) {
-                            Toast.makeText(getActivity(), EMPTY_REMARKS, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
                         for (int i = 0; i < remarksDtoList.size(); i++) {
                             String s = remarksDtoList.get(i).getRemarks();
                             int id = remarksDtoList.get(i).getId();
@@ -380,8 +370,8 @@ public class BWHFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RemarkApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
+                hideProgress();
+                ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, BTN_OK, false);
             }
         });
     }
@@ -389,7 +379,6 @@ public class BWHFragment extends Fragment {
     private UpdateWareHouseNoRequestDto setData() {
         StorageLocationDto selectedWareHouseNo = null;
         RemarksDto remarksDto = null;
-        Integer FLAG = 8;
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, String.valueOf(LocalDateTime.now()));
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(defaultWareHouse);
         if (selectedRmgNo != null) {
@@ -405,9 +394,9 @@ public class BWHFragment extends Fragment {
         RfidLepIssueDto rfidLepIssueDto = new RfidLepIssueDto(selectedLepNoId);
         if (inUnloadingTime != null) {
             StorageLocationDto previousWareHouseNo2 = new StorageLocationDto(previousRMGCode);
-            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo2, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, inUnloadingTime, LocalDateTime.now().toString());
+            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo2, selectedWareHouseNo, rfidLepIssueDto, remarksDto, 8, null, null, inUnloadingTime, LocalDateTime.now().toString());
         } else {
-            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, FLAG, null, null, LocalDateTime.now().toString(), null);
+            return new UpdateWareHouseNoRequestDto(auditEntity, previousWareHouseNo, selectedWareHouseNo, rfidLepIssueDto, remarksDto, 8, null, null, LocalDateTime.now().toString(), null);
         }
     }
 
@@ -419,17 +408,17 @@ public class BWHFragment extends Fragment {
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-               hideProgress();
+                hideProgress();
                 if (!response.isSuccessful()) {
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK", false);
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "Error occurs while updating transaction", null, BTN_OK, false);
                 }
                 Log.i(TAG, "onResponse: updateWareHouseNo : " + response.raw());
 
                 if (response.isSuccessful()) {
-                    if (response.body().getStatus().equalsIgnoreCase("OK")) {
-                        ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_OK)) {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_SUCCESS, response.body().getMessage(), null, BTN_OK, true);
                     } else {
-                        ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
                     }
                 }
             }
@@ -437,7 +426,7 @@ public class BWHFragment extends Fragment {
             @Override
             public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
                 hideProgress();
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
+                ((MainActivity) requireActivity()).alert(getActivity(), DIALOG_ERROR, t.getMessage(), null, BTN_OK, false);
                 t.printStackTrace();
             }
         });
@@ -474,7 +463,7 @@ public class BWHFragment extends Fragment {
         }
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber) {
+    private void showDataOnScreen(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber) {
         edtRfidTag.setText(rfidTag.toUpperCase());
         edtLepNo.setText(lepNo.toUpperCase());
         edtTruckNumber.setText(truckNo.toUpperCase());
@@ -484,7 +473,8 @@ public class BWHFragment extends Fragment {
         edtBatchNumber.setText(batchNumber.toUpperCase());
 
         if (inUnloadingTime != null) {
-            edtPreviousWareHouseNo.setText(previousRmgNo.toUpperCase() + " - " + PreviousRmgNoDesc.toUpperCase());
+            String previousRmg = previousRmgNo + PreviousRmgNoDesc.toUpperCase();
+            edtPreviousWareHouseNo.setText(previousRmg);
         } else {
             edtPreviousWareHouseNo.setText(wareHouseCode.toUpperCase());
         }
@@ -498,7 +488,6 @@ public class BWHFragment extends Fragment {
         String driverName = sp.getString("driverNameSPK", null);
         String truckNo = sp.getString("truckNoSPK", null);
         String commodity = sp.getString("commoditySPK", null);
-        String grossWeight = sp.getString("GrossWeightSPK", null);
         String sourceGrossWeight = sp.getString("sourceGrossWeightSPK", null);
         String previousRmgNo = sp.getString("previousRmgNoSPK", null);
         String PreviousRmgNoDesc = sp.getString("PreviousRmgNoDescSPK", null);
@@ -515,7 +504,7 @@ public class BWHFragment extends Fragment {
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
-        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
+        showDataOnScreen(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
     }
 
     private void showProgress() {
