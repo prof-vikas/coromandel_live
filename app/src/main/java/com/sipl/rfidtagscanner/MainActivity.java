@@ -190,9 +190,9 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("userPlantLocationSPK", null);
     }
 
-    public int getUserId() {
+    public String getUserId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return Integer.parseInt(sp.getString("userIDSPK", null));
+        return sp.getString("userIDSPK", null);
     }
 
     public String getUserPlantLocationDesc() {

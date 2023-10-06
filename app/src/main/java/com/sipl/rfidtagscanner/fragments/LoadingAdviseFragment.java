@@ -113,7 +113,10 @@ public class LoadingAdviseFragment extends Fragment {
         layoutPinnacleSupervisor = view.findViewById(R.id.title_pinnacle_supervisor);
 
         this.loginUserName = ((MainActivity) requireActivity()).getUsername();
-        this.loginUserId = ((MainActivity) requireActivity()).getUserId();
+        String userId = ((MainActivity) requireActivity()).getUserId();
+        if (userId != null){
+            this.loginUserId = Integer.parseInt(userId);
+        }
         this.loginUserStorageLocation = ((MainActivity) requireActivity()).getUserSourceLocationCode();
         this.loginUserStorageLocationDesc = ((MainActivity) requireActivity()).getUserSourceLocationDesc();
         this.token = ((MainActivity) requireActivity()).getToken();
