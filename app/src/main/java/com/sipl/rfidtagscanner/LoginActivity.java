@@ -2,10 +2,9 @@ package com.sipl.rfidtagscanner;
 
 import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
-import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_FOUND;
-import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_OK;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
@@ -31,11 +30,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.gson.Gson;
+import com.sipl.rfidtagscanner.dto.dtos.GenericData;
+import com.sipl.rfidtagscanner.dto.dtos.GenericIntegerData;
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
+import com.sipl.rfidtagscanner.dto.dtos.UserPermissionsResponseDto;
 import com.sipl.rfidtagscanner.dto.request.JwtRequest;
+import com.sipl.rfidtagscanner.dto.response.GenericeApiResponse;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
 import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -284,7 +289,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UserValidateResponseDto> call, Throwable t) {
-                showProgress();
+                hideProgress();
                 alert(LoginActivity.this, DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, BTN_OK);
             }
         });
@@ -421,7 +426,7 @@ public class LoginActivity extends AppCompatActivity {
                             SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putString("userIDSPK", token).apply();
-                            getUserDetails(token);
+                            getUserDetailsWithAllPermission(token);
                         } else {
                             Log.i(TAG, "onResponse: Status : " + response.body().getStatus() + "\nMessage : " + response.body().getMessage());
                             alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, "OK");
@@ -550,7 +555,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void getUserDetails(String token) {
+ /*   private void getUserDetails(String token) {
         showProgress();
         Call<UserValidateResponseDto> call = RetrofitController.getInstances(this).getLoadingAdviseApi().getLoginUserDetails("Bearer " + token, edtUsername.getText().toString().trim());
         call.enqueue(new Callback<UserValidateResponseDto>() {
@@ -591,7 +596,7 @@ public class LoginActivity extends AppCompatActivity {
                 alert(LoginActivity.this, "error", t.getMessage(), null, "OK");
             }
         });
-    }
+    }*/
 
 
     public int getLoginUserId() {
@@ -639,7 +644,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i(TAG, "onFailure: " + t.getMessage());
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             Log.i(TAG, "logoutApi: " + e.getMessage() + e.getCause() + e.getStackTrace());
         }
@@ -654,6 +659,84 @@ public class LoginActivity extends AppCompatActivity {
     private void hideProgress() {
         progressBar.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void getUserDetailsWithAllPermission(String token) {
+        showProgress();
+        Call<GenericeApiResponse> call = RetrofitController.getInstances(this).getLoadingAdviseApi().getLoginUserDetailsV2("Bearer " + token, edtUsername.getText().toString().trim());
+        call.enqueue(new Callback<GenericeApiResponse>() {
+            @Override
+            public void onResponse(Call<GenericeApiResponse> call, Response<GenericeApiResponse> response) {
+                hideProgress();
+                if (!response.isSuccessful()) {
+                    alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, BTN_OK);
+                }
+
+                if (response.body() != null && response.body().getStatus() != null) {
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
+                        UserPermissionsResponseDto userPermissionsResponseDto = response.body().getResponse();
+                        String userId = userPermissionsResponseDto.getUserMasterId().toString();
+                        String username = userPermissionsResponseDto.getUserId();
+                        String userRoleId = userPermissionsResponseDto.getRoleId().toString();
+                        String roleName = userPermissionsResponseDto.getRoleName();
+                        String plantCode = userPermissionsResponseDto.getPlantCode();
+
+                        if (username == null || roleName == null || plantCode == null) {
+                            alert(LoginActivity.this, DIALOG_ERROR, "Something went wrong with is user", "some key field value is missing \ncontact with admin...", BTN_OK);
+                            return;
+                        }
+
+                        Boolean isBerthAssign = userPermissionsResponseDto.getBerth() != null ? userPermissionsResponseDto.getBerth() : false;
+                        List<GenericIntegerData> berthList = userPermissionsResponseDto.getAllBerth();
+
+                        Boolean isSourceLocationAssign = userPermissionsResponseDto.getSourceLocation() != null ? userPermissionsResponseDto.getSourceLocation() : false;
+                        List<GenericData> sourceLocationList = userPermissionsResponseDto.getSourceLocationDto();
+
+                        Boolean isDestinationLocationAssign = userPermissionsResponseDto.getDestinationLocation() != null ? userPermissionsResponseDto.getDestinationLocation() : false;
+                        List<GenericData> destinationLocationList = userPermissionsResponseDto.getDestinationLocationDto();
+
+                        Gson gson = new Gson();
+                        String strBerthList = berthList != null ? gson.toJson(berthList) : null;
+                        String strSourceLocationList = sourceLocationList != null ? gson.toJson(sourceLocationList) : null;
+                        String strDestinationList = destinationLocationList != null ? gson.toJson(destinationLocationList) : null;
+
+
+                        if (userRoleId.equalsIgnoreCase(ROLES_LAO) || userRoleId.equalsIgnoreCase(ROLES_CWH) || userRoleId.equalsIgnoreCase(ROLES_BWH) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_SUPER)) {
+                            saveLoginUserDetails(userId, username, userRoleId, roleName, plantCode, isBerthAssign, strBerthList, isSourceLocationAssign, strSourceLocationList, isDestinationLocationAssign, strDestinationList);
+                        } else {
+                            alert(LoginActivity.this, DIALOG_ERROR, "User role not allowed", null, BTN_OK);
+                        }
+                    } else {
+                        alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, BTN_OK);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenericeApiResponse> call, Throwable t) {
+                hideProgress();
+                alert(LoginActivity.this, DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, BTN_OK);
+            }
+        });
+    }
+
+    private void saveLoginUserDetails(String userId, String userName, String roleId, String roleName, String plantCode, Boolean isBerthAssign, String berthDtoList, Boolean sourceLocationIsAssign, String sourceLocationDtoList, Boolean isDestinationLocationIsAssign, String destinationLocationDtoList) {
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("userIdSPK", userId).apply();
+        editor.putString("userNameSPK", userName).apply();
+        editor.putString("roleIdSPK", roleId).apply();
+        editor.putString("roleNameSPK", roleName).apply();
+        editor.putString("plantCodeSPK", plantCode).apply();
+        editor.putBoolean("isBerthAssignSPK", isBerthAssign).apply();
+        editor.putString("berthDtoListSPK", berthDtoList).apply();
+        editor.putBoolean("sourceLocationIsAssignSPK", sourceLocationIsAssign).apply();
+        editor.putString("sourceLocationDtoListSPK", sourceLocationDtoList).apply();
+        editor.putBoolean("isDestinationLocationIsAssignSPK", isDestinationLocationIsAssign).apply();
+        editor.putString("destinationLocationDtoListSPK", destinationLocationDtoList).apply();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }

@@ -10,7 +10,8 @@ import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_BOTHRA_LOADING_ADVI
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_COROMANDEL_LOADING_ADVISE_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS;
-import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LOGIN_USER_DETAIL;
+//import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LOGIN_USER_DETAIL;
+import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_LOGIN_USER_DETAIL_V2;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGIN_WITHOUT_JWT;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.LOGOUT;
@@ -24,6 +25,7 @@ import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
+import com.sipl.rfidtagscanner.dto.response.GenericeApiResponse;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.LoadingAdvisePostApiResponse;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
@@ -50,8 +52,11 @@ public interface ApiController {
     @GET(LOGIN_WITHOUT_JWT + "/{userId}" + "/{password}")
     Call<UserValidateResponseDto> loginWithOutJwt(@Path("userId") String userId, @Path("password") String password);
 
-    @GET(GET_LOGIN_USER_DETAIL + "{username}")
-    Call<UserValidateResponseDto> getLoginUserDetails(@Header("Authorization") String authToken, @Path("username") String userName);
+ /*   @GET(GET_LOGIN_USER_DETAIL + "{username}")
+    Call<UserValidateResponseDto> getLoginUserDetails(@Header("Authorization") String authToken, @Path("username") String userName);*/
+
+    @GET(GET_LOGIN_USER_DETAIL_V2 + "{userId}" + "/permissions")
+    Call<GenericeApiResponse> getLoginUserDetailsV2(@Header("Authorization") String authToken, @Path("userId") String userId);
 
     @PUT(LOGOUT)
     Call<UserMasterDto> logout(@Body UserMasterDto userMasterDto);
