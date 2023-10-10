@@ -54,7 +54,7 @@ public class LoadingAdviseFragment extends Fragment {
     //    userDetails
     private String loginUserName;
     private String token;
-    private String loginUserStorageLocation;
+    private String strGrLocationCode;
     private String loginUserStorageLocationDesc;
     private int loginUserId;
 
@@ -211,7 +211,7 @@ public class LoadingAdviseFragment extends Fragment {
             return false;
         }
 
-        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
+        if (!arrBothraStrLocation.contains(strGrLocationCode)) {
 
             if (!strisgetInLoadingTime.equalsIgnoreCase("true")) {
                 if (edtPinnacleSupervisor.length() == 0) {
@@ -368,7 +368,7 @@ public class LoadingAdviseFragment extends Fragment {
 
     private UpdateBothraLoadingAdviseDto updateData() {
         final Integer BOTHRA_FLAG = 12;
-        StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
+        StorageLocationDto sourceMasterDto = new StorageLocationDto(strGrLocationCode);
         UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
@@ -381,7 +381,7 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void updateUIBasedOnUser() {
-        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
+        if (!arrBothraStrLocation.contains(strGrLocationCode)) {
             layoutBothraSupervisor.setVisibility(View.VISIBLE);
             layoutPinnacleSupervisor.setVisibility(View.VISIBLE);
             edtBerthNumberLayout.setVisibility(View.VISIBLE);
@@ -394,7 +394,7 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void chooseMethodToCall() {
-        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
+        if (!arrBothraStrLocation.contains(strGrLocationCode)) {
             UpdateCoromadelLoadingAdviseDetails(setData());
         } else {
             UpdateBothraLoadingAdviseDetails(updateData());
@@ -469,7 +469,7 @@ public class LoadingAdviseFragment extends Fragment {
         }
         edtTareWeight.setText(bTareWeight);
 //        edtSourceLocation.setText(loginUserStorageLocation + " - " + loginUserStorageLocationDesc);
-        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
+        if (!arrBothraStrLocation.contains(strGrLocationCode)) {
             edtBerthNumber.setText(berthNumber.toUpperCase());
         }
 

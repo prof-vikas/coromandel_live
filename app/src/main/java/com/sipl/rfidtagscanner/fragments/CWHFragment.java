@@ -55,6 +55,7 @@ public class CWHFragment extends Fragment {
     private final String TAG = "BothraAdvicePage";
 
     ArrayList<String> arrayList = new ArrayList<>();
+    private ArrayAdapter<String> updateAssignDestinationLocation;
 
     private ArrayAdapter<String> remarksAdapter;
 
@@ -62,7 +63,6 @@ public class CWHFragment extends Fragment {
     private EditText edtLepLocationActual;
 
 
-    private ArrayAdapter<String> updateAssignDestinationLocation;
 
     private String inUnloadingTime = null;
     private EditText edtEntryTime, edtOtherRemarks;

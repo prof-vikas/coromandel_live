@@ -27,19 +27,21 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sipl.rfidtagscanner.MainActivity;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
+import com.sipl.rfidtagscanner.dto.dtos.GenericData;
 import com.sipl.rfidtagscanner.dto.dtos.RemarksDto;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.StorageLocationDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
-import com.sipl.rfidtagscanner.dto.response.RmgNumberApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -54,6 +56,13 @@ import retrofit2.Response;
 public class BWHFragment extends Fragment {
 
     private final String TAG = "TracingError";
+
+    ArrayList<String> arrayList = new ArrayList<>();
+    private ArrayAdapter<String> updateAssignDestinationLocation;
+
+
+    private LinearLayout llEdtLepLocationActual, llSpinnerLepLocationActual, llSpinnerRemarks;
+    private EditText edtLepLocationActual;
 
     private TextClock tvExitTime, tvEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
@@ -71,6 +80,12 @@ public class BWHFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_b_w_h, container, false);
+
+        llEdtLepLocationActual = view.findViewById(R.id.ll_bwh_edt_rmg_no);
+        llSpinnerRemarks = view.findViewById(R.id.cwh_remark);
+        llSpinnerLepLocationActual = view.findViewById(R.id.ll_bwh_spinner_rmg_no);
+        edtLepLocationActual = view.findViewById(R.id.bwh_edt_warehouse_no);
+
         spinnerWarehouseNo = view.findViewById(R.id.bwh_spinner_warehouse_no);
         spinnerRemark = view.findViewById(R.id.bwh_spinner_remark);
         tvExitTime = view.findViewById(R.id.bwh_exit_time);
@@ -98,7 +113,8 @@ public class BWHFragment extends Fragment {
         setLocalTime();
         getBWHDetails();
         updateUIBaseOnVehicleInTime();
-        getBssLocation();
+//        getBssLocation();
+        getUserMappedStorage();
         getAllRemarks();
 
         btnSubmit.setOnClickListener(view12 -> {
@@ -149,14 +165,122 @@ public class BWHFragment extends Fragment {
             edtBatchNumber.setError("This field is required");
             return false;
         }
-        if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Select Warehouse No") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
-            Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
-            return false;
+        if (arrayList.size() > 1) {
+            if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Select Warehouse No") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
+                Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
         return true;
     }
 
-    private void getBssLocation() {
+
+    private void getUserMappedStorage() {
+        String storageLocation = ((MainActivity) requireActivity()).destinationLocationDtoList();
+        if (storageLocation != null) {
+
+            HashMap<String, String> hashMapForDestinationLocation = new HashMap<>();
+            Type listType = new TypeToken<List<GenericData>>() {
+            }.getType();
+            List<GenericData> parsedDestinationList = new Gson().fromJson(storageLocation, listType);
+            for (GenericData name : parsedDestinationList) {
+                String s = name.getName();
+                String v = name.getValue();
+                arrayList.add(s);
+                hashMapForDestinationLocation.put(s, v);
+            }
+
+            if (arrayList.size() > 1) {
+                llEdtLepLocationActual.setVisibility(View.GONE);
+                llSpinnerLepLocationActual.setVisibility(View.VISIBLE);
+                arrayList.add("Update LEP Location");
+
+                updateAssignDestinationLocation = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrayList) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+
+                        View v = super.getView(position, convertView, parent);
+                        if (position == getCount()) {
+                            ((TextView) v.findViewById(android.R.id.text1)).setText("");
+                            ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                        }
+                        return v;
+                    }
+
+                    @Override
+                    public int getCount() {
+                        return super.getCount() - 1;
+                    }
+                };
+
+                spinnerWarehouseNo.setAdapter(updateAssignDestinationLocation);
+
+                if (inUnloadingTime != null) {
+                    if (previousRMG.equalsIgnoreCase(defaulfWareHouseDesc)) {
+                        spinnerWarehouseNo.setEnabled(false);
+                        spinnerWarehouseNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
+                        spinnerWarehouseNo.setSelection(updateAssignDestinationLocation.getCount());
+                    } else {
+                        int position = -1;
+                        if (arrayList.contains(defaulfWareHouseDesc)) {
+                            for (int i = 0; i < updateAssignDestinationLocation.getCount(); i++) {
+                                String item = updateAssignDestinationLocation.getItem(i);
+                                if (defaulfWareHouseDesc.trim().equalsIgnoreCase(item.trim())) {
+                                    position = i;
+                                    break;
+                                }
+                            }
+                            if (position != -1) {
+                                spinnerWarehouseNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
+                                spinnerWarehouseNo.setSelection(position);
+                                spinnerWarehouseNo.setEnabled(false);
+                            } else {
+                                Log.i(TAG, "onResponse:  in position else");
+                            }
+                        } else {
+                            Log.i(TAG, "onResponse: not contain storage location " + defaulfWareHouseDesc);
+                        }
+                    }
+                } else {
+                    spinnerWarehouseNo.setSelection(updateAssignDestinationLocation.getCount());
+                }
+
+                spinnerWarehouseNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        String selectedRmgCode = adapterView.getSelectedItem().toString();
+
+                        if (hashMapForDestinationLocation.containsKey(selectedRmgCode)) {
+                            selectedRmgNo = hashMapForDestinationLocation.get(selectedRmgCode);
+                        }
+
+                        if (!selectedRmgCode.equalsIgnoreCase("Update RMG No")) {
+                            spinnerRemark.setEnabled(true);
+                        } else {
+                            spinnerRemark.setEnabled(false);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                    }
+                });
+            } else {
+                llEdtLepLocationActual.setVisibility(View.VISIBLE);
+                llSpinnerLepLocationActual.setVisibility(View.GONE);
+                llSpinnerRemarks.setVisibility(View.GONE);
+
+                spinnerRemark.setEnabled(false);
+                edtLepLocationActual.setText(arrayList.get(0));
+                edtLepLocationActual.setEnabled(false);
+                if (hashMapForDestinationLocation.containsKey(arrayList.get(0))) {
+                    selectedRmgNo = hashMapForDestinationLocation.get(arrayList.get(0));
+                }
+            }
+        }
+    }
+
+  /*  private void getBssLocation() {
         showProgress();
         Call<RmgNumberApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
                 getAllCoromandelRmgNo("Bearer " + token, "bothra");
@@ -272,7 +396,7 @@ public class BWHFragment extends Fragment {
                 ((MainActivity) getActivity()).alert(getActivity(), DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, "OK", false);
             }
         });
-    }
+    }*/
 
     private void getAllRemarks() {
         showProgress();
@@ -381,11 +505,13 @@ public class BWHFragment extends Fragment {
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, String.valueOf(LocalDateTime.now()));
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(defaultWareHouse);
         if (selectedRmgNo != null) {
-            if (!selectedRmgNo.equalsIgnoreCase("Select Warehouse No")) {
-                selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
-            }
-            if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
-                remarksDto = new RemarksDto(selectedRemarksId);
+            if (arrayList.size() > 1) {
+                if (!selectedRmgNo.equalsIgnoreCase("Select Warehouse No")) {
+                    selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
+                }
+                if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
+                    remarksDto = new RemarksDto(selectedRemarksId);
+                }
             }
         } else {
             selectedWareHouseNo = new StorageLocationDto(defaultWareHouse);
@@ -503,6 +629,11 @@ public class BWHFragment extends Fragment {
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
         this.previousRMG = previousRMG;
         this.inUnloadingTime = inUnloadingTime;
+
+        if (inUnloadingTime != null) {
+            spinnerWarehouseNo.setEnabled(false);
+            spinnerRemark.setEnabled(false);
+        }
         showDataOnScreen(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
     }
 
