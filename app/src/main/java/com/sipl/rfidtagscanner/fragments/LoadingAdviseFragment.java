@@ -112,7 +112,7 @@ public class LoadingAdviseFragment extends Fragment {
         layoutBothraSupervisor = view.findViewById(R.id.title_bothra_supervisor);
         layoutPinnacleSupervisor = view.findViewById(R.id.title_pinnacle_supervisor);
 
-        this.loginUserName = ((MainActivity) requireActivity()).getUsername();
+        this.loginUserName = ((MainActivity) requireActivity()).getUserName();
         String userId = ((MainActivity) requireActivity()).getUserId();
         if (userId != null){
             this.loginUserId = Integer.parseInt(userId);

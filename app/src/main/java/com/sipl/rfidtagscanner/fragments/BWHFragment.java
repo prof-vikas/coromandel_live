@@ -45,7 +45,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -94,7 +93,7 @@ public class BWHFragment extends Fragment {
         Button btnSubmit = view.findViewById(R.id.bwh_btn_submit);
 
         this.token = ((MainActivity) requireActivity()).getToken();
-        this.loginUserName = ((MainActivity) requireActivity()).getUsername();
+        this.loginUserName = ((MainActivity) requireActivity()).getUserName();
 
         setLocalTime();
         getBWHDetails();

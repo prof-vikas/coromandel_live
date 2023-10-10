@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         TextView login_username = headerView.findViewById(R.id.login_username);
         TextView txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
         LinearLayout headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
-        login_username.setText(getUsername());
-        String loginUserPlantCode = getUserPlantCode() + " - " + getUserPlantLocationDesc();
+        login_username.setText(getUserName());
+        String loginUserPlantCode = getUserPlantCode();
         txtHeaderPlantCode.setText(loginUserPlantCode);
 
         if (isPlantDetailsRequiredInSideNav) {
@@ -165,9 +165,9 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public String getUsername() {
+    public String getUserName() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("usernameSPK", null);
+        return sp.getString("userNameSPK", null);
     }
 
     public String getToken() {
@@ -177,33 +177,45 @@ public class MainActivity extends AppCompatActivity {
 
     public String getRoleId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("userRolesIdSPK", null);
+        return sp.getString("roleIdSPK", null);
     }
 
-    public String getUserSourceLocationCode() {
+/*    public String getUserSourceLocationCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("UserSourceLocationSPK", null);
-    }
+    }*/
 
     public String getUserPlantCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("userPlantLocationSPK", null);
+        return sp.getString("plantCodeSPK", null);
     }
 
     public String getUserId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("userIDSPK", null);
+        return sp.getString("userIdSPK", null);
     }
 
-    public String getUserPlantLocationDesc() {
+    public boolean isDestinationAssign(){
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        return sp.getBoolean("isDestinationLocationIsAssignSPK", false);
+    }
+
+    public String destinationLocationDtoList(){
+        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
+        return sp.getString("destinationLocationDtoListSPK", null);
+    }
+
+  /*  public String getUserPlantLocationDesc() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("userPlantLocationDescSPK", null);
-    }
+    }*/
 
-    public String getUserSourceLocationDesc() {
+/*    public String getUserSourceLocationDesc() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("UserSourceLocationDescSPK", null);
-    }
+    }*/
+
+
 
     public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);

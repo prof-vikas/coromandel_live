@@ -99,7 +99,7 @@ public class CWHFragment extends Fragment {
         tvOtherRemark = view.findViewById(R.id.cwh_other);
 
         this.token = ((MainActivity) getActivity()).getToken();
-        this.loginUserName = ((MainActivity) getActivity()).getUsername();
+        this.loginUserName = ((MainActivity) getActivity()).getUserName();
 
         displayClock();
         getCWHDetails();
