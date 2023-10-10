@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,10 +28,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.sipl.rfidtagscanner.dto.dtos.GenericData;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivityList";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -54,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             loadMenuBasedOnRoles(getRoleId());
         }
         showSideBarLoginUsername();
-
     }
 
     public void loadFragment(Fragment fragment, int flag) {

@@ -96,7 +96,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         this.loginUserRole = ((MainActivity) getActivity()).getRoleId();
         this.loginUserToken = ((MainActivity) getActivity()).getToken();
         this.adminSelectedNavScreen = getScreenDetails();
-        this.loginUserStorageLocation = ((MainActivity) getActivity()).getUserSourceLocationCode();
+        this.loginUserStorageLocation = /*((MainActivity) getActivity()).getUserSourceLocationCode()*/ "alpha";
 
         btnVerify = view.findViewById(R.id.sf_btn_verify);
         getWareHouseStorage();

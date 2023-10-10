@@ -117,8 +117,8 @@ public class LoadingAdviseFragment extends Fragment {
         if (userId != null){
             this.loginUserId = Integer.parseInt(userId);
         }
-        this.loginUserStorageLocation = ((MainActivity) requireActivity()).getUserSourceLocationCode();
-        this.loginUserStorageLocationDesc = ((MainActivity) requireActivity()).getUserSourceLocationDesc();
+//        this.loginUserStorageLocation = ((MainActivity) requireActivity()).getUserSourceLocationCode();
+//        this.loginUserStorageLocationDesc = ((MainActivity) requireActivity()).getUserSourceLocationDesc();
         this.token = ((MainActivity) requireActivity()).getToken();
 
         edtLoadingSupervisor.setText(loginUserName);
@@ -358,12 +358,12 @@ public class LoadingAdviseFragment extends Fragment {
         final Integer FLAG = 1;
         AuditEntity auditEntity = new AuditEntity(loginUserName, null);
         RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
-        StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
+        StorageLocationDto sourceMasterDto = new StorageLocationDto("0058");
         UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
         StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
         String bothraSupervisor = edtBothraSupervisor.getText().toString();
         String pinnacleSupervisor = edtPinnacleSupervisor.getText().toString();
-        return new LoadingAdviseRequestDto(auditEntity, bothraSupervisor, pinnacleSupervisor, loadingAdviseDto, sourceMasterDto, functionalLocationMasterDto, rfidLepIssueModel, FLAG, true, RSTAT, String.valueOf(LocalDateTime.now()), String.valueOf(LocalDateTime.now()));
+        return new LoadingAdviseRequestDto(auditEntity, bothraSupervisor, pinnacleSupervisor, loadingAdviseDto, sourceMasterDto, functionalLocationMasterDto, rfidLepIssueModel, FLAG, true, RSTAT, String.valueOf(LocalDateTime.now()), null);
     }
 
     private UpdateBothraLoadingAdviseDto updateData() {

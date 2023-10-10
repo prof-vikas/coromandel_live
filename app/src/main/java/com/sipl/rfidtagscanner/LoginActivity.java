@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sipl.rfidtagscanner.dto.dtos.GenericData;
 import com.sipl.rfidtagscanner.dto.dtos.GenericIntegerData;
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
@@ -40,6 +41,7 @@ import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
 import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Call;
@@ -667,6 +669,7 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<GenericeApiResponse>() {
             @Override
             public void onResponse(Call<GenericeApiResponse> call, Response<GenericeApiResponse> response) {
+                Log.e(TAG, "onResponse: response.raw : UserMaster : Mapping : " + response.raw() );
                 hideProgress();
                 if (!response.isSuccessful()) {
                     alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, BTN_OK);
@@ -675,6 +678,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.body() != null && response.body().getStatus() != null) {
                     if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
                         UserPermissionsResponseDto userPermissionsResponseDto = response.body().getResponse();
+                        String strToken = token;
                         String userId = userPermissionsResponseDto.getUserMasterId().toString();
                         String username = userPermissionsResponseDto.getUserId();
                         String userRoleId = userPermissionsResponseDto.getRoleId().toString();
@@ -700,9 +704,8 @@ public class LoginActivity extends AppCompatActivity {
                         String strSourceLocationList = sourceLocationList != null ? gson.toJson(sourceLocationList) : null;
                         String strDestinationList = destinationLocationList != null ? gson.toJson(destinationLocationList) : null;
 
-
                         if (userRoleId.equalsIgnoreCase(ROLES_LAO) || userRoleId.equalsIgnoreCase(ROLES_CWH) || userRoleId.equalsIgnoreCase(ROLES_BWH) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_SUPER)) {
-                            saveLoginUserDetails(userId, username, userRoleId, roleName, plantCode, isBerthAssign, strBerthList, isSourceLocationAssign, strSourceLocationList, isDestinationLocationAssign, strDestinationList);
+                            saveLoginUserDetails(userId, username, userRoleId, roleName, plantCode, isBerthAssign, strBerthList, isSourceLocationAssign, strSourceLocationList, isDestinationLocationAssign, strDestinationList, strToken);
                         } else {
                             alert(LoginActivity.this, DIALOG_ERROR, "User role not allowed", null, BTN_OK);
                         }
@@ -720,7 +723,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void saveLoginUserDetails(String userId, String userName, String roleId, String roleName, String plantCode, Boolean isBerthAssign, String berthDtoList, Boolean sourceLocationIsAssign, String sourceLocationDtoList, Boolean isDestinationLocationIsAssign, String destinationLocationDtoList) {
+    private void saveLoginUserDetails(String userId, String userName, String roleId, String roleName, String plantCode, Boolean isBerthAssign, String berthDtoList, Boolean sourceLocationIsAssign, String sourceLocationDtoList, Boolean isDestinationLocationIsAssign, String destinationLocationDtoList, String token) {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("userIdSPK", userId).apply();
@@ -734,6 +737,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("sourceLocationDtoListSPK", sourceLocationDtoList).apply();
         editor.putBoolean("isDestinationLocationIsAssignSPK", isDestinationLocationIsAssign).apply();
         editor.putString("destinationLocationDtoListSPK", destinationLocationDtoList).apply();
+        editor.putString("tokenSPK", token).apply();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

@@ -316,7 +316,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_rmg_no"
+                    android:id="@+id/ll_spinner_rmg_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -340,6 +340,38 @@
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/reactangle_spinner_select_able_field"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_edt_rmg_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/cwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:visibility="gone"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/update_wh_no"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/cwh_edt_update_rmg_no"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
+                        android:layout_weight="4"
+                        android:textColor="#000"
+                        android:background="@drawable/rectangle_edt_read_only_field"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
                         android:textSize="@dimen/common_edt_text" />

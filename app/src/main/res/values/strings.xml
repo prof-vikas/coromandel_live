@@ -74,7 +74,7 @@
     <string name="destination_location">Destination Location</string>
     <string name="update_rmg_no">Update RMG No</string>
     <string name="previous_wh_no">LEP Location "\n"(Planned)</string>
-    <string name="update_wh_no">Lep Location "\n"(Actual)</string>
+    <string name="update_wh_no">LEP Location "\n"(Actual)</string>
 
 
     <string name="login_app_version">Version 1.0.6</string>

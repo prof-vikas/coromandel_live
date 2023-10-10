@@ -55,7 +55,7 @@ public interface ApiController {
  /*   @GET(GET_LOGIN_USER_DETAIL + "{username}")
     Call<UserValidateResponseDto> getLoginUserDetails(@Header("Authorization") String authToken, @Path("username") String userName);*/
 
-    @GET(GET_LOGIN_USER_DETAIL_V2 + "{userId}" + "/permissions")
+    @GET(GET_LOGIN_USER_DETAIL_V2 + "{userId}")
     Call<GenericeApiResponse> getLoginUserDetailsV2(@Header("Authorization") String authToken, @Path("userId") String userId);
 
     @PUT(LOGOUT)
