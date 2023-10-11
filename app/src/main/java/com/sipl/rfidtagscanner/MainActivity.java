@@ -154,17 +154,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         SharedPreferences checkBox = getSharedPreferences("rememberMe", MODE_PRIVATE);
         checkBox.edit().putString("remember", "false").apply();
-        sp.edit().remove("userIDSPK").apply();
-        sp.edit().remove("usernameSPK").apply();
-        sp.edit().remove("roleSPK").apply();
-        sp.edit().remove("UserSourceLocationDescSPK").apply();
-        sp.edit().remove("userPlantLocationDescSPK").apply();
+        sp.edit().remove("userIdSPK").apply();
+        sp.edit().remove("userNameSPK").apply();
+        sp.edit().remove("roleIdSPK").apply();
+        sp.edit().remove("plantCodeSPK").apply();
         sp.edit().remove("tokenSPK").apply();
         sp.edit().remove("userLoginStatus").apply();
-
-        SharedPreferences sp1 = getSharedPreferences("logoutMark", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp1.edit();
-        editor.putString("isLogout", "logout").apply();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
