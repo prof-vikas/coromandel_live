@@ -52,9 +52,6 @@ public interface ApiController {
     @GET(LOGIN_WITHOUT_JWT + "/{userId}" + "/{password}")
     Call<UserValidateResponseDto> loginWithOutJwt(@Path("userId") String userId, @Path("password") String password);
 
- /*   @GET(GET_LOGIN_USER_DETAIL + "{username}")
-    Call<UserValidateResponseDto> getLoginUserDetails(@Header("Authorization") String authToken, @Path("username") String userName);*/
-
     @GET(GET_LOGIN_USER_DETAIL_V2 + "{userId}")
     Call<GenericeApiResponse> getLoginUserDetailsV2(@Header("Authorization") String authToken, @Path("userId") String userId);
 
@@ -63,11 +60,11 @@ public interface ApiController {
 
 
     //    Loading Advise
-    @GET(GET_COROMANDEL_LOADING_ADVISE_DETAILS + "{tag}")
-    Call<RfidLepApiResponse> getRfidTagDetailCoromandelLA(@Header("Authorization") String authToken, @Path("tag") String tag);
+    @GET(GET_COROMANDEL_LOADING_ADVISE_DETAILS + "{tag}" + "/{userId}")
+    Call<RfidLepApiResponse> getRfidTagDetailCoromandelLA(@Header("Authorization") String authToken, @Path("tag") String tag, @Path("userId") String userId);
 
     @GET(GET_BOTHRA_LOADING_ADVISE_DETAILS)
-    Call<TransactionsApiResponse> getRfidTagDetailBothraLA(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
+    Call<TransactionsApiResponse> getRfidTagDetailBothraLA(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber, @Query("userId") String userId);
 
     @POST(ADD_RFID_LEP_ISSUE)
     Call<LoadingAdvisePostApiResponse> addRfidLepIssue(@Header("Authorization") String authToken, @Body LoadingAdviseRequestDto loadingAdviseRequestDto);
@@ -82,7 +79,7 @@ public interface ApiController {
 
     //Coromandel
     @GET(GET_COROMANDEL_WAREHOUSE_SCREEN_DETAILS)
-    Call<TransactionsApiResponse> getCoromandelWHDetails(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
+    Call<TransactionsApiResponse> getCoromandelWHDetails(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber, @Query("userId") String userId);
 
     @GET(GET_ALL_RMG_NUMBER + "{storageLocation}")
     Call<RmgNumberApiResponse> getAllCoromandelRmgNo(@Header("Authorization") String authToken, @Path("storageLocation") String storageLocation);
@@ -96,7 +93,7 @@ public interface ApiController {
 
     //Bothra
     @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS)
-    Call<TransactionsApiResponse> getBothraWHDetails(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber);
+    Call<TransactionsApiResponse> getBothraWHDetails(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("prevTransactionFlag") String prevTransactionFlag, @Query("tagNumber") String tagNumber, @Query("userId") String userId);
 
     @GET(GET_BOTHRA_WAREHOUSE_SCREEN_DETAILS)
     Call<TransactionsApiResponse> getBothraWHDetailsForExit(@Header("Authorization") String authToken, @Query("currentTransactionFlag") String currentTransactionFlag, @Query("tagNumber") String tagNumber);

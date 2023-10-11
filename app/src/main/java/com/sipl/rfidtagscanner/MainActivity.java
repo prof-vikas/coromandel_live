@@ -97,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.menu_item_scan_rfid) {
                 loadFragment2(new ScanFragment(), 1, null);
-            } else if (id == R.id.menu_item_loading_advise) {
-                loadFragment2(new ScanFragment(), 1, "loadingAdvise");
+            } else if (id == R.id.menu_item_c_loading_advise) {
+                loadFragment2(new ScanFragment(), 1, "cLoadingAdvise");
+            }else if (id == R.id.menu_item_b_loading_advise) {
+                loadFragment2(new ScanFragment(), 1, "bLoadingAdvise");
             } else if (id == R.id.menu_item_bothra_warehouse) {
                 loadFragment2(new ScanFragment(), 1, "bothra");
             } else if (id == R.id.menu_item_coromandel_warehouse) {
@@ -183,11 +185,6 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("roleIdSPK", null);
     }
 
-/*    public String getUserSourceLocationCode() {
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("UserSourceLocationSPK", null);
-    }*/
-
     public String getUserPlantCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("plantCodeSPK", null);
@@ -207,18 +204,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("destinationLocationDtoListSPK", null);
     }
-
-  /*  public String getUserPlantLocationDesc() {
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("userPlantLocationDescSPK", null);
-    }*/
-
-/*    public String getUserSourceLocationDesc() {
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("UserSourceLocationDescSPK", null);
-    }*/
-
-
 
     public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);

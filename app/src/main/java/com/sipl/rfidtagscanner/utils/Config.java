@@ -10,8 +10,9 @@ public class Config {
     //    Roles Constants
     public static final String ROLES_BWH = "9";
     public static final String ROLES_CWH = "18";
-    public static final String ROLES_LAO = "7";
-    public static final String ROLES_ADMIN_SUPER = "";
+    public static final String ROLES_C_LAO = "7";
+    public static final String ROLES_B_LAO = "27";
+    public static final String ROLES_ADMIN_SUPER = "1";
 
     //TODO below 4 is need to use delete 1 in admin plant
     public static final String ROLES_ADMIN_PLANT = "1";

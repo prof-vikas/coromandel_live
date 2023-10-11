@@ -14,7 +14,8 @@ public class ApiConstants {
     // login
     public static final String LOGIN = BASE_URL + "api/v1/auth/login/";
 //    public static final String GET_LOGIN_USER_DETAIL = BASE_URL + "users/details/";
-    public static final String GET_LOGIN_USER_DETAIL_V2 = BASE_URL + "users/v2/user-locations/";
+//    public static final String GET_LOGIN_USER_DETAIL_V2 = BASE_URL + "users/v2/user-locations/";
+    public static final String GET_LOGIN_USER_DETAIL_V2 = BASE_URL + "users/v2/locations/valid-mapped/";
     public static final String LOGOUT = BASE_URL + "users/logoutUser";
 
     public static final String LOGIN_WITHOUT_JWT = BASE_URL + "users/validate";

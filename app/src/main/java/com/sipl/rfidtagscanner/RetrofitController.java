@@ -53,7 +53,7 @@ public class RetrofitController {
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
                     .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0])
                     .protocols(Collections.singletonList(Protocol.HTTP_1_1))
-                    .addInterceptor(new RetryInterceptor(1, 1000))
+//                    .addInterceptor(new RetryInterceptor(1, 1000))
                     .hostnameVerifier((hostname, session) -> true);
 
             // Create a Retrofit instance with the customized OkHttpClient

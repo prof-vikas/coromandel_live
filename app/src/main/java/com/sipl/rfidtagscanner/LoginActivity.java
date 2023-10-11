@@ -6,8 +6,9 @@ import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_FOUND;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_B_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_C_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isJWTEnable;
 
 import android.app.Dialog;
@@ -30,7 +31,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.sipl.rfidtagscanner.dto.dtos.GenericData;
 import com.sipl.rfidtagscanner.dto.dtos.GenericIntegerData;
 import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
@@ -41,7 +41,6 @@ import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
 import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Call;
@@ -531,7 +530,7 @@ public class LoginActivity extends AppCompatActivity {
                         String plantLocationCode = response.body().getUserDto().getPlantMaster().getPlantCode();
                         String plantLocationCodeDesc = response.body().getUserDto().getPlantMaster().getPlantDesc();
                         Log.i(TAG, "onResponse: " + response.raw());
-                        if (userRoleId.equalsIgnoreCase(ROLES_LAO)) {
+                        if (userRoleId.equalsIgnoreCase(ROLES_C_LAO)) {
                             savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
                         } else if (userRoleId.equalsIgnoreCase(ROLES_CWH)) {
                             savingLoginUserToSharedPref(id, userID, userRole, token, sourceLocationCode, sourceLocationCodeDesc, plantLocationCode, plantLocationCodeDesc, userRoleId);
@@ -704,7 +703,7 @@ public class LoginActivity extends AppCompatActivity {
                         String strSourceLocationList = sourceLocationList != null ? gson.toJson(sourceLocationList) : null;
                         String strDestinationList = destinationLocationList != null ? gson.toJson(destinationLocationList) : null;
 
-                        if (userRoleId.equalsIgnoreCase(ROLES_LAO) || userRoleId.equalsIgnoreCase(ROLES_CWH) || userRoleId.equalsIgnoreCase(ROLES_BWH) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_SUPER)) {
+                        if (userRoleId.equalsIgnoreCase(ROLES_C_LAO) || userRoleId.equalsIgnoreCase(ROLES_CWH) || userRoleId.equalsIgnoreCase(ROLES_BWH) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_PLANT) || userRoleId.equalsIgnoreCase(ROLES_ADMIN_SUPER) || userRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
                             saveLoginUserDetails(userId, username, userRoleId, roleName, plantCode, isBerthAssign, strBerthList, isSourceLocationAssign, strSourceLocationList, isDestinationLocationAssign, strDestinationList, strToken);
                         } else {
                             alert(LoginActivity.this, DIALOG_ERROR, "User role not allowed", null, BTN_OK);
