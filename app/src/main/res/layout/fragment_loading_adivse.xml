@@ -65,14 +65,14 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_rfid_tag_no"
+                        android:id="@+id/la_edt_rfid_tag_no"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
                         android:enabled="false"
-                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:paddingStart="@dimen/common_edt_rectangle_pd_left"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
@@ -104,8 +104,7 @@
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
                         android:layout_weight="4"
                         android:background="@drawable/rectangle_edt_read_only_field"
-                        android:inputType="textCapCharacters"
-                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:paddingStart="@dimen/common_edt_rectangle_pd_left"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
@@ -130,7 +129,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_batch_number"
+                        android:id="@+id/la_edt_batch_number"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -162,7 +161,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_truck_no"
+                        android:id="@+id/la_edt_truck_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -175,7 +174,7 @@
                         android:textSize="@dimen/common_edt_text" />
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/title_berth_number"
+                    android:id="@+id/la_ll_berth_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
@@ -193,7 +192,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_berth_number"
+                        android:id="@+id/la_edt_berth_number"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -207,7 +206,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_la_tare_weight"
+                    android:id="@+id/la_ll_tare_weight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
@@ -226,7 +225,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_tare_weight"
+                        android:id="@+id/la_edt_tare_weight"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -258,7 +257,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_driver_name"
+                        android:id="@+id/la_edt_driver_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -290,7 +289,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_driver_mobile_no"
+                        android:id="@+id/la_edt_driver_mobile_no"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -322,7 +321,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_driver_license_no"
+                        android:id="@+id/la_edt_driver_license_no"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -355,7 +354,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_vessel_name"
+                        android:id="@+id/la_edt_vessel_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -387,7 +386,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/edt_la_commodity"
+                        android:id="@+id/la_edt_commodity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -457,7 +456,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/ll_edt_destination_location"
+                        android:id="@+id/la_edt_destination_location"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -490,7 +489,7 @@
 
 
                     <EditText
-                        android:id="@+id/edt_la_loading_supervisor"
+                        android:id="@+id/la_edt_loading_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -504,7 +503,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_pinnacle_supervisor"
+                    android:id="@+id/la_ll_pinnacle_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
@@ -513,7 +512,7 @@
                     android:weightSum="7">
 
                     <TextView
-                        android:id="@+id/tv_la_pinnacle_supervisor"
+                        android:id="@+id/la_txt_pinnacle_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
@@ -524,7 +523,7 @@
 
 
                     <EditText
-                        android:id="@+id/ll_edt_pinnacle_supervisor"
+                        android:id="@+id/la_edt_pinnacle_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -540,7 +539,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_bothra_supervisor"
+                    android:id="@+id/la_ll_bothra_supervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
@@ -549,7 +548,7 @@
                     android:weightSum="7">
 
                     <TextView
-                        android:id="@+id/tv_la_bothra_supervisor"
+                        android:id="@+id/la_txt_bothra_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
@@ -559,7 +558,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/ll_edt_bothra_supervisor"
+                        android:id="@+id/la_edt_bothra_supervisor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -575,7 +574,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_date_time"
+                    android:id="@+id/la_ll_loading_in_clock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
@@ -593,7 +592,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <TextClock
-                        android:id="@+id/la_tv_clock"
+                        android:id="@+id/la_clock_in_loading_time"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -609,7 +608,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_ll_entry_time"
+                    android:id="@+id/la_ll_static_loading_in_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
@@ -628,7 +627,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <EditText
-                        android:id="@+id/ll_edt_entryTime"
+                        android:id="@+id/la_edt_loading_in_time"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -644,7 +643,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/title_exit_date_time"
+                    android:id="@+id/la_ll_loading_out_clock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/la_ly_margin_bottom"
@@ -663,7 +662,7 @@
                         android:textSize="@dimen/common_tv_text" />
 
                     <TextClock
-                        android:id="@+id/la_exit_tv_clock"
+                        android:id="@+id/la_clock_out_loading_time"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/la_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
@@ -692,7 +691,7 @@
                         android:layout_weight="0.5" />
 
                     <Button
-                        android:id="@+id/btn_loading_advise_submit"
+                        android:id="@+id/la_btn_submit"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="2"
@@ -707,7 +706,7 @@
                         android:layout_weight="1" />
 
                     <Button
-                        android:id="@+id/btn_loading_advise_reset"
+                        android:id="@+id/la_btn_cancel"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="2"

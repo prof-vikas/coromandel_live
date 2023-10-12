@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 public class Concatenator {
 
-    public void multiStringConcatenate(TextView textview, String one, String two) {
+    public static void multiStringConcatenate(TextView textview, String one, String two) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString str1 = new SpannableString(one);
         str1.setSpan(new ForegroundColorSpan(Color.BLACK), 0, str1.length(), 0);

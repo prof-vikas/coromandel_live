@@ -70,7 +70,6 @@ public class CWHFragment extends Fragment {
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvOtherRemark;
 
     private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo, edtBatchNumber;
-    private CustomToast customToast = new CustomToast();
     private ProgressBar progressBar;
     private Spinner spinnerUpdateRmgNo, spinnerRemark;
     private Button btnSubmit, btnReset;
@@ -160,37 +159,9 @@ public class CWHFragment extends Fragment {
     }
 
     private boolean validateLoadingAdviseForm() {
-        if (edtRfidTag.length() == 0) {
-            edtRfidTag.setError("This field is required");
-            return false;
-        }
-        if (edtLepNo.length() == 0) {
-            edtLepNo.setError("This field is required");
-            return false;
-        }
 
-        if (edtTruckNumber.length() == 0) {
-            edtTruckNumber.setError("This field is required");
-            return false;
-        }
-        if (edtDriverName.length() == 0) {
-            edtDriverName.setError("This field is required");
-            return false;
-        }
-        if (edtCommodity.length() == 0) {
-            edtCommodity.setError("This field is required");
-            return false;
-        }
-        if (edtGrossWeight.length() == 0) {
-            edtGrossWeight.setError("This field is required");
-            return false;
-        }
-        if (edtPreviousRmgNo.length() == 0) {
-            edtPreviousRmgNo.setError("This field is required");
-            return false;
-        }
         if (arrayList.size() > 1) {
-            if (!spinnerUpdateRmgNo.getSelectedItem().toString().equals("Update RMG No") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
+            if (!spinnerUpdateRmgNo.getSelectedItem().toString().equals("Update LEP Location") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
                 Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -310,7 +281,7 @@ public class CWHFragment extends Fragment {
     private void getRemarks() {
         progressBar.setVisibility(View.VISIBLE);
         Call<RemarkApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
-                getAllCoromandelRemark("Bearer " + token);
+                getRemarks("Bearer " + token);
 
         call.enqueue(new Callback<RemarkApiResponse>() {
             @Override
@@ -415,7 +386,7 @@ public class CWHFragment extends Fragment {
 
     private void updateRmgNo(UpdateRmgRequestDto updateRmgRequestDto) {
         Log.i(TAG, new Gson().toJson(updateRmgRequestDto).toString());
-        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().updateRmgNo("Bearer " + token, updateRmgRequestDto);
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().updateCilWarehouse("Bearer " + token, updateRmgRequestDto);
         progressBar.setVisibility(View.VISIBLE);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override

@@ -132,41 +132,8 @@ public class BWHFragment extends Fragment {
     }
 
     private boolean validateLoadingData() {
-        if (edtRfidTag.length() == 0) {
-            edtRfidTag.setError("This field is required");
-            return false;
-        }
-        if (edtLepNo.length() == 0) {
-            edtLepNo.setError("This field is required");
-            return false;
-        }
-        if (edtTruckNumber.length() == 0) {
-            edtTruckNumber.setError("This field is required");
-            return false;
-        }
-        if (edtDriverName.length() == 0) {
-            edtDriverName.setError("This field is required");
-            return false;
-        }
-        if (edtCommodity.length() == 0) {
-            edtCommodity.setError("This field is required");
-            return false;
-        }
-        if (edtGrossWeight.length() == 0) {
-            edtGrossWeight.setError("This field is required");
-            return false;
-        }
-        if (edtPreviousWareHouseNo.length() == 0) {
-            edtPreviousWareHouseNo.setError("This field is required");
-            return false;
-        }
-
-        if (edtBatchNumber.length() == 0) {
-            edtBatchNumber.setError("This field is required");
-            return false;
-        }
         if (arrayList.size() > 1) {
-            if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Select Warehouse No") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
+            if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Update LEP Location") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
                 Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -401,7 +368,7 @@ public class BWHFragment extends Fragment {
     private void getAllRemarks() {
         showProgress();
         Call<RemarkApiResponse> call = RetrofitController.getInstances(requireContext()).getLoadingAdviseApi().
-                getAllCoromandelRemark("Bearer " + token);
+                getRemarks("Bearer " + token);
 
         call.enqueue(new Callback<RemarkApiResponse>() {
             @Override
@@ -529,7 +496,7 @@ public class BWHFragment extends Fragment {
     private void updateWareHouseNo(UpdateWareHouseNoRequestDto updateWareHouseNoRequestDto) {
         Log.i(TAG, new Gson().toJson(updateWareHouseNoRequestDto));
         showProgress();
-        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateWareHouse("Bearer " + token, updateWareHouseNoRequestDto);
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateBothraWarehouse("Bearer " + token, updateWareHouseNoRequestDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {

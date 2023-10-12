@@ -30,6 +30,10 @@ public class Config {
     //Response status
     public static final String RESPONSE_OK = "OK";
     public static final String RESPONSE_FOUND = "FOUND";
+    public static final String RESPONSE_NOT_FOUND = "NOT_FOUND";
+    public static final String RESPONSE_CREATED = "CREATED";
+    public static final String RESPONSE_FORBIDDEN = "FORBIDDEN";
+    public static final String RESPONSE_ALREADY_REPORTED = "ALREADY_REPORTED";
 
 
     //Error message

@@ -81,4 +81,8 @@
     <string name="unloading_in_time">Unloading in time</string>
     <string name="unloading_out_time">Unloading out time</string>
     <string name="rfid_tag">RFID Tag</string>
+    <string name="bottom_wave">Bottom wave</string>
+    <string name="verify">Verify</string>
+    <string name="scan_rfid_tag">Scan RFID Tag</string>
+    <string name="top_wave">Top wave</string>
 </resources>

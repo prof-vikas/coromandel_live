@@ -176,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getUserDetailsWithAllPermission(String token) {
         showProgress();
-        Call<GenericeApiResponse> call = RetrofitController.getInstances(this).getLoadingAdviseApi().getLoginUserDetailsV2("Bearer " + token, edtUsername.getText().toString().trim());
+        Call<GenericeApiResponse> call = RetrofitController.getInstances(this).getLoadingAdviseApi().getLoginUserDetail("Bearer " + token, edtUsername.getText().toString().trim());
         call.enqueue(new Callback<GenericeApiResponse>() {
             @Override
             public void onResponse(Call<GenericeApiResponse> call, Response<GenericeApiResponse> response) {
