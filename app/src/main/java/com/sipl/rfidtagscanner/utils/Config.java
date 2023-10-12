@@ -32,6 +32,11 @@ public class Config {
     public static final String RESPONSE_FOUND = "FOUND";
 
 
+    //Error message
+    public static final String NULL_VALUE_RESPONSE = "Null value received while retrieving service response";
+
+
+
     public static final String EMPTY_RMG_NUMBER = "No RMG Number available";
     public static final String EMPTY_REMARKS = "No remarks available";
     public static final String EMPTY_WAREHOUSE_NUMBER = "No WareHouse available";

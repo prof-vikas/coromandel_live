@@ -190,11 +190,6 @@ public class MainActivity extends AppCompatActivity {
         return sp.getString("userIdSPK", null);
     }
 
-    public boolean isDestinationAssign(){
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getBoolean("isDestinationLocationIsAssignSPK", false);
-    }
-
     public String destinationLocationDtoList(){
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("destinationLocationDtoListSPK", null);

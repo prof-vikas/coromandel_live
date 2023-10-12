@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/la_root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/loading_advise_bg"
     tools:context=".fragments.LoadingAdviseFragment">
 
-
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:isScrollContainer="false">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -458,18 +456,6 @@
                         android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
-
-                   <!-- <Spinner
-                        android:id="@+id/ll_spinner_destination_location"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/la_edt_rectangle_height"
-                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
-                        android:layout_weight="4"
-                        android:background="@drawable/reactangle_spinner_select_able_field"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:textSize="@dimen/common_edt_text" />-->
-
                     <EditText
                         android:id="@+id/ll_edt_destination_location"
                         android:layout_width="0dp"
@@ -572,7 +558,6 @@
                         android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
-
                     <EditText
                         android:id="@+id/ll_edt_bothra_supervisor"
                         android:layout_width="0dp"
@@ -607,8 +592,6 @@
                         android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
-
-
                     <TextClock
                         android:id="@+id/la_tv_clock"
                         android:layout_width="0dp"
@@ -623,7 +606,6 @@
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
-                    <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -659,8 +641,6 @@
                         android:textColor="@color/wh_edt_txt"
                         android:spinnerMode="dropdown"
                         android:textSize="@dimen/common_edt_text" />
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -682,8 +662,6 @@
                         android:textColor="@color/wh_tv_txt"
                         android:textSize="@dimen/common_tv_text" />
 
-
-
                     <TextClock
                         android:id="@+id/la_exit_tv_clock"
                         android:layout_width="0dp"
@@ -698,11 +676,8 @@
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/wh_edt_txt"
                         android:textSize="@dimen/common_edt_text" />
-                    <!--            android:format24hours="hh:mm:ss a  EEE MMM d"-->
                 </LinearLayout>
 
-
-                <!--Buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -747,7 +722,6 @@
                         android:layout_weight="0.5" />
                 </LinearLayout>
 
-
             </LinearLayout>
 
             <include layout="@layout/footer"
@@ -761,12 +735,24 @@
     <ProgressBar
         android:id="@+id/la_progressBar"
         style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
         android:indeterminateDrawable="@drawable/progress_icon"
         android:visibility="gone"
-        android:layout_centerInParent="true" />
+        android:elevation="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</RelativeLayout>
+    <View
+        android:id="@+id/la_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_dusk_overlay"
+        android:visibility="gone" />
+
+</FrameLayout>
 
 

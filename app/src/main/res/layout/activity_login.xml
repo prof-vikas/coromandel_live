@@ -207,8 +207,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-      />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:id="@+id/view_pre_gate"
@@ -216,7 +215,5 @@
         android:layout_height="match_parent"
         android:background="@color/transparent_dusk_overlay"
         android:visibility="gone" />
-
-
 
 </FrameLayout>

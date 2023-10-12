@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -52,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "TestingArea2";
     private ProgressBar progressBar;
     private EditText edtUsername, edtPassword;
-    private FrameLayout rootLayout;
     private View colorOverlay;
     private Button btnLogin;
 
@@ -64,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
         edtUsername = findViewById(R.id.edt_username);
         edtPassword = findViewById(R.id.edt_password);
-        rootLayout = findViewById(R.id.ls_root_layout);
         colorOverlay = findViewById(R.id.view_pre_gate);
         progressBar = findViewById(R.id.login_progressBar);
         ImageView imageView = findViewById(R.id.img_view_show_hide_password);
@@ -135,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
         colorOverlay.setVisibility(View.VISIBLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-//        rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.dusk_scanner));
     }
 
     private void hideProgress() {
@@ -144,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         colorOverlay.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//        rootLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.normal_scanner));
     }
 
     private void processLogin() {

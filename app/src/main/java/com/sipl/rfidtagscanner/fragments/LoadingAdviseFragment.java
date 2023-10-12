@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
+import static com.sipl.rfidtagscanner.utils.Config.NULL_VALUE_RESPONSE;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_FOUND;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_B_LAO;
 
@@ -13,13 +14,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
@@ -45,9 +49,9 @@ import retrofit2.Response;
 public class LoadingAdviseFragment extends Fragment {
     private static final String TAG = "TracingError";
     private final Concatenator concatenator = new Concatenator();
-
+    Button btnCancel;
+    Button btnSubmit;
     private TextClock tvClock, exitClock;
-    private ProgressBar progressBar;
     private EditText edtDestinationLocation, edtBothraSupervisor, edtPinnacleSupervisor;
     private TextView tvPinnacleSupervisor, tvBothraSupervisor;
     private EditText edtRfidTagNo, edtBerthNumber, edtLepNo, edtBatchNumber, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtLoadingSupervisor, edtSourceLocation, edtTareWeight, edtConstEntryTime;
@@ -55,6 +59,9 @@ public class LoadingAdviseFragment extends Fragment {
     private int loginUserId;
     private Integer selectedLepNumberId;
     private LinearLayout layoutBothraSupervisor, layoutPinnacleSupervisor, edtBerthNumberLayout, constaintEntryTimeLayout, textclockLayoutexit, llTareWeight, lltvClockLayout;
+    private ProgressBar progressBar;
+    private FrameLayout rootLayout;
+    private View colorOverlay;
 
     public LoadingAdviseFragment() {
     }
@@ -63,6 +70,8 @@ public class LoadingAdviseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_loading_adivse, container, false);
+        rootLayout = view.findViewById(R.id.la_root_layout);
+        colorOverlay = view.findViewById(R.id.la_view);
 
         edtPinnacleSupervisor = view.findViewById(R.id.ll_edt_pinnacle_supervisor);
         edtBothraSupervisor = view.findViewById(R.id.ll_edt_bothra_supervisor);
@@ -76,8 +85,8 @@ public class LoadingAdviseFragment extends Fragment {
         constaintEntryTimeLayout = view.findViewById(R.id.title_ll_entry_time);
         edtConstEntryTime = view.findViewById(R.id.ll_edt_entryTime);
 
-        Button btnSubmit = view.findViewById(R.id.btn_loading_advise_submit);
-        Button btnCancel = view.findViewById(R.id.btn_loading_advise_reset);
+        btnSubmit = view.findViewById(R.id.btn_loading_advise_submit);
+        btnCancel = view.findViewById(R.id.btn_loading_advise_reset);
 
         edtSourceLocation = view.findViewById(R.id.la_edt_source_location);
         edtRfidTagNo = view.findViewById(R.id.edt_la_rfid_tag_no);
@@ -230,7 +239,6 @@ public class LoadingAdviseFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
                 }
-                Log.i(TAG, "onResponse: add loading advise : " + response.body().getStatus());
                 if (response.body().getStatus().equalsIgnoreCase("CREATED")) {
                     progressBar.setVisibility(View.GONE);
                     ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK", true);
@@ -249,8 +257,8 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
 
-    private void UpdateCoromadelLoadingAdviseDetails(LoadingAdviseRequestDto
-                                                             loadingAdviseRequestDto) {
+    private void updateCoromandelLa(LoadingAdviseRequestDto
+                                            loadingAdviseRequestDto) {
         progressBar.setVisibility(View.VISIBLE);
         Log.i(TAG, "UpdateCoromadelLoadingAdviseDetails : Request Dto : <<------- " + new Gson().toJson(loadingAdviseRequestDto));
         Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateCoromandelLoadingAdvise("Bearer " + token, loadingAdviseRequestDto);
@@ -288,23 +296,25 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
 
-    private void UpdateBothraLoadingAdviseDetails(UpdateBothraLoadingAdviseDto
-                                                          updateBothraLoadingAdviseDto) {
-        progressBar.setVisibility(View.VISIBLE);
-        Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(updateBothraLoadingAdviseDto));
+    private void updateBothraLa(UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto) {
+        showProgress();
+        Log.i(TAG, "updateBothraLa :" + new Gson().toJson(updateBothraLoadingAdviseDto));
         Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
         call.enqueue(new Callback<TransactionsApiResponse>() {
             @Override
             public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-                    progressBar.setVisibility(View.GONE);
+                hideProgress();
                 if (!response.isSuccessful()) {
-                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.errorBody().toString(), null, BTN_OK, false);
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "Error occurs while updating transaction", null, BTN_OK, false);
                 }
-
-                if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
-                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_SUCCESS, response.body().getMessage(), null, BTN_OK, true);
-                } else {
-                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
+                if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null) {
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_SUCCESS, response.body().getMessage(), null, BTN_OK, true);
+                    } else {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
+                    }
+                }else {
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, NULL_VALUE_RESPONSE, null, BTN_OK, false);
                 }
             }
 
@@ -357,11 +367,10 @@ public class LoadingAdviseFragment extends Fragment {
     }
 
     private void chooseMethodToCall() {
-//        if (!arrBothraStrLocation.contains(strGrLocationCode)) {
         if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
-            UpdateCoromadelLoadingAdviseDetails(setData());
+            updateCoromandelLa(setData());
         } else {
-            UpdateBothraLoadingAdviseDetails(updateData());
+            updateBothraLa(updateData());
         }
     }
 
@@ -377,9 +386,7 @@ public class LoadingAdviseFragment extends Fragment {
         String driverMobileNo = sp.getString("driverMobileNoSPK", null);
         String driverLicenseNo = sp.getString("driverLicenseNoSPK", null);
         String truckNo = sp.getString("truckNoSPK", null);
-        String sapGrNo = sp.getString("sapGrNoSPK", null);
         String vesselName = sp.getString("vesselNameSPK", null);
-        String truckCapacity = sp.getString("truckCapacitySPK", null);
         String commodity = sp.getString("commoditySPK", null);
         String strDestinationCode = sp.getString("strDestinationCodeSPK", null);
         String strDestinationDesc = sp.getString("strDestinationDescSPK", null);
@@ -408,15 +415,13 @@ public class LoadingAdviseFragment extends Fragment {
             edtBothraSupervisor.setEnabled(false);
             edtBothraSupervisor.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
             textclockLayoutexit.setVisibility(View.VISIBLE);
-
-
         }
         String destinationLocation = strDestinationCode + " - " + strDestinationDesc;
         this.selectedDestinationCode = strDestinationCode;
-        saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, strBerthNumber, strBatchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, strBerthNumber, strBatchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String destinationLocation, String berthNumber, String batchNumber, String grSrcLoc, String grSrcLocDesc, String bTareWeight) {
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String vesselName, String commodity, String destinationLocation, String berthNumber, String batchNumber, String grSrcLoc, String grSrcLocDesc, String bTareWeight) {
         edtRfidTagNo.setText(rfidTag.toUpperCase());
         edtLepNo.setText(lepNo.toUpperCase());
         edtBatchNumber.setText(batchNumber.toUpperCase());
@@ -436,6 +441,22 @@ public class LoadingAdviseFragment extends Fragment {
         if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
             edtBerthNumber.setText(berthNumber);
         }
+    }
 
+    private void showProgress() {
+        btnSubmit.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+        colorOverlay.setVisibility(View.VISIBLE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        rootLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dusk_scanner));
+    }
+
+    private void hideProgress() {
+        btnSubmit.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
+        colorOverlay.setVisibility(View.GONE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        rootLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.normal_scanner));
     }
 }
