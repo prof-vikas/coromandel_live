@@ -245,6 +245,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                         }
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_NOT_FOUND)) {
                         getCilLoadingOutTagDetails();
+                    } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_ALREADY_REPORTED)) {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else {
                         ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
                     }
@@ -634,7 +636,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                         } catch (Exception e) {
                             ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Exception occurs while fetching CIL unloading details", "Exception : " + e.getMessage(), BTN_OK, false);
                         }
-                    }else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
+                    } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
