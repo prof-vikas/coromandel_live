@@ -127,6 +127,7 @@
     <color name="transparent_dusk_overlay">#80E4DBDB</color>
     <color name="dusk_scanner">#ACB3B6</color>
     <color name="normal_scanner">#00434B4E</color>
+    <color name="icon_web_url">#FF9800</color>
 
 
 </resources>

@@ -400,8 +400,8 @@
                         android:layout_width="0dp"
                         android:layout_height="@dimen/cwh_edt_rectangle_height"
                         android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
-                        android:layout_weight="4"
                         android:background="@drawable/reactangle_spinner_select_able_field"
+                        android:layout_weight="4"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
                         android:textSize="@dimen/common_edt_text" />

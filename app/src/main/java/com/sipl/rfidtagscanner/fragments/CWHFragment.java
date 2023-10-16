@@ -175,6 +175,7 @@ public class CWHFragment extends Fragment {
 
     private void getUserMappedStorage() {
         String storageLocation = ((MainActivity) requireActivity()).destinationLocationDtoList();
+        spinnerRemark.setEnabled(false);
         if (storageLocation != null) {
 
             HashMap<String, String> hashMapForDestinationLocation = new HashMap<>();
@@ -252,7 +253,7 @@ public class CWHFragment extends Fragment {
                             selectedRmgNo = hashMapForDestinationLocation.get(selectedRmgCode);
                         }
 
-                        if (!selectedRmgCode.equalsIgnoreCase("Update RMG No")) {
+                        if (!selectedRmgCode.equalsIgnoreCase("Update LEP Location")) {
                             spinnerRemark.setEnabled(true);
                         } else {
                             spinnerRemark.setEnabled(false);
@@ -311,6 +312,20 @@ public class CWHFragment extends Fragment {
                         arrRemarks.add("Select Remarks");
 
                         remarksAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_spinner_dropdown_item, arrRemarks) {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                                if (convertView == null) {
+                                    convertView = getLayoutInflater().inflate(R.layout.custom_spinner_dropdown_item, parent, false);
+                                }
+
+                              /*  TextView text = convertView.findViewById(R.id.spinner_item_text);
+                                text.setText(getItem(position));*/
+                                TextView text = convertView.findViewById(R.id.spinner_selected_item_text);
+                                text.setText(getItem(position));
+
+                                return convertView;
+                            }
+
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
 

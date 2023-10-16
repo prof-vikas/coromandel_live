@@ -8,6 +8,7 @@ import static com.sipl.rfidtagscanner.utils.Config.NULL_VALUE_RESPONSE;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_CREATED;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_FOUND;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_NOT_FOUND;
+import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_OK;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_B_LAO;
 
 import android.content.SharedPreferences;
@@ -336,7 +337,7 @@ public class LoadingAdviseFragment extends Fragment {
                     ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "Error occurs while updating transaction", null, BTN_OK, false);
                 }
                 if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null) {
-                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_OK)) {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_SUCCESS, response.body().getMessage(), null, BTN_OK, true);
                     } else {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);

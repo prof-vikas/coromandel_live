@@ -4,14 +4,14 @@ public class ApiConstants {
     /*
      * Dev environment
      * */
-    public static final String BASE_URL = "http://10.66.66.5:8081/coromandel-rest-repo/";
+//    public static final String BASE_URL = "http://10.66.66.5:8081/coromandel-rest-repo/";
 //    public static final String BASE_URL = "http://10.66.66.91:8080/coromandel-rest-repo/";
 
 
     /*
      * client UAT environment
      * */
-//    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
+    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
 
 
     /*

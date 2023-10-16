@@ -8,6 +8,7 @@
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" android:centerColor="@color/fragment_edt_text_center" android:centerY="0.2" android:endColor="@color/fragment_edt_text_end" android:startColor="@color/fragment_spinner_text_start" />
                     <stroke android:width="2dp" android:color="@color/rectangle_edt_stroke" />
+                    <size android:width="200dp" />
                     <corners android:radius="3dp" />
                 </shape>
             </item>

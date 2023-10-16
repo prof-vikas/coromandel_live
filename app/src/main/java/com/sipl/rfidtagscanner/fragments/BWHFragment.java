@@ -113,7 +113,6 @@ public class BWHFragment extends Fragment {
         setLocalTime();
         getBWHDetails();
         updateUIBaseOnVehicleInTime();
-//        getBssLocation();
         getUserMappedStorage();
         getAllRemarks();
 
@@ -144,6 +143,7 @@ public class BWHFragment extends Fragment {
 
     private void getUserMappedStorage() {
         String storageLocation = ((MainActivity) requireActivity()).destinationLocationDtoList();
+        spinnerRemark.setEnabled(false);
         if (storageLocation != null) {
 
             HashMap<String, String> hashMapForDestinationLocation = new HashMap<>();
@@ -221,7 +221,7 @@ public class BWHFragment extends Fragment {
                             selectedRmgNo = hashMapForDestinationLocation.get(selectedRmgCode);
                         }
 
-                        if (!selectedRmgCode.equalsIgnoreCase("Update RMG No")) {
+                        if (!selectedRmgCode.equalsIgnoreCase("Update LEP Location")) {
                             spinnerRemark.setEnabled(true);
                         } else {
                             spinnerRemark.setEnabled(false);
@@ -473,7 +473,7 @@ public class BWHFragment extends Fragment {
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(defaultWareHouse);
         if (selectedRmgNo != null) {
             if (arrayList.size() > 1) {
-                if (!selectedRmgNo.equalsIgnoreCase("Select Warehouse No")) {
+                if (!selectedRmgNo.equalsIgnoreCase("Update LEP Location")) {
                     selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
                 }
                 if (!selectedRemarks.equalsIgnoreCase("Select Remarks")) {
