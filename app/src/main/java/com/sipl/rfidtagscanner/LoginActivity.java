@@ -3,6 +3,8 @@ package com.sipl.rfidtagscanner;
 import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_WARNING;
+import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_FORBIDDEN;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_FOUND;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_OK;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
@@ -186,8 +188,8 @@ public class LoginActivity extends AppCompatActivity {
                     alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, BTN_OK);
                 }
 
-                if (response.body() != null && response.body().getStatus() != null && response.body().getResponse() != null) {
-                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
+                if (response.body() != null && response.body().getStatus() != null) {
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND) && response.body().getResponse() != null) {
                         UserPermissionsResponseDto userPermissionsResponseDto = response.body().getResponse();
                         String userId = userPermissionsResponseDto.getUserMasterId().toString();
                         String username = userPermissionsResponseDto.getUserId();
@@ -219,6 +221,8 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             alert(LoginActivity.this, DIALOG_ERROR, "User role not allowed", null, BTN_OK);
                         }
+                    } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
+                        alert(LoginActivity.this, DIALOG_WARNING, response.body().getMessage(), null, BTN_OK);
                     } else {
                         alert(LoginActivity.this, DIALOG_ERROR, response.body().getMessage(), null, BTN_OK);
                     }
@@ -262,12 +266,20 @@ public class LoginActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         TextView error = dialog.findViewById(R.id.dialog_type_error);
         TextView success = dialog.findViewById(R.id.dialog_type_success);
+        TextView warning = dialog.findViewById(R.id.dialog_type_warning);
+
         if (dialogType.equalsIgnoreCase(DIALOG_ERROR)) {
             error.setVisibility(View.VISIBLE);
             success.setVisibility(View.GONE);
+            warning.setVisibility(View.GONE);
         } else if (dialogType.equalsIgnoreCase(DIALOG_SUCCESS)) {
             error.setVisibility(View.GONE);
             success.setVisibility(View.VISIBLE);
+            warning.setVisibility(View.GONE);
+        } else if (dialogType.equalsIgnoreCase(DIALOG_WARNING)) {
+            error.setVisibility(View.GONE);
+            success.setVisibility(View.GONE);
+            warning.setVisibility(View.VISIBLE);
         }
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
         if (dialogMessage == null) {
