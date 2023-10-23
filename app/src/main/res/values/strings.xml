@@ -78,7 +78,7 @@
 
 
     <string name="environment">UAT</string>
-    <string name="login_app_version">Version 1.1.0</string>
+    <string name="login_app_version">Version 1.1.1</string>
     <string name="unloading_in_time">Unloading in time</string>
     <string name="unloading_out_time">Unloading out time</string>
     <string name="rfid_tag">RFID Tag</string>
@@ -86,4 +86,6 @@
     <string name="verify">Verify</string>
     <string name="scan_rfid_tag">Scan RFID Tag</string>
     <string name="top_wave">Top wave</string>
+    <string name="warning">Warning</string>
+    <string name="ok">OK</string>
 </resources>

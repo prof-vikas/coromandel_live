@@ -36,7 +36,6 @@ import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.response.RemarkApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
-import com.sipl.rfidtagscanner.utils.CustomToast;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
@@ -63,8 +62,8 @@ public class CWHFragment extends Fragment {
     private EditText edtLepLocationActual;
 
 
-
     private String inUnloadingTime = null;
+    private String userType;
     private EditText edtEntryTime, edtOtherRemarks;
     private TextClock tvClock, tvEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvOtherRemark;
@@ -143,6 +142,7 @@ public class CWHFragment extends Fragment {
         String strInUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
         String inUnloadingTime = null;
         if (strInUnloadingTime != null) {
+            spinnerRemark.setEnabled(false);
             LocalDateTime aLDT = LocalDateTime.parse(strInUnloadingTime);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             inUnloadingTime = aLDT.format(formatter);
@@ -159,7 +159,12 @@ public class CWHFragment extends Fragment {
     }
 
     private boolean validateLoadingAdviseForm() {
-
+        if (!userType.equalsIgnoreCase("authorized")) {
+            if (spinnerUpdateRmgNo.getSelectedItem().toString().equalsIgnoreCase("Update LEP Location")) {
+                Toast.makeText(getActivity(), "Please update warehouse ... !", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
         if (arrayList.size() > 1) {
             if (!spinnerUpdateRmgNo.getSelectedItem().toString().equals("Update LEP Location") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
                 Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
@@ -312,19 +317,19 @@ public class CWHFragment extends Fragment {
                         arrRemarks.add("Select Remarks");
 
                         remarksAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_spinner_dropdown_item, arrRemarks) {
-                            @Override
+                        /*    @Override
                             public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                                if (convertView == null) {
+                               *//* if (convertView == null) {
                                     convertView = getLayoutInflater().inflate(R.layout.custom_spinner_dropdown_item, parent, false);
-                                }
+                                }*//*
 
-                              /*  TextView text = convertView.findViewById(R.id.spinner_item_text);
-                                text.setText(getItem(position));*/
+                             *//*  TextView text = convertView.findViewById(R.id.spinner_item_text);
+                                text.setText(getItem(position));*//*
                                 TextView text = convertView.findViewById(R.id.spinner_selected_item_text);
                                 text.setText(getItem(position));
 
                                 return convertView;
-                            }
+                            }*/
 
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
@@ -485,6 +490,8 @@ public class CWHFragment extends Fragment {
         String wareHouseDesc = sp.getString("wareHouseCodeDescSPK", null);
         String remarks = sp.getString("remarksSPK", null);
         String batchNumber = sp.getString("batchNumberSPK", null);
+        String userType = sp.getString("userTypeSPK", null);
+        this.userType = userType;
         String wareHouse = wareHouseCode + " - " + wareHouseDesc;
         String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
         this.defaultWareHouse = wareHouseCode;
@@ -494,7 +501,7 @@ public class CWHFragment extends Fragment {
         this.previousRMGCode = previousRmgNo;
         this.inUnloadingTime = inUnloadingTime;
 
-        if (inUnloadingTime != null){
+        if (inUnloadingTime != null) {
             spinnerUpdateRmgNo.setEnabled(false);
             spinnerRemark.setEnabled(false);
         }

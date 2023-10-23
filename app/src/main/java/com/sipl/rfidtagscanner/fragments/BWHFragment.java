@@ -63,6 +63,7 @@ public class BWHFragment extends Fragment {
 
     private LinearLayout llEdtLepLocationActual, llSpinnerLepLocationActual, llSpinnerRemarks;
     private EditText edtLepLocationActual;
+    private String userType;
 
     private TextClock tvExitTime, tvEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
@@ -131,6 +132,12 @@ public class BWHFragment extends Fragment {
     }
 
     private boolean validateLoadingData() {
+        if (!userType.equalsIgnoreCase("authorized")) {
+            if (spinnerWarehouseNo.getSelectedItem().toString().equalsIgnoreCase("Update LEP Location")) {
+                Toast.makeText(getActivity(), "Please update warehouse ... !", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
         if (arrayList.size() > 1) {
             if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Update LEP Location") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
                 Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
@@ -540,6 +547,7 @@ public class BWHFragment extends Fragment {
         String inUnloadingTime = sp.getString("inUnloadingTimeSPK", null);
         String strInUnloadingTime = null;
         if (inUnloadingTime != null) {
+            spinnerRemark.setEnabled(false);
             LocalDateTime localDateTime = LocalDateTime.parse(inUnloadingTime);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             strInUnloadingTime = localDateTime.format(formatter);
@@ -588,6 +596,8 @@ public class BWHFragment extends Fragment {
         String wareHouseDesc = sp.getString("wareHouseCodeDescSPK", null);
         String remarks = sp.getString("remarksSPK", null);
         String batchNumber = sp.getString("batchNumberSPK", null);
+        String userType = sp.getString("userTypeSPK", null);
+        this.userType = userType;
         String wareHouse = wareHouseCode + " - " + wareHouseDesc;
         String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
         this.defaultWareHouse = wareHouseCode;

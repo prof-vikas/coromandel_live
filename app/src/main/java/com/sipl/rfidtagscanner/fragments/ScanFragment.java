@@ -16,6 +16,8 @@ import static com.sipl.rfidtagscanner.utils.Config.ROLES_B_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_C_LAO;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,10 +40,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sipl.rfidtagscanner.MainActivity;
 import com.sipl.rfidtagscanner.R;
 import com.sipl.rfidtagscanner.RetrofitController;
 import com.sipl.rfidtagscanner.RfidHandler;
+import com.sipl.rfidtagscanner.dto.dtos.GenericData;
 import com.sipl.rfidtagscanner.dto.dtos.RfidLepIssueDto;
 import com.sipl.rfidtagscanner.dto.dtos.TransactionsDto;
 import com.sipl.rfidtagscanner.dto.response.RfidLepApiResponse;
@@ -52,10 +57,13 @@ import com.sipl.rfidtagscanner.interf.RfidUiDataDto;
 import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
 import com.zebra.rfid.api3.TagData;
 
+import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -400,7 +408,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                         }
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_ALREADY_REPORTED)) {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
-                    }else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
+                    } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
@@ -480,7 +488,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
+                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
                                 }
@@ -488,10 +496,58 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Exception occurs while fetching Bothra unloading in details", "Exception : " + e.getMessage(), BTN_OK, false);
                             }
                         }
-                    } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
-                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_ALREADY_REPORTED)) {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
+                    } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
+                        if (response.body().getTransactionsDto() != null) {
+                            TransactionsDto transactionsDto = response.body().getTransactionsDto();
+                            try {
+                                String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
+                                String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
+                                String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                                String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
+                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String previousRmgNo = null;
+                                String PreviousRmgNoDesc = null;
+                                String remarks = null;
+
+                                if (strInUnloadingTime != null) {
+                                    if (isLoadingDifferenceEnable) {
+                                        if (!getCalculateDate(strInUnloadingTime, "Buffer time between Unloading In - Unloading Out is 3 min")) {
+                                            return;
+                                        }
+                                    }
+                                    if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
+                                        previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
+                                        PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
+                                        if (transactionsDto.getRemarkMaster() != null) {
+                                            remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                        }
+                                    }
+                                }
+
+                                if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
+                                    String sourceGrossWeight;
+                                    if (transactionsDto.getSourceGrossWeight() != null) {
+                                        sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
+                                    } else {
+                                        sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
+                                    }
+                                    List<String> location = getLoginUserAssignedLocation();
+                                    warehouseAlert(requireActivity(), response.body().getMessage() + "\nYour assign warehouse location are " + location + "\n" + "\nAre you still want to continue with your assign warehouse ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
+//                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
+                                } else {
+                                    ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
+                                }
+                            } catch (Exception e) {
+                                ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Exception occurs while fetching Bothra unloading in details", "Exception : " + e.getMessage(), BTN_OK, false);
+                            }
+                        }
                     } else {
                         getBothraWhUnloadingOutTagDetails();
                     }
@@ -507,6 +563,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
             }
         });
     }
+
 
     private void getBothraWhUnloadingOutTagDetails() {
         showProgress();
@@ -562,7 +619,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
+                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
                                 }
@@ -572,7 +629,56 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             }
                         }
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
-                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
+                        if (response.body().getTransactionsDto() != null) {
+                            TransactionsDto transactionsDto = response.body().getTransactionsDto();
+                            try {
+                                String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
+                                String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
+                                String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                                String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
+                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String previousRmgNo = null;
+                                String PreviousRmgNoDesc = null;
+                                String remarks = null;
+
+                                if (strInUnloadingTime != null) {
+                                    if (isLoadingDifferenceEnable) {
+                                        if (!getCalculateDate(strInUnloadingTime, "Buffer time between Unloading In - Unloading Out is 3 min")) {
+                                            return;
+                                        }
+                                    }
+                                    if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
+                                        previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
+                                        PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
+                                        if (transactionsDto.getRemarkMaster() != null) {
+                                            remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                        }
+                                    }
+                                }
+
+                                if (loginUserRole.equalsIgnoreCase(ROLES_BWH)) {
+                                    String sourceGrossWeight;
+                                    if (transactionsDto.getSourceGrossWeight() != null) {
+                                        sourceGrossWeight = String.valueOf(transactionsDto.getSourceGrossWeight());
+                                    } else {
+                                        sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
+                                    }
+                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
+//                                    warehouseAlert(requireActivity(), "Planned LEP location " + previousRmgNo + " - " + PreviousRmgNoDesc.toUpperCase() + " is not assign to user " + loginUserName.toUpperCase() + "\nAre you still want to continue with your assign warehouse ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
+                                } else {
+                                    ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
+                                }
+
+                            } catch (Exception e) {
+                                ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Exception occurs while fetching Bothra unloading out details", "Exception : " + e.getMessage(), BTN_OK, false);
+                            }
+                        }
+//                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_ALREADY_REPORTED)) {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else {
@@ -639,7 +745,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                 String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
-                                saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
+                                saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
                             } else {
                                 ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
                             }
@@ -647,7 +753,57 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Exception occurs while fetching CIL unloading details", "Exception : " + e.getMessage(), BTN_OK, false);
                         }
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
-                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
+                        if (response.body().getTransactionsDto() != null) {
+                            TransactionsDto transactionsDto = response.body().getTransactionsDto();
+                            try {
+                                String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
+                                String lepNoId = String.valueOf(transactionsDto.getRfidLepIssueModel().getId());
+                                String rfidTag = transactionsDto.getRfidLepIssueModel().getRfidMaster().getRfidNumber();
+                                String driverName = transactionsDto.getRfidLepIssueModel().getDriverMaster().getDriverName();
+                                String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
+                                String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
+                                String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
+                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String previousRmgNo = null;
+                                String PreviousRmgNoDesc = null;
+                                String remarks = null;
+
+                                if (strInUnloadingTime != null) {
+                                    if (isLoadingDifferenceEnable) {
+                                        if (!getCalculateDate(strInUnloadingTime, "Buffer time between loading In - loading Out is 3 min")) {
+                                            return;
+                                        }
+                                    }
+                                    if (transactionsDto.getPriviousWarehouse().getStrLocationCode() != null && transactionsDto.getPriviousWarehouse().getStrLocationDesc() != null) {
+                                        previousRmgNo = transactionsDto.getPriviousWarehouse().getStrLocationCode();
+                                        PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
+                                        if (transactionsDto.getRemarkMaster() != null) {
+                                            remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                        }
+                                    }
+                                }
+
+                                if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
+                                    String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
+                                    if (strInUnloadingTime != null) {
+                                        saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
+                                    } else {
+                                        List<String> location = getLoginUserAssignedLocation();
+//                                        warehouseAlert(requireActivity(), "Planned LEP location " + wareHouseCode + " - " + wareHouseDesc + " is not assign to user " + loginUserName.toUpperCase() + "\n" + location + "\nAre you still want to continue with your assign warehouse ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
+                                        warehouseAlert(requireActivity(), response.body().getMessage() + "\nYour assign warehouse location are " + location + "\n" + "\nAre you still want to continue with your assign warehouse ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
+                                    }
+                                } else {
+                                    ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Exception occurs while fetching CIL unloading details", "Exception : " + e.getMessage(), BTN_OK, false);
+                            }
+                        }
+
+//                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_ALREADY_REPORTED)) {
                         ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, response.body().getMessage(), null, BTN_OK, false);
                     } else {
@@ -691,7 +847,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
     }
 
-    private void saveCilWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
+    private void saveCilWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String userType) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -710,10 +866,11 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
         editor.putString("remarksSPK", remarks).apply();
         editor.putString("batchNumberSPK", batchNumber).apply();
+        editor.putString("userTypeSPK", userType).apply();
         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
     }
 
-    private void saveBothraWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber) {
+    private void saveBothraWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String userType) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -732,6 +889,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("vehicleInTimeSPK", vehicleInTime).apply();
         editor.putString("remarksSPK", remarks).apply();
         editor.putString("batchNumberSPK", batchNumber).apply();
+        editor.putString("userTypeSPK", userType).apply();
         ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
     }
 
@@ -833,5 +991,61 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
             ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_WARNING, "Exception occurs .. !", e.getMessage(), BTN_OK, false);
             return false;
         }
+    }
+
+    public void warehouseAlert(Context context, String dialogMessage, int locationFlag, String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String strInUnloadingTime) {
+        Dialog dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setContentView(R.layout.dialog_questionary);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        TextView dialogMessageTxt = dialog.findViewById(R.id.dialog_message);
+        TextView btnCancel = dialog.findViewById(R.id.txt_btn_cancel);
+        TextView btnOk = dialog.findViewById(R.id.txt_btn_ok);
+        dialogMessageTxt.setText(dialogMessage);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                edtRfidTagId.setText(null);
+                dialog.dismiss();
+            }
+        });
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                if (locationFlag == 1) {
+                    saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "unAuthorizedUser");
+//                    ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
+                } else if (locationFlag == 2) {
+                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "unAuthorizedUser");
+                } else {
+                    Log.e(TAG, "onClick: Wrong flag is passed");
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+    private List<String> getLoginUserAssignedLocation() {
+        ArrayList<String> arrayList = new ArrayList<>();
+        String storageLocation = ((MainActivity) requireActivity()).destinationLocationDtoList();
+        Type listType = new TypeToken<List<GenericData>>() {
+        }.getType();
+        List<GenericData> parsedDestinationList = new Gson().fromJson(storageLocation, listType);
+        for (GenericData name : parsedDestinationList) {
+            String s = name.getValue();
+            arrayList.add(s);
+            if (arrayList.size() == 6) {
+                arrayList.add("...");
+                return arrayList;
+
+            }
+        }
+        return arrayList;
     }
 }
