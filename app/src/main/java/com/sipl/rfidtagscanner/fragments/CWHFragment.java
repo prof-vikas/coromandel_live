@@ -161,7 +161,7 @@ public class CWHFragment extends Fragment {
     private boolean validateLoadingAdviseForm() {
         if (!userType.equalsIgnoreCase("authorized")) {
             if (spinnerUpdateRmgNo.getSelectedItem().toString().equalsIgnoreCase("Update LEP Location")) {
-                Toast.makeText(getActivity(), "Please update warehouse ... !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please select LEP location (Actual)", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -222,6 +222,7 @@ public class CWHFragment extends Fragment {
                 if (inUnloadingTime != null) {
                     if (previousRMG.equalsIgnoreCase(defaulfWareHouseDesc)) {
                         spinnerUpdateRmgNo.setEnabled(false);
+                        spinnerRemark.setEnabled(false);
                         spinnerUpdateRmgNo.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
                         spinnerUpdateRmgNo.setSelection(updateAssignDestinationLocation.getCount());
                     } else {
