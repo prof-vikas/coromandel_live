@@ -152,19 +152,23 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<JwtAuthResponse> call, Response<JwtAuthResponse> response) {
                 Log.d(TAG, "onResponse: processLogin() : Raw : " + response.raw());
                 hideProgress();
-                if (!response.isSuccessful()) {
+             /*   if (!response.isSuccessful()) {
                     alert(LoginActivity.this, DIALOG_ERROR, response.errorBody().toString(), null, BTN_OK);
-                }
-
-                if (response.body() != null && response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase(RESPONSE_OK)) {
-                    String token = response.body().getToken() != null ? response.body().getToken() : null;
-                    if (token != null) {
-                        getUserDetailsWithAllPermission(token);
+                    return;
+                }*/
+                if (response.body() != null) {
+                    if (response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase(RESPONSE_OK)) {
+                        String token = response.body().getToken() != null ? response.body().getToken() : null;
+                        if (token != null) {
+                            getUserDetailsWithAllPermission(token);
+                        } else {
+                            alert(LoginActivity.this, DIALOG_ERROR, "An error occurs when attempting to login with this user", null, BTN_OK);
+                        }
                     } else {
-                        alert(LoginActivity.this, DIALOG_ERROR, "An error occurs when attempting to login with this user", null, BTN_OK);
+                        alert(LoginActivity.this, DIALOG_ERROR, response.body() != null && response.body().getMessage() != null ? response.body().getMessage() : "An error occurs when attempting to log in with this user", null, BTN_OK);
                     }
-                } else {
-                    alert(LoginActivity.this, DIALOG_ERROR, response.body() != null && response.body().getMessage() != null ? response.body().getMessage() : "An error occurs when attempting to log in with this user", null, BTN_OK);
+                }else {
+                    alert(LoginActivity.this, DIALOG_ERROR, "Server is down", null, BTN_OK);
                 }
             }
 
