@@ -69,7 +69,7 @@ public class BWHFragment extends Fragment {
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout;
     private ProgressBar progressBar;
     private Spinner spinnerWarehouseNo, spinnerRemark;
-    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo, edtEntryTime, edtBatchNumber;
+    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousWareHouseNo, edtEntryTime, edtBatchNumber, edtBerthNumber;
     private Integer selectedLepNoId, selectedRemarksId;
     private String previousRMGCode, inUnloadingTime, selectedRemarks, selectedRmgNo, loginUserName, token, defaultWareHouse, previousRMG, remarks, defaulfWareHouseDesc;
     private ArrayAdapter<String> remarkAdapter, updateWareHouseNoAdapter;
@@ -103,6 +103,7 @@ public class BWHFragment extends Fragment {
         edtTruckNumber = view.findViewById(R.id.bwh_edt_truck_no);
         edtCommodity = view.findViewById(R.id.bwh_edt_commodity);
         edtGrossWeight = view.findViewById(R.id.bwh_edt_gross_weight);
+        edtBerthNumber = view.findViewById(R.id.edt_bwh_berth_no);
         edtPreviousWareHouseNo = view.findViewById(R.id.bwh_edt_previous_ware_house_no);
         progressBar = view.findViewById(R.id.bwh_progressBar);
         Button btnReset = view.findViewById(R.id.bwh_btn_reset);
@@ -564,7 +565,7 @@ public class BWHFragment extends Fragment {
         }
     }
 
-    private void showDataOnScreen(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber) {
+    private void showDataOnScreen(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String sourceGrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber, String berthNumber) {
         edtRfidTag.setText(rfidTag.toUpperCase());
         edtLepNo.setText(lepNo.toUpperCase());
         edtTruckNumber.setText(truckNo.toUpperCase());
@@ -572,6 +573,7 @@ public class BWHFragment extends Fragment {
         edtCommodity.setText(commodity.toUpperCase());
         edtGrossWeight.setText(sourceGrossWeight.toUpperCase());
         edtBatchNumber.setText(batchNumber.toUpperCase());
+        edtBerthNumber.setText(berthNumber);
 
         if (inUnloadingTime != null) {
             String previousRmg = previousRmgNo + PreviousRmgNoDesc.toUpperCase();
@@ -598,6 +600,7 @@ public class BWHFragment extends Fragment {
         String remarks = sp.getString("remarksSPK", null);
         String batchNumber = sp.getString("batchNumberSPK", null);
         String userType = sp.getString("userTypeSPK", null);
+        String berthNumber = sp.getString("berthNumberSPK", null);
         this.userType = userType;
         String wareHouse = wareHouseCode + " - " + wareHouseDesc;
         String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
@@ -612,7 +615,7 @@ public class BWHFragment extends Fragment {
             spinnerWarehouseNo.setEnabled(false);
             spinnerRemark.setEnabled(false);
         }
-        showDataOnScreen(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
+        showDataOnScreen(rfidTagId, lepNo, driverName, truckNo, commodity, sourceGrossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber, berthNumber);
     }
 
     private void showProgress() {

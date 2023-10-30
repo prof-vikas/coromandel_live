@@ -144,7 +144,7 @@ public class LoadingAdviseFragment extends Fragment {
             llBothraSupervisor.setVisibility(View.GONE);
             llPinnacleSupervisor.setVisibility(View.GONE);
             llTareWeight.setVisibility(View.VISIBLE);
-            llBerthNumber.setVisibility(View.GONE);
+            llBerthNumber.setVisibility(View.VISIBLE);
         }
     }
 
@@ -364,6 +364,7 @@ public class LoadingAdviseFragment extends Fragment {
         edtDriverMobileNo.setText(driverMobileNo.toUpperCase());
         edtDriverLicenseNo.setText(driverLicenseNo.toUpperCase());
         edtVesselName.setText(vesselName.toUpperCase());
+        edtBerthNumber.setText(berthNumber);
         edtCommodity.setText(commodity.toUpperCase());
         edtDestinationLocation.setText(destinationLocation.toUpperCase());
         if (grSrcLoc != null && grSrcLocDesc != null) {
@@ -373,9 +374,9 @@ public class LoadingAdviseFragment extends Fragment {
             edtSourceLocation.setText(null);
         }
         edtTareWeight.setText(bTareWeight);
-        if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
+     /*   if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
             edtBerthNumber.setText(berthNumber);
-        }
+        }*/
     }
 
     private void showProgress() {

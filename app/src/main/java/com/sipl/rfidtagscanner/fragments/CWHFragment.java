@@ -68,7 +68,7 @@ public class CWHFragment extends Fragment {
     private TextClock tvClock, tvEntryTime;
     private LinearLayout tvEntryTimeClocKLayout, tvEntryTimeEdtLayout, tvLoadingTimeLayout, tvOtherRemark;
 
-    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo, edtBatchNumber;
+    private EditText edtRfidTag, edtLepNo, edtDriverName, edtTruckNumber, edtCommodity, edtGrossWeight, edtPreviousRmgNo, edtBatchNumber, edtBerthNumber;
     private ProgressBar progressBar;
     private Spinner spinnerUpdateRmgNo, spinnerRemark;
     private Button btnSubmit, btnReset;
@@ -97,6 +97,7 @@ public class CWHFragment extends Fragment {
         edtPreviousRmgNo = view.findViewById(R.id.cwh_edt_previous_rmg_no);
         edtOtherRemarks = view.findViewById(R.id.cwh_edt_other);
         edtBatchNumber = view.findViewById(R.id.cwh_edt_batch_no);
+        edtBerthNumber = view.findViewById(R.id.cwh_edt_berth_no);
 
         btnReset = view.findViewById(R.id.cwh_btn_reset);
         btnSubmit = view.findViewById(R.id.cwh_btn_submit);
@@ -492,6 +493,7 @@ public class CWHFragment extends Fragment {
         String remarks = sp.getString("remarksSPK", null);
         String batchNumber = sp.getString("batchNumberSPK", null);
         String userType = sp.getString("userTypeSPK", null);
+        String berthNumber = sp.getString("berthNumberSPK", null);
         this.userType = userType;
         String wareHouse = wareHouseCode + " - " + wareHouseDesc;
         String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
@@ -506,10 +508,10 @@ public class CWHFragment extends Fragment {
             spinnerUpdateRmgNo.setEnabled(false);
             spinnerRemark.setEnabled(false);
         }
-        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber);
+        saveLoginAdviseData(rfidTagId, lepNo, driverName, truckNo, commodity, grossWeight, previousRmgNo, PreviousRmgNoDesc, wareHouse, batchNumber, berthNumber);
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String grossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber) {
+    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String truckNo, String commodity, String grossWeight, String previousRmgNo, String PreviousRmgNoDesc, String wareHouseCode, String batchNumber, String berthNumber) {
         edtRfidTag.setText(rfidTag.toUpperCase());
         edtLepNo.setText(lepNo.toUpperCase());
         edtTruckNumber.setText(truckNo.toUpperCase());
@@ -517,6 +519,7 @@ public class CWHFragment extends Fragment {
         edtCommodity.setText(commodity.toUpperCase());
         edtGrossWeight.setText(grossWeight.toUpperCase());
         edtBatchNumber.setText(batchNumber.toUpperCase());
+        edtBerthNumber.setText(berthNumber);
         if (inUnloadingTime != null) {
             edtPreviousRmgNo.setText(previousRmgNo.toUpperCase() + " - " + PreviousRmgNoDesc.toUpperCase());
         } else {

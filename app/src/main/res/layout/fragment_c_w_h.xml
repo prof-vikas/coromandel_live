@@ -148,6 +148,40 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/cwh_berth_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/bwh_ly_pd_bottom"
+                    android:layout_marginBottom="@dimen/common_ly_margin_bottom"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:id="@+id/cwh_tv_berth_no"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="@string/berthNumber"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_tv_txt"
+                        android:textSize="@dimen/common_tv_text" />
+
+                    <EditText
+                        android:id="@+id/cwh_edt_berth_no"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/bwh_edt_rectangle_height"
+                        android:layout_marginStart="@dimen/common_edt_rectangle_margin_start_left"
+                        android:layout_weight="4"
+                        android:enabled="false"
+                        android:background="@drawable/rectangle_edt_read_only_field"
+                        android:inputType="textCapCharacters"
+                        android:paddingLeft="@dimen/common_edt_rectangle_pd_left"
+                        android:fontFamily="@font/source_sans_pro_semi_bold"
+                        android:textColor="@color/wh_edt_txt"
+                        android:textSize="@dimen/common_edt_text" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/title_driver_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -382,6 +382,8 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String grSrcLoc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSourceLocationCode();
                                 String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSourceDescription();
                                 String bTareWeight = transactionsDto.getSourceTareWeight().toString();
+                                String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
+                                Log.e(TAG, "onResponse: berth Number " + berthNumber );
                                 String inLoadingTime = null;
                                 String pinnacleSupervisor = null;
                                 String bothraSupervisor = null;
@@ -398,7 +400,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     }
                                 }
                                 if (loginUserRole.equalsIgnoreCase(ROLES_B_LAO)) {
-                                    saveLoadingInfo(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, inLoadingTime, pinnacleSupervisor, bothraSupervisor, null, batchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
+                                    saveLoadingInfo(rfidTag, lepNo, lepNoId, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, destinationLocationDesc, inLoadingTime, pinnacleSupervisor, bothraSupervisor, berthNumber, batchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
                                 }
@@ -462,6 +464,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
                                 String PreviousRmgNoDesc = null;
                                 String remarks = null;
@@ -488,7 +491,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
+                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized", berthNumber);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
                                 }
@@ -512,6 +515,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
                                 String PreviousRmgNoDesc = null;
                                 String remarks = null;
@@ -540,7 +544,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     }
                                     List<String> location = getLoginUserAssignedLocation();
 //                                    String msg = "Access Denied for User  As he does not have permission to receive cargo into location code ";
-                                    warehouseAlert(requireActivity(), "Access Denied for User "+ loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode +"\n"+ "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
+                                    warehouseAlert(requireActivity(), "Access Denied for User "+ loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode +"\n"+ "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime, berthNumber);
 //                                    warehouseAlert(requireActivity(), response.body().getMessage() + "\nYour assign warehouse location are " + location + "\n" + "\nAre you still want to continue with your assign warehouse ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
 //                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                 } else {
@@ -565,7 +569,6 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
             }
         });
     }
-
 
     private void getBothraWhUnloadingOutTagDetails() {
         showProgress();
@@ -595,6 +598,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
                                 String PreviousRmgNoDesc = null;
                                 String remarks = null;
@@ -621,7 +625,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
+                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized", berthNumber);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
                                 }
@@ -644,6 +648,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
                                 String PreviousRmgNoDesc = null;
                                 String remarks = null;
@@ -670,7 +675,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         sourceGrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     }
-                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
+                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized", berthNumber);
 //                                    warehouseAlert(requireActivity(), "Planned LEP location " + previousRmgNo + " - " + PreviousRmgNoDesc.toUpperCase() + " is not assign to user " + loginUserName.toUpperCase() + "\nAre you still want to continue with your assign warehouse ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
@@ -723,6 +728,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                             String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
+                            String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                             String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                             String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                             String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
@@ -747,7 +753,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
 
                             if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                 String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
-                                saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
+                                saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized", berthNumber);
                             } else {
                                 ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
                             }
@@ -768,6 +774,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
                                 String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
+                                String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
                                 String PreviousRmgNoDesc = null;
                                 String remarks = null;
@@ -790,12 +797,10 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     if (strInUnloadingTime != null) {
-                                        saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized");
+                                        saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized", berthNumber);
                                     } else {
                                         List<String> location = getLoginUserAssignedLocation();
-//                                        warehouseAlert(requireActivity(), "Planned LEP location " + wareHouseCode + " - " + wareHouseDesc + " is not assign to user " + loginUserName.toUpperCase() + "\n" + location + "\nAre you still want to continue with your assign warehouse ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
-                                        warehouseAlert(requireActivity(), "Access Denied for User "+ loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode + "\n"+ "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
-//                                        warehouseAlert(requireActivity(), response.body().getMessage() + "\nYour assign warehouse location are " + location + "\n" + "\nAre you still want to continue with your assign warehouse ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
+                                        warehouseAlert(requireActivity(), "Access Denied for User "+ loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode + "\n"+ "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime, berthNumber);
                                     }
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);
@@ -850,7 +855,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         ((MainActivity) requireActivity()).loadFragment(new LoadingAdviseFragment(), 1);
     }
 
-    private void saveCilWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String userType) {
+    private void saveCilWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String userType, String berthNumber) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -870,10 +875,11 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("remarksSPK", remarks).apply();
         editor.putString("batchNumberSPK", batchNumber).apply();
         editor.putString("userTypeSPK", userType).apply();
+        editor.putString("berthNumberSPK", berthNumber).apply();
         ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
     }
 
-    private void saveBothraWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String userType) {
+    private void saveBothraWareHouseInfo(String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String userType, String berthNumber) {
         SharedPreferences sp = requireActivity().getSharedPreferences("WareHouseDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("rfidTagSPK", rfidTag).apply();
@@ -893,6 +899,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         editor.putString("remarksSPK", remarks).apply();
         editor.putString("batchNumberSPK", batchNumber).apply();
         editor.putString("userTypeSPK", userType).apply();
+        editor.putString("berthNumberSPK", berthNumber).apply();
         ((MainActivity) requireActivity()).loadFragment(new BWHFragment(), 1);
     }
 
@@ -996,7 +1003,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
         }
     }
 
-    public void warehouseAlert(Context context, String dialogMessage, int locationFlag, String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String strInUnloadingTime) {
+    public void warehouseAlert(Context context, String dialogMessage, int locationFlag, String lepNo, String lepNoId, String rfidTag, String driverName, String truckNo, String commodity, String GrossWeight, String previousRmgNo, String PreviousRmgNoDesc, String sourceGrossWeight, String vehicleInTime, String inUnloadingTime, String wareHouseCode, String wareHouseDesc, String remarks, String batchNumber, String strInUnloadingTime, String berthNumber) {
         Dialog dialog = new Dialog(context);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.dialog_questionary);
@@ -1021,10 +1028,10 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
             public void onClick(View view) {
                 dialog.dismiss();
                 if (locationFlag == 1) {
-                    saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "unAuthorizedUser");
+                    saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "unAuthorizedUser", berthNumber);
 //                    ((MainActivity) requireActivity()).loadFragment(new CWHFragment(), 1);
                 } else if (locationFlag == 2) {
-                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "unAuthorizedUser");
+                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "unAuthorizedUser", berthNumber);
                 } else {
                     Log.e(TAG, "onClick: Wrong flag is passed");
                 }
