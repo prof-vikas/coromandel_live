@@ -5,7 +5,7 @@ public class ApiConstants {
      * Dev environment
      * */
 //    public static final String BASE_URL = "http://10.66.66.5:8081/coromandel-rest-repo/";
-    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
+//    public static final String BASE_URL = "http://10.66.66.90:8080/coromandel-rest-repo/";
 
 
     /*
@@ -18,7 +18,7 @@ public class ApiConstants {
     /*
      * client PROD environment
      * */
-//    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
+    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
 
 
     /*
