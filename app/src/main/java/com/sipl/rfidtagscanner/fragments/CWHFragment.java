@@ -166,7 +166,7 @@ public class CWHFragment extends Fragment {
                 return false;
             }
         }
-        if (arrayList.size() > 1) {
+        if (arrayList.size() > 0) {
             if (!spinnerUpdateRmgNo.getSelectedItem().toString().equals("Update LEP Location") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
                 Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
                 return false;
@@ -195,7 +195,7 @@ public class CWHFragment extends Fragment {
                 hashMapForDestinationLocation.put(s, v);
             }
 
-            if (arrayList.size() > 1) {
+            if (arrayList.size() > 0) {
                 llEdtLepLocationActual.setVisibility(View.GONE);
                 llSpinnerLepLocationActual.setVisibility(View.VISIBLE);
                 arrayList.add("Update LEP Location");
@@ -271,6 +271,18 @@ public class CWHFragment extends Fragment {
                     public void onNothingSelected(AdapterView<?> adapterView) {
                     }
                 });
+           /* } else if (arrayList.size() == 1 && userType.equalsIgnoreCase("unAuthorizedUser")) {
+                llEdtLepLocationActual.setVisibility(View.VISIBLE);
+                llSpinnerLepLocationActual.setVisibility(View.GONE);
+                llSpinnerRemarks.setVisibility(View.VISIBLE);
+
+                spinnerRemark.setEnabled(true);
+                edtLepLocationActual.setText(arrayList.get(0));
+                edtLepLocationActual.setEnabled(false);
+                if (hashMapForDestinationLocation.containsKey(arrayList.get(0))) {
+                    selectedRmgNo = hashMapForDestinationLocation.get(arrayList.get(0));
+                }
+                */
             } else {
                 llEdtLepLocationActual.setVisibility(View.VISIBLE);
                 llSpinnerLepLocationActual.setVisibility(View.GONE);
@@ -450,7 +462,7 @@ public class CWHFragment extends Fragment {
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(defaultWareHouse);
 
         if (selectedRmgNo != null) {
-            if (arrayList.size() > 1) {
+            if (arrayList.size() > 0) {
                 if (!selectedRmgNo.equalsIgnoreCase("Update RMG No")) {
                     selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
                 }

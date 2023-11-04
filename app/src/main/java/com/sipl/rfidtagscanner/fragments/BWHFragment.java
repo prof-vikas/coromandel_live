@@ -139,7 +139,7 @@ public class BWHFragment extends Fragment {
                 return false;
             }
         }
-        if (arrayList.size() > 1) {
+        if (arrayList.size() > 0) {
             if (!spinnerWarehouseNo.getSelectedItem().toString().equals("Update LEP Location") && spinnerRemark.getSelectedItem().toString().equals("Select Remarks")) {
                 Toast.makeText(getActivity(), "Select remarks", Toast.LENGTH_SHORT).show();
                 return false;
@@ -165,7 +165,7 @@ public class BWHFragment extends Fragment {
                 hashMapForDestinationLocation.put(s, v);
             }
 
-            if (arrayList.size() > 1) {
+            if (arrayList.size() > 0) {
                 llEdtLepLocationActual.setVisibility(View.GONE);
                 llSpinnerLepLocationActual.setVisibility(View.VISIBLE);
                 arrayList.add("Update LEP Location");
@@ -481,7 +481,7 @@ public class BWHFragment extends Fragment {
         AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, String.valueOf(LocalDateTime.now()));
         StorageLocationDto previousWareHouseNo = new StorageLocationDto(defaultWareHouse);
         if (selectedRmgNo != null) {
-            if (arrayList.size() > 1) {
+            if (arrayList.size() > 0) {
                 if (!selectedRmgNo.equalsIgnoreCase("Update LEP Location")) {
                     selectedWareHouseNo = new StorageLocationDto(selectedRmgNo);
                 }
