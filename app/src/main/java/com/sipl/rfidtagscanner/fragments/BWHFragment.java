@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_WARNING;
 import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_OK;
 
 import android.content.SharedPreferences;
@@ -214,7 +215,9 @@ public class BWHFragment extends Fragment {
                                 Log.i(TAG, "onResponse:  in position else");
                             }
                         } else {
+                            ((MainActivity)requireActivity()).alert(requireContext(), DIALOG_WARNING, "Please log in again. It appears that your user receiving location has been updated", null, BTN_OK, true);
                             Log.i(TAG, "onResponse: not contain storage location " + defaulfWareHouseDesc);
+                            return;
                         }
                     }
                 } else {

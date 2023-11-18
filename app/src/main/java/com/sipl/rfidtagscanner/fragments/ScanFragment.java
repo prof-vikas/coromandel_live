@@ -718,6 +718,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                 }
                 if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null) {
                     if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
+                        Log.e(TAG, "onResponse: in IN found case : " );
                         vibrate();
                         TransactionsDto transactionsDto = response.body().getTransactionsDto();
                         try {
@@ -762,6 +763,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                         }
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
                         if (response.body().getTransactionsDto() != null) {
+                            Log.e(TAG, "onResponse: in IN forbidden case : " );
                             TransactionsDto transactionsDto = response.body().getTransactionsDto();
                             try {
                                 String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
@@ -797,8 +799,10 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 if (loginUserRole.equalsIgnoreCase(ROLES_CWH)) {
                                     String GrossWeight = String.valueOf(transactionsDto.getGrossWeight());
                                     if (strInUnloadingTime != null) {
+                                        Log.e(TAG, "onResponse: In if strInUnloadingTime ! = null: " + strInUnloadingTime);
                                         saveCilWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, "authorized", berthNumber, false);
                                     } else {
+                                        Log.e(TAG, "onResponse: In else statement where strInUnloadingTime == null: ");
                                         List<String> location = getLoginUserAssignedLocation();
                                         warehouseAlert(requireActivity(), "Access Denied for User "+ loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode + "\n"+ "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime, berthNumber, true);
                                     }

@@ -1,7 +1,9 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_WARNING;
 import static com.sipl.rfidtagscanner.utils.Config.EMPTY_REMARKS;
 
 import android.content.SharedPreferences;
@@ -196,6 +198,11 @@ public class CWHFragment extends Fragment {
             }
 
             if (arrayList.size() > 0) {
+                int counter = 1;
+                for (String s: arrayList) {
+                    Log.e(TAG, "getUserMappedStorage: Stoorage location : " + counter + " : " + s );
+                    counter ++ ;
+                }
                 llEdtLepLocationActual.setVisibility(View.GONE);
                 llSpinnerLepLocationActual.setVisibility(View.VISIBLE);
                 arrayList.add("Update LEP Location");
@@ -244,7 +251,9 @@ public class CWHFragment extends Fragment {
                                 Log.i(TAG, "onResponse:  in position else");
                             }
                         } else {
+                            ((MainActivity)requireActivity()).alert(requireContext(), DIALOG_WARNING, "Please log in again. It appears that your user receiving location has been updated", null, BTN_OK, true);
                             Log.i(TAG, "onResponse: not contain storage location " + defaulfWareHouseDesc);
+                            return;
                         }
                     }
                 } else {
@@ -284,6 +293,7 @@ public class CWHFragment extends Fragment {
                 }
                 */
             } else {
+                Log.e(TAG, "getUserMappedStorage: in else as per sudhir" );
                 llEdtLepLocationActual.setVisibility(View.VISIBLE);
                 llSpinnerLepLocationActual.setVisibility(View.GONE);
                 llSpinnerRemarks.setVisibility(View.GONE);
