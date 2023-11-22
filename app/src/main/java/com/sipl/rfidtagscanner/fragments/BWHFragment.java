@@ -605,8 +605,8 @@ public class BWHFragment extends Fragment {
         String userType = sp.getString("userTypeSPK", null);
         String berthNumber = sp.getString("berthNumberSPK", null);
         this.userType = userType;
-        String wareHouse = wareHouseCode + " - " + wareHouseDesc;
-        String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
+        String wareHouse = wareHouseCode + " - " + wareHouseDesc.trim();
+        String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc.trim();
         this.defaultWareHouse = wareHouseCode;
         this.remarks = remarks;
         this.previousRMGCode = previousRmgNo;

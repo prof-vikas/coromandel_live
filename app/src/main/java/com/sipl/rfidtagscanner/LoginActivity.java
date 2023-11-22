@@ -214,6 +214,12 @@ public class LoginActivity extends AppCompatActivity {
 
                         Boolean isDestinationLocationAssign = userPermissionsResponseDto.getDestinationLocation() != null ? userPermissionsResponseDto.getDestinationLocation() : false;
                         List<GenericData> destinationLocationList = userPermissionsResponseDto.getDestinationLocationDto();
+                        for (GenericData s: destinationLocationList) {
+                            Log.e(TAG, "onResponse: " + s.getValue() );
+                            Log.e(TAG, "onResponse: " + s.getName() );
+                            Log.e(TAG, "onResponse: " + s.getDescription() );
+                            Log.e(TAG, "\n\n" );
+                        }
 
                         Gson gson = new Gson();
                         String strBerthList = berthList != null ? gson.toJson(berthList) : null;

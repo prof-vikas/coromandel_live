@@ -251,6 +251,14 @@ public class CWHFragment extends Fragment {
                                 Log.i(TAG, "onResponse:  in position else");
                             }
                         } else {
+                            Log.e(TAG, "getUserMappedStorage: default : "  + defaulfWareHouseDesc );
+                            for (String s: arrayList) {
+                                String a = s;
+                                Log.e(TAG, "getUserMappedStorage: list : "  + s);
+                                String b = defaulfWareHouseDesc;
+                                Log.e(TAG, "getUserMappedStorage: " + b.equalsIgnoreCase(a) );
+
+                            }
                             ((MainActivity)requireActivity()).alert(requireContext(), DIALOG_WARNING, "Please log in again. It appears that your user receiving location has been updated", null, BTN_OK, true);
                             Log.i(TAG, "onResponse: not contain storage location " + defaulfWareHouseDesc);
                             return;
@@ -517,8 +525,8 @@ public class CWHFragment extends Fragment {
         String userType = sp.getString("userTypeSPK", null);
         String berthNumber = sp.getString("berthNumberSPK", null);
         this.userType = userType;
-        String wareHouse = wareHouseCode + " - " + wareHouseDesc;
-        String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc;
+        String wareHouse = wareHouseCode + " - " + wareHouseDesc.trim();
+        String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc.trim();
         this.defaultWareHouse = wareHouseCode;
         this.remarks = remarks;
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();
