@@ -383,7 +383,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String grSrcLocDesc = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSourceDescription();
                                 String bTareWeight = transactionsDto.getSourceTareWeight().toString();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
-                                Log.e(TAG, "onResponse: berth Number " + berthNumber );
+                                Log.e(TAG, "onResponse: berth Number " + berthNumber);
                                 String inLoadingTime = null;
                                 String pinnacleSupervisor = null;
                                 String bothraSupervisor = null;
@@ -461,8 +461,18 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                                 String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
-                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                             /*   String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
+                                String wareHouseCode;
+                                String wareHouseDesc;
+                                if (transactionsDto.getWarehouse() == null) {
+                                    wareHouseCode = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationDesc();
+                                } else {
+                                    wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                }
+
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
@@ -512,8 +522,18 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                                 String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
-                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                        /*        String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
+                                String wareHouseCode;
+                                String wareHouseDesc;
+                                if (transactionsDto.getWarehouse() == null) {
+                                    wareHouseCode = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationDesc();
+                                } else {
+                                    wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                }
+
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
@@ -544,7 +564,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     }
                                     List<String> location = getLoginUserAssignedLocation();
 //                                    String msg = "Access Denied for User  As he does not have permission to receive cargo into location code ";
-                                    warehouseAlert(requireActivity(), "Access Denied for User "+ loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode +"\n"+ "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime, berthNumber, true);
+                                    warehouseAlert(requireActivity(), "Access Denied for User " + loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode + "\n" + "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime, berthNumber, true);
 //                                    warehouseAlert(requireActivity(), response.body().getMessage() + "\nYour assign warehouse location are " + location + "\n" + "\nAre you still want to continue with your assign warehouse ?", 2, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime);
 //                                    saveBothraWareHouseInfo(lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, null, previousRmgNo, PreviousRmgNoDesc, sourceGrossWeight, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber);
                                 } else {
@@ -595,8 +615,19 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                                 String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
-                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                               /* String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
+
+                                String wareHouseCode;
+                                String wareHouseDesc;
+                                if (transactionsDto.getWarehouse() == null) {
+                                    wareHouseCode = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationDesc();
+                                } else {
+                                    wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                }
+
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
@@ -645,8 +676,19 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                                 String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
-                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                       /*         String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();*/
+
+                                String wareHouseCode;
+                                String wareHouseDesc;
+                                if (transactionsDto.getWarehouse() == null) {
+                                    wareHouseCode = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationDesc();
+                                } else {
+                                    wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                }
+
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
@@ -718,7 +760,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                 }
                 if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null) {
                     if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
-                        Log.e(TAG, "onResponse: in IN found case : " );
+                        Log.e(TAG, "onResponse: in IN found case : ");
                         vibrate();
                         TransactionsDto transactionsDto = response.body().getTransactionsDto();
                         try {
@@ -730,8 +772,16 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                             String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                             String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
                             String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
-                            String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                            String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                            String wareHouseCode;
+                            String wareHouseDesc;
+                            if (transactionsDto.getWarehouse() == null) {
+                                wareHouseCode = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationCode();
+                                wareHouseDesc = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationDesc();
+                            } else {
+                                wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                            }
+
                             String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                             String previousRmgNo = null;
                             String PreviousRmgNoDesc = null;
@@ -748,7 +798,14 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
                                     if (transactionsDto.getRemarkMaster() != null) {
                                         remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                        Log.e(TAG, "onResponse: " + remarks);
+                                        Log.e(TAG, "onResponse: " + previousRmgNo);
+                                        Log.e(TAG, "onResponse: " + PreviousRmgNoDesc);
+                                    } else {
+                                        Log.e(TAG, "onResponse: sr98weruwoie");
                                     }
+                                } else {
+                                    Log.e(TAG, "onResponse: inelse of ");
                                 }
                             }
 
@@ -763,7 +820,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                         }
                     } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FORBIDDEN)) {
                         if (response.body().getTransactionsDto() != null) {
-                            Log.e(TAG, "onResponse: in IN forbidden case : " );
+                            Log.e(TAG, "onResponse: in IN forbidden case : ");
                             TransactionsDto transactionsDto = response.body().getTransactionsDto();
                             try {
                                 String lepNo = transactionsDto.getRfidLepIssueModel().getLepNumber();
@@ -773,8 +830,17 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                 String truckNo = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getVehicleMaster().getVehicleRegistrationNumber();
                                 String commodity = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getDescription();
                                 String batchNumber = transactionsDto.getRfidLepIssueModel().getDailyTransportReportModule().getSapGrnDetailsEntity().getBatch();
-                                String wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
-                                String wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+
+                                String wareHouseCode;
+                                String wareHouseDesc;
+                                if (transactionsDto.getWarehouse() == null) {
+                                    wareHouseCode = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getRfidLepIssueModel().getDestinationLocation().getStrLocationDesc();
+                                } else {
+                                    wareHouseCode = transactionsDto.getWarehouse().getStrLocationCode();
+                                    wareHouseDesc = transactionsDto.getWarehouse().getStrLocationDesc();
+                                }
+
                                 String strInUnloadingTime = transactionsDto.getInUnLoadingTime();
                                 String berthNumber = transactionsDto.getRfidLepIssueModel().getBerthMaster().getBerthNumber();
                                 String previousRmgNo = null;
@@ -792,7 +858,14 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                         PreviousRmgNoDesc = transactionsDto.getPriviousWarehouse().getStrLocationDesc();
                                         if (transactionsDto.getRemarkMaster() != null) {
                                             remarks = transactionsDto.getRemarkMaster().getRemarks();
+                                            Log.e(TAG, "onResponse: " + remarks);
+                                            Log.e(TAG, "onResponse: " + previousRmgNo);
+                                            Log.e(TAG, "onResponse: " + PreviousRmgNoDesc);
+                                        } else {
+                                            Log.e(TAG, "onResponse: sr98weruwoie");
                                         }
+                                    } else {
+                                        Log.e(TAG, "onResponse: inelse of ");
                                     }
                                 }
 
@@ -804,7 +877,7 @@ public class ScanFragment extends Fragment implements HandleStatusInterface {
                                     } else {
                                         Log.e(TAG, "onResponse: In else statement where strInUnloadingTime == null: ");
                                         List<String> location = getLoginUserAssignedLocation();
-                                        warehouseAlert(requireActivity(), "Access Denied for User "+ loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode + "\n"+ "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime, berthNumber, true);
+                                        warehouseAlert(requireActivity(), "Access Denied for User " + loginUserName + ", As he does not have permission to receive cargo into LEP location code " + wareHouseCode + "\n" + "\nYou still want to receive cargo into your assigned LEP locations " + location + " ?", 1, lepNo, lepNoId, rfidTag, driverName, truckNo, commodity, GrossWeight, previousRmgNo, PreviousRmgNoDesc, null, null, strInUnloadingTime, wareHouseCode, wareHouseDesc, remarks, batchNumber, strInUnloadingTime, berthNumber, true);
                                     }
                                 } else {
                                     ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Something went wrong", null, BTN_OK, false);

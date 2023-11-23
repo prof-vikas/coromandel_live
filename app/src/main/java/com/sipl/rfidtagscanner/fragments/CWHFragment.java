@@ -199,9 +199,9 @@ public class CWHFragment extends Fragment {
 
             if (arrayList.size() > 0) {
                 int counter = 1;
-                for (String s: arrayList) {
-                    Log.e(TAG, "getUserMappedStorage: Stoorage location : " + counter + " : " + s );
-                    counter ++ ;
+                for (String s : arrayList) {
+                    Log.e(TAG, "getUserMappedStorage: Stoorage location : " + counter + " : " + s);
+                    counter++;
                 }
                 llEdtLepLocationActual.setVisibility(View.GONE);
                 llSpinnerLepLocationActual.setVisibility(View.VISIBLE);
@@ -228,6 +228,7 @@ public class CWHFragment extends Fragment {
                 spinnerUpdateRmgNo.setAdapter(updateAssignDestinationLocation);
 
                 if (inUnloadingTime != null) {
+                    Log.e(TAG, "getUserMappedStorage: " + previousRMG + "    :    "+  defaulfWareHouseDesc );
                     if (previousRMG.equalsIgnoreCase(defaulfWareHouseDesc)) {
                         spinnerUpdateRmgNo.setEnabled(false);
                         spinnerRemark.setEnabled(false);
@@ -251,16 +252,7 @@ public class CWHFragment extends Fragment {
                                 Log.i(TAG, "onResponse:  in position else");
                             }
                         } else {
-                            Log.e(TAG, "getUserMappedStorage: default : "  + defaulfWareHouseDesc );
-                            for (String s: arrayList) {
-                                String a = s;
-                                Log.e(TAG, "getUserMappedStorage: list : "  + s);
-                                String b = defaulfWareHouseDesc;
-                                Log.e(TAG, "getUserMappedStorage: " + b.equalsIgnoreCase(a) );
-
-                            }
-                            ((MainActivity)requireActivity()).alert(requireContext(), DIALOG_WARNING, "Please log in again. It appears that your user receiving location has been updated", null, BTN_OK, true);
-                            Log.i(TAG, "onResponse: not contain storage location " + defaulfWareHouseDesc);
+                            ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_WARNING, "Please log in again. It appears that your user receiving location has been updated", null, BTN_OK, true);
                             return;
                         }
                     }
@@ -301,7 +293,7 @@ public class CWHFragment extends Fragment {
                 }
                 */
             } else {
-                Log.e(TAG, "getUserMappedStorage: in else as per sudhir" );
+                Log.e(TAG, "getUserMappedStorage: in else as per sudhir");
                 llEdtLepLocationActual.setVisibility(View.VISIBLE);
                 llSpinnerLepLocationActual.setVisibility(View.GONE);
                 llSpinnerRemarks.setVisibility(View.GONE);
@@ -526,7 +518,13 @@ public class CWHFragment extends Fragment {
         String berthNumber = sp.getString("berthNumberSPK", null);
         this.userType = userType;
         String wareHouse = wareHouseCode + " - " + wareHouseDesc.trim();
-        String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc.trim();
+        Log.e(TAG, "getCWHDetails: wareHouse : " + wareHouse );
+        Log.d(TAG, "getCWHDetails: Previous No : " + PreviousRmgNoDesc);
+
+        String previousRMG = null;
+        if (PreviousRmgNoDesc != null) {
+            previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc.trim();
+        }
         this.defaultWareHouse = wareHouseCode;
         this.remarks = remarks;
         this.defaulfWareHouseDesc = wareHouse.toUpperCase();

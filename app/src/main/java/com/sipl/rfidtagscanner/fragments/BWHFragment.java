@@ -579,7 +579,7 @@ public class BWHFragment extends Fragment {
         edtBerthNumber.setText(berthNumber);
 
         if (inUnloadingTime != null) {
-            String previousRmg = previousRmgNo + PreviousRmgNoDesc.toUpperCase();
+            String previousRmg = previousRmgNo + " - " +PreviousRmgNoDesc.toUpperCase();
             edtPreviousWareHouseNo.setText(previousRmg);
         } else {
             edtPreviousWareHouseNo.setText(wareHouseCode.toUpperCase());
@@ -606,7 +606,14 @@ public class BWHFragment extends Fragment {
         String berthNumber = sp.getString("berthNumberSPK", null);
         this.userType = userType;
         String wareHouse = wareHouseCode + " - " + wareHouseDesc.trim();
-        String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc.trim();
+//        String previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc.trim();
+
+        String previousRMG = null;
+        if (PreviousRmgNoDesc != null) {
+            previousRMG = previousRmgNo + " - " + PreviousRmgNoDesc.trim();
+        }
+
+        Log.e(TAG, "getBWHDetails: " + wareHouse  + "  : " + previousRMG );
         this.defaultWareHouse = wareHouseCode;
         this.remarks = remarks;
         this.previousRMGCode = previousRmgNo;
