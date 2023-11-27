@@ -1,5 +1,6 @@
 package com.sipl.rfidtagscanner.api;
 
+import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_APP_VERSION_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_BOTHRA_WAREHOUSE_UNLOADING_OUT_TAG_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.GET_CIL_LOADING_OUT_TAG_DETAILS;
 import static com.sipl.rfidtagscanner.utils.ApiConstants.UPDATE_CIL_LOADING_OUT_TAG_DETAILS;
@@ -20,6 +21,7 @@ import com.sipl.rfidtagscanner.dto.request.LoadingAdviseRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateBothraLoadingAdviseDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateRmgRequestDto;
 import com.sipl.rfidtagscanner.dto.request.UpdateWareHouseNoRequestDto;
+import com.sipl.rfidtagscanner.dto.response.AndroidApiResponse;
 import com.sipl.rfidtagscanner.dto.response.GenericeApiResponse;
 import com.sipl.rfidtagscanner.dto.response.JwtAuthResponse;
 import com.sipl.rfidtagscanner.dto.response.LoadingAdvisePostApiResponse;
@@ -45,6 +47,9 @@ public interface ApiController {
 
     @GET(GET_LOGIN_USER_DETAIL + "{userId}")
     Call<GenericeApiResponse> getLoginUserDetail(@Header("Authorization") String authToken, @Path("userId") String userId);
+
+    @GET(GET_APP_VERSION_DETAILS + "{appId}" + "/{version}")
+    Call<AndroidApiResponse> getAppVersion(@Path("appId") String appId, @Path("version") String version);
 
 
     /*

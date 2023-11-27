@@ -12,7 +12,6 @@ public class ApiConstants {
      * client UAT environment
      * */
 //    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
-//    public static final String BASE_URL = "http://10.66.66.5:8081/coromandel-rest-repo/";
 //    public static final String BASE_URL = "http://10.210.213.6:8080/coromandel-rest-repo/";
 
 
@@ -27,6 +26,7 @@ public class ApiConstants {
      * */
     public static final String LOGIN = BASE_URL + "api/v1/auth/login/";
     public static final String GET_LOGIN_USER_DETAIL = BASE_URL + "users/v2/locations/valid-mapped/";
+    public static final String GET_APP_VERSION_DETAILS = BASE_URL + "api/v2/android/check-version/";
 
    /*
    * CIL endPoints

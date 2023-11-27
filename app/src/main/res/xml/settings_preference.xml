@@ -48,7 +48,7 @@
     <PreferenceCategory
         android:title="Loading Difference"
         android:layout="@layout/preferences_category"
-        app:isPreferenceVisible="true"
+        app:isPreferenceVisible="false"
         app:iconSpaceReserved="false">
         <SwitchPreference
             android:key="enable_loading_difference"
