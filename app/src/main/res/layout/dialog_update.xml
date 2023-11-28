@@ -1,93 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_update_root_ly"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_margin="30dp"
-    android:background="@drawable/custom_edittext"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="5dp">
+    android:background="@color/transparent2"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="0dp">
 
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="8dp">
-
-        <TextView
-            android:id="@+id/dialog_type_warning"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="180dp"
             android:layout_gravity="center"
-            android:drawableLeft="@drawable/dialog_logo_update"
-            android:text="@string/update"
-            android:visibility="visible"
-            android:fontFamily="@font/source_sans_pro_black"
-            android:drawablePadding="10dp"
-            android:textAlignment="center"
-            android:textColor="#7DD2F0"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_margin="30dp"
+            android:background="@drawable/custom_edittext"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp"/>
-
-        <TextView
-            android:id="@+id/dialog_update_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:fontFamily="@font/source_sans_pro_regular"
-            android:text="Message"
-            android:textColor="#000"
-            android:textSize="16sp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp"/>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/dialog_update_btn_update"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#25BAEF"
-                android:fontFamily="@font/source_sans_pro_regular"
-                android:padding="8dp"
-                android:text="@string/download"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:visibility="visible" />
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/dialog_type_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/dialog_logo_update"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/source_sans_pro_black"
+                    android:text="@string/update"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_orange"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp" />
+
+                <TextView
+                    android:id="@+id/dialog_update_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/source_sans_pro_regular"
+                    android:padding="8dp"
+                    android:text="Message"
+                    android:textColor="#000"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/dialog_update_btn_update"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:backgroundTint="@color/primary_orange"
+                        android:fontFamily="@font/source_sans_pro_regular"
+                        android:padding="8dp"
+                        android:text="@string/download"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.5" />
+
+                    <Button
+                        android:id="@+id/dialog_update_btn_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:backgroundTint="@color/white_bg"
+                        android:fontFamily="@font/source_sans_pro_regular"
+                        android:padding="8dp"
+                        android:text="@string/close_app"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5" />
+
+                <TextView
+                    android:id="@+id/dialog_update_txt_downloading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/source_sans_pro_regular"
+                    android:padding="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/downloading"
+                    android:textColor="@color/black"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+            <ProgressBar
+                android:id="@+id/dialog_update_progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:indeterminateDrawable="@drawable/progress_icon"
+                android:visibility="gone"
+                android:elevation="1dp" />
 
             <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="0.5" />
+                android:id="@+id/dialog_update_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent_dusk_overlay"
+                android:visibility="gone" />
 
-            <Button
-                android:id="@+id/dialog_update_btn_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#E91E63"
-                android:fontFamily="@font/source_sans_pro_regular"
-                android:padding="8dp"
-                android:text="@string/cancel"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:visibility="visible" />
+        </androidx.cardview.widget.CardView>
+</FrameLayout>
 
-        </LinearLayout>
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+

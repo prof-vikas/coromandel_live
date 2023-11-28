@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">RFId Tag Scanner</string>
+    <string name="app_name">RMMS</string>
     <string name="app_names" />
     <string name="app_id">1</string>
-    <string name="login_app_version">Version 1.1.9</string>
+    <string name="login_app_version">1.2.0</string>
     <string name="environment">UAT</string>
 
 
@@ -11,8 +11,6 @@
     <string name="title_coromandel">Coromandel Warehouse</string>
     <string name="title_loading_advise">Loading Advise</string>
     <string name="title_bothra_loading_advise">Loading Advise</string>
-    <!--    <string name="title1">Bothra WH Supervisor</string>-->
-
 
     <string name="driverName">Driver Name</string>
     <string name="TruckNumber">Truck Number</string>
@@ -37,11 +35,10 @@
     <string name="truck_capacity">Truck Capacity</string>
     <string name="system_date">In Loading Time</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="OpenDrawer">Open Navigation Drawer</string>
     <string name="ClosedDrawer">Close Navigation Drawer</string>
-    <string name="launcher_name">" RFID Scanner"</string>
+    <string name="launcher_name">"RMMS"</string>
     <string name="footer_text">© 2023 Developed By Suraj Informatics Pvt. Ltd.</string>
     <string name="table_date">Date</string>
     <string name="table_trips">Trips</string>
@@ -92,4 +89,8 @@
     <string name="ok">OK</string>
     <string name="update">Update</string>
     <string name="download">Download</string>
+    <string name="close_app">Close app</string>
+    <string name="retry">Retry</string>
+    <string name="message">Message</string>
+    <string name="downloading">Downloading …</string>
 </resources>

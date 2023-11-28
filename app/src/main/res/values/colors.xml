@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent2">#00000000</color>
     <color name="primary">#F76E11</color>
     <color name="primary_variant">#FF9F45</color>
     <color name="secondary">#FFBC80</color>
@@ -21,6 +22,8 @@
     <color name="transparent">#80000000</color>
     <color name="transparent_white">#D9FFFFFF</color>
     <color name="gray">#808080</color>
+    <color name="white_bg">#F0EEEE</color>
+
     <color name="textFieldColor">#5676</color>
     <color name="blue">#4BB6E8</color>
 
