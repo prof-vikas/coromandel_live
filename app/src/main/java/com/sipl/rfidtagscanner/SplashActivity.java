@@ -64,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (response.body().getVersionChanged()) {
                         progressBar.setVisibility(GONE);
                         checkForStoragePermission();
-                        updateDialogPrompt(response.body().getMessage(), response.body().getUrl());
+                        updateDialogPrompt(response.body().getMessage(), response.body().getUrl(), response.body().getNewVersion());
                     } else {
                         new Handler().postDelayed(() -> {
                             progressBar.setVisibility(GONE);
@@ -85,7 +85,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    private void updateDialogPrompt(String message, String url) {
+    private void updateDialogPrompt(String message, String url, String newVersion) {
         Dialog dialog = new Dialog(SplashActivity.this);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.dialog_update);
@@ -104,8 +104,7 @@ public class SplashActivity extends AppCompatActivity {
             String txtMsg = "Downloading started ...";
             txtDownloading.setText(txtMsg);
             txtDownloading.setVisibility(View.VISIBLE);
-            String appVersion = getString(R.string.login_app_next_release);
-            String updateVersion = "rmms v." + appVersion;
+            String updateVersion = "rmms v." + newVersion;
             ApkDownloader.downloadApk(
                     SplashActivity.this,
                     url,

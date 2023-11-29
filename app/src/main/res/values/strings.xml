@@ -2,8 +2,7 @@
     <string name="app_name">RMMS</string>
     <string name="app_names" />
     <string name="app_id">1</string>
-    <string name="login_app_version">1.2.2</string>
-    <string name="login_app_next_release">1.2.3</string>
+    <string name="login_app_version">1.2.5</string>
     <string name="environment">UAT</string>
     <string name="environment_90">90 Server</string>
     <string name="environment_91">91 Server</string>
