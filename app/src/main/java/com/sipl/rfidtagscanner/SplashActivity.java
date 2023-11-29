@@ -104,7 +104,7 @@ public class SplashActivity extends AppCompatActivity {
             String txtMsg = "Downloading started ...";
             txtDownloading.setText(txtMsg);
             txtDownloading.setVisibility(View.VISIBLE);
-            String appVersion = getString(R.string.login_app_version);
+            String appVersion = getString(R.string.login_app_next_release);
             String updateVersion = "rmms v." + appVersion;
             ApkDownloader.downloadApk(
                     SplashActivity.this,

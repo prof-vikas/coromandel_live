@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import androidx.core.content.FileProvider;
 
@@ -27,7 +26,7 @@ public class ApkDownloader {
         request.setTitle(title);
         request.setDescription(description);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
+        request.setMimeType("application/vnd.android.package-archive");
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, title);
 
         long downloadId = downloadManager.enqueue(request);
@@ -56,6 +55,7 @@ public class ApkDownloader {
 
         context.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
+
     private static int getDownloadStatus(Context context, long downloadId) {
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(downloadId);
@@ -105,7 +105,7 @@ public class ApkDownloader {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } else {
-                Log.e(TAG, "openDownloadedFile: status : " + status );
+                Log.e(TAG, "openDownloadedFile: status : " + status);
             }
         }
         cursor.close();
