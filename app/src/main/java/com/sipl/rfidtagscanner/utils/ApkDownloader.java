@@ -22,11 +22,11 @@ public class ApkDownloader {
         Uri uri = Uri.parse(apkUrl);
 
         DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+//        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setMimeType("application/vnd.android.package-archive");
         request.setTitle(title);
         request.setDescription(description);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setMimeType("application/vnd.android.package-archive");
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, title);
 
         long downloadId = downloadManager.enqueue(request);

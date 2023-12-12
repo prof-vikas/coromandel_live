@@ -199,7 +199,7 @@
                         android:shadowDx="1"
                         android:shadowRadius="1"
                         android:textStyle="italic"
-                        android:text="@string/environment_90"
+                        android:text="@string/environment"
                         android:visibility="visible"
                         android:fontFamily="@font/source_sans_pro_semi_bold"
                         android:textColor="@color/login_app_version_text"

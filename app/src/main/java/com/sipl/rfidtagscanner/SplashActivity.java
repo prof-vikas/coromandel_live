@@ -46,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
 
         NetworkManager networkManager = NetworkManager.getInstance(this);
         if (networkManager.isConnected()) {
+            Log.d(TAG, "onCreate: before method");
             checkForUpdate();
         } else {
             errorAlert(SplashActivity.this, "No internet connection, Please connect to internet and try again");
@@ -53,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkForUpdate() {
+        Log.d(TAG, "onCreate: checkForUpdate");
         progressBar.setVisibility(View.VISIBLE);
         String appId = getString(R.string.app_id);
         String appVersion = getString(R.string.login_app_version);
@@ -60,6 +62,7 @@ public class SplashActivity extends AppCompatActivity {
         call.enqueue(new Callback<AndroidApiResponse>() {
             @Override
             public void onResponse(Call<AndroidApiResponse> call, Response<AndroidApiResponse> response) {
+                Log.d(TAG, "onCreate: cehckforupdate : response ");
                 if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null && response.body().getVersionChanged() != null) {
                     if (response.body().getVersionChanged()) {
                         progressBar.setVisibility(GONE);
@@ -79,6 +82,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AndroidApiResponse> call, Throwable t) {
                 progressBar.setVisibility(GONE);
+                Log.d(TAG, "onCreate: file down");
                 errorAlert(SplashActivity.this, CustomErrorMessage.setErrorMessage(t.getMessage()));
             }
         });
