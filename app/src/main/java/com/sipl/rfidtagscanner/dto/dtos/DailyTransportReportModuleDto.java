@@ -5,47 +5,41 @@ import com.sipl.rfidtagscanner.entites.AuditEntity;
 
 public class DailyTransportReportModuleDto {
 
-    private Integer id;
-    private String commodity;
-    private AuditDtrRequestDto auditDtrRequest;
-    private String truckNumber;
-    private String vesselName;
-    private Integer sapGrNumber;
-    private Integer truckCapacity;
-    private String date;
-    private String batch;
-    private Integer grSloc;
-    private String billNo;
-    private String uom;
-    private Integer billOfEntry;
-    private String billOfDate;
-    private String status;
+  /*  private Integer id;
+    private SapGrnDetailsDto sapGrnDetailsEntity;
+    private VehicleMasterDto vehicleMaster;
     private Boolean isActive;
     private Integer rStat;
-    private AuditEntity auditEntity;
+    private Boolean isAssigned;
     private Boolean isProcessed;
+    private AuditEntity auditEntity;
+    private String remark;*/
+
+    private Integer id;
+    private SapGrnDetailsDto sapGrnDetailsEntity;
+    private VehicleMasterDto vehicleMaster;
+    private String batch;
+    private String sourceLocationCode;
+    private String sourceDescription;
+    private Boolean isActive;
+    private Integer rStat;
+    private Boolean isAssigned;
+    private Boolean isProcessed;
+    private AuditEntity auditEntity;
     private String remark;
 
-    public DailyTransportReportModuleDto(Integer id, String commodity, AuditDtrRequestDto auditDtrRequest, String truckNumber, String vesselName, Integer sapGrNumber, Integer truckCapacity, String date, String batch, Integer grSloc, String billNo, String uom, Integer billOfEntry, String billOfDate, String status, Boolean isActive, Integer rStat, AuditEntity auditEntity, Boolean isProcessed, String remark) {
+    public DailyTransportReportModuleDto(Integer id, SapGrnDetailsDto sapGrnDetailsEntity, VehicleMasterDto vehicleMaster, String batch, String sourceLocationCode, String sourceDescription, Boolean isActive, Integer rStat, Boolean isAssigned, Boolean isProcessed, AuditEntity auditEntity, String remark) {
         this.id = id;
-        this.commodity = commodity;
-        this.auditDtrRequest = auditDtrRequest;
-        this.truckNumber = truckNumber;
-        this.vesselName = vesselName;
-        this.sapGrNumber = sapGrNumber;
-        this.truckCapacity = truckCapacity;
-        this.date = date;
+        this.sapGrnDetailsEntity = sapGrnDetailsEntity;
+        this.vehicleMaster = vehicleMaster;
         this.batch = batch;
-        this.grSloc = grSloc;
-        this.billNo = billNo;
-        this.uom = uom;
-        this.billOfEntry = billOfEntry;
-        this.billOfDate = billOfDate;
-        this.status = status;
+        this.sourceLocationCode = sourceLocationCode;
+        this.sourceDescription = sourceDescription;
         this.isActive = isActive;
         this.rStat = rStat;
-        this.auditEntity = auditEntity;
+        this.isAssigned = isAssigned;
         this.isProcessed = isProcessed;
+        this.auditEntity = auditEntity;
         this.remark = remark;
     }
 
@@ -57,60 +51,20 @@ public class DailyTransportReportModuleDto {
         this.id = id;
     }
 
-    public String getCommodity() {
-        return commodity;
+    public SapGrnDetailsDto getSapGrnDetailsEntity() {
+        return sapGrnDetailsEntity;
     }
 
-    public void setCommodity(String commodity) {
-        this.commodity = commodity;
+    public void setSapGrnDetailsEntity(SapGrnDetailsDto sapGrnDetailsEntity) {
+        this.sapGrnDetailsEntity = sapGrnDetailsEntity;
     }
 
-    public AuditDtrRequestDto getAuditDtrRequest() {
-        return auditDtrRequest;
+    public VehicleMasterDto getVehicleMaster() {
+        return vehicleMaster;
     }
 
-    public void setAuditDtrRequest(AuditDtrRequestDto auditDtrRequest) {
-        this.auditDtrRequest = auditDtrRequest;
-    }
-
-    public String getTruckNumber() {
-        return truckNumber;
-    }
-
-    public void setTruckNumber(String truckNumber) {
-        this.truckNumber = truckNumber;
-    }
-
-    public String getVesselName() {
-        return vesselName;
-    }
-
-    public void setVesselName(String vesselName) {
-        this.vesselName = vesselName;
-    }
-
-    public Integer getSapGrNumber() {
-        return sapGrNumber;
-    }
-
-    public void setSapGrNumber(Integer sapGrNumber) {
-        this.sapGrNumber = sapGrNumber;
-    }
-
-    public Integer getTruckCapacity() {
-        return truckCapacity;
-    }
-
-    public void setTruckCapacity(Integer truckCapacity) {
-        this.truckCapacity = truckCapacity;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public void setVehicleMaster(VehicleMasterDto vehicleMaster) {
+        this.vehicleMaster = vehicleMaster;
     }
 
     public String getBatch() {
@@ -121,52 +75,20 @@ public class DailyTransportReportModuleDto {
         this.batch = batch;
     }
 
-    public Integer getGrSloc() {
-        return grSloc;
+    public String getSourceLocationCode() {
+        return sourceLocationCode;
     }
 
-    public void setGrSloc(Integer grSloc) {
-        this.grSloc = grSloc;
+    public void setSourceLocationCode(String sourceLocationCode) {
+        this.sourceLocationCode = sourceLocationCode;
     }
 
-    public String getBillNo() {
-        return billNo;
+    public String getSourceDescription() {
+        return sourceDescription;
     }
 
-    public void setBillNo(String billNo) {
-        this.billNo = billNo;
-    }
-
-    public String getUom() {
-        return uom;
-    }
-
-    public void setUom(String uom) {
-        this.uom = uom;
-    }
-
-    public Integer getBillOfEntry() {
-        return billOfEntry;
-    }
-
-    public void setBillOfEntry(Integer billOfEntry) {
-        this.billOfEntry = billOfEntry;
-    }
-
-    public String getBillOfDate() {
-        return billOfDate;
-    }
-
-    public void setBillOfDate(String billOfDate) {
-        this.billOfDate = billOfDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setSourceDescription(String sourceDescription) {
+        this.sourceDescription = sourceDescription;
     }
 
     public Boolean getActive() {
@@ -185,12 +107,12 @@ public class DailyTransportReportModuleDto {
         this.rStat = rStat;
     }
 
-    public AuditEntity getAuditEntity() {
-        return auditEntity;
+    public Boolean getAssigned() {
+        return isAssigned;
     }
 
-    public void setAuditEntity(AuditEntity auditEntity) {
-        this.auditEntity = auditEntity;
+    public void setAssigned(Boolean assigned) {
+        isAssigned = assigned;
     }
 
     public Boolean getProcessed() {
@@ -199,6 +121,14 @@ public class DailyTransportReportModuleDto {
 
     public void setProcessed(Boolean processed) {
         isProcessed = processed;
+    }
+
+    public AuditEntity getAuditEntity() {
+        return auditEntity;
+    }
+
+    public void setAuditEntity(AuditEntity auditEntity) {
+        this.auditEntity = auditEntity;
     }
 
     public String getRemark() {

@@ -2,9 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_item_loading_advise"
+        android:id="@+id/menu_item_c_loading_advise"
         android:icon="@drawable/menu_logo_warehouse"
-        android:title="Loading Advise" />
+        android:title="Coromandel Loading Advise" />
+
+    <item
+        android:id="@+id/menu_item_b_loading_advise"
+        android:icon="@drawable/menu_logo_warehouse"
+        android:title="Bothra Loading Advise" />
 
     <item
         android:id="@+id/menu_item_coromandel_warehouse"

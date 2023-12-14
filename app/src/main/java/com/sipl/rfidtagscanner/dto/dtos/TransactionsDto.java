@@ -447,7 +447,7 @@ public class TransactionsDto {
         this.strPinnacleLoadingSupervisor = strPinnacleLoadingSupervisor;
     }
 
-    public String getInLoadingTime() {
+    public String inLoadingTime() {
         return inLoadingTime;
     }
 

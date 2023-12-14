@@ -1,11 +1,10 @@
 package com.sipl.rfidtagscanner;
 
 import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_WARNING;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_SUPER;
 import static com.sipl.rfidtagscanner.utils.Config.ROLES_ADMIN_PLANT;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_BWH;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_CWH;
-import static com.sipl.rfidtagscanner.utils.Config.ROLES_LAO;
 import static com.sipl.rfidtagscanner.utils.Config.isPlantDetailsRequiredInSideNav;
 
 import android.app.Dialog;
@@ -29,19 +28,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sipl.rfidtagscanner.dto.dtos.UserMasterDto;
-import com.sipl.rfidtagscanner.dto.response.UserValidateResponseDto;
-import com.sipl.rfidtagscanner.fragments.BWHFragment;
+import com.google.gson.Gson;
+import com.sipl.rfidtagscanner.dto.dtos.GenericData;
 import com.sipl.rfidtagscanner.fragments.ScanFragment;
 import com.sipl.rfidtagscanner.fragments.SettingsFragment;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivityList";
 
-    private static final String TAG = "TestingArea";
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
@@ -60,11 +54,10 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
 
-        if (getLoginUserRole() != null) {
-            loadMenuBasedOnRoles(getLoginUserRole());
+        if (getRoleId() != null) {
+            loadMenuBasedOnRoles(getRoleId());
         }
         showSideBarLoginUsername();
-
     }
 
     public void loadFragment(Fragment fragment, int flag) {
@@ -104,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.menu_item_scan_rfid) {
                 loadFragment2(new ScanFragment(), 1, null);
-            } else if (id == R.id.menu_item_loading_advise) {
-                loadFragment2(new ScanFragment(), 1, "loadingAdvise");
+            } else if (id == R.id.menu_item_c_loading_advise) {
+                loadFragment2(new ScanFragment(), 1, "cLoadingAdvise");
+            }else if (id == R.id.menu_item_b_loading_advise) {
+                loadFragment2(new ScanFragment(), 1, "bLoadingAdvise");
             } else if (id == R.id.menu_item_bothra_warehouse) {
                 loadFragment2(new ScanFragment(), 1, "bothra");
             } else if (id == R.id.menu_item_coromandel_warehouse) {
@@ -146,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
         TextView login_username = headerView.findViewById(R.id.login_username);
         TextView txtHeaderPlantCode = headerView.findViewById(R.id.login_plantCode);
         LinearLayout headerLayoutPlant = headerView.findViewById(R.id.ll_header_plant_code);
-        login_username.setText(getLoginUsername());
-        String loginUserPlantCode = getLoginUserPlantCode() + " - " + getLoginUserPlantLocationDesc();
+        login_username.setText(getUserName());
+        String loginUserPlantCode = getUserPlantCode();
         txtHeaderPlantCode.setText(loginUserPlantCode);
 
         if (isPlantDetailsRequiredInSideNav) {
@@ -159,105 +154,46 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         SharedPreferences checkBox = getSharedPreferences("rememberMe", MODE_PRIVATE);
         checkBox.edit().putString("remember", "false").apply();
-        sp.edit().remove("userIDSPK").apply();
-        sp.edit().remove("usernameSPK").apply();
-        sp.edit().remove("roleSPK").apply();
-        sp.edit().remove("UserSourceLocationDescSPK").apply();
-        sp.edit().remove("userPlantLocationDescSPK").apply();
+        sp.edit().remove("userIdSPK").apply();
+        sp.edit().remove("userNameSPK").apply();
+        sp.edit().remove("roleIdSPK").apply();
+        sp.edit().remove("plantCodeSPK").apply();
         sp.edit().remove("tokenSPK").apply();
         sp.edit().remove("userLoginStatus").apply();
-
-        SharedPreferences sp1 = getSharedPreferences("logoutMark", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp1.edit();
-        editor.putString("isLogout", "logout").apply();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
 
-    public String getLoginUsername() {
+    public String getUserName() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("usernameSPK", null);
+        return sp.getString("userNameSPK", null);
     }
 
-    public String getLoginToken() {
+    public String getToken() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
         return sp.getString("tokenSPK", null);
     }
 
-    public String getLoginUserRole() {
+    public String getRoleId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("userRolesIdSPK", null);
+        return sp.getString("roleIdSPK", null);
     }
 
-    public String getLoginUserStorageCode() {
+    public String getUserPlantCode() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("UserSourceLocationSPK", null);
+        return sp.getString("plantCodeSPK", null);
     }
 
-    public String getLoginUserPlantCode() {
+    public String getUserId() {
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("userPlantLocationSPK", null);
+        return sp.getString("userIdSPK", null);
     }
 
-    public int getLoginUserId() {
+    public String destinationLocationDtoList(){
         SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return Integer.parseInt(sp.getString("userIDSPK", null));
+        return sp.getString("destinationLocationDtoListSPK", null);
     }
-
-    public String getLoginUserPlantLocationDesc() {
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("userPlantLocationDescSPK", null);
-    }
-
-    public String getLoginUserSourceLocationDesc() {
-        SharedPreferences sp = getSharedPreferences("loginCredentials", MODE_PRIVATE);
-        return sp.getString("UserSourceLocationDescSPK", null);
-    }
-
-/*    public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
-        Dialog dialog = new Dialog(context);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setContentView(R.layout.custom_alert_dialog_box);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        TextView error = dialog.findViewById(R.id.dialog_type_error);
-        TextView success = dialog.findViewById(R.id.dialog_type_success);
-        TextView warning = dialog.findViewById(R.id.dialog_type_warning);
-        if (dialogType.equalsIgnoreCase("error")) {
-            error.setVisibility(View.VISIBLE);
-            success.setVisibility(View.GONE);
-            warning.setVisibility(View.GONE);
-        } else if (dialogType.equalsIgnoreCase("success")) {
-            error.setVisibility(View.GONE);
-            warning.setVisibility(View.GONE);
-            success.setVisibility(View.VISIBLE);
-        } else if (dialogType.equalsIgnoreCase("warning")) {
-            error.setVisibility(View.GONE);
-            success.setVisibility(View.GONE);
-            warning.setVisibility(View.VISIBLE);
-        } else {
-            Log.i(TAG, "alertBuilder3: Wrong parameter pass in dialogType");
-        }
-        TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
-        if (dialogMessage == null) {
-            dialogMessageTxt.setVisibility(View.GONE);
-        }
-        TextView dialogTitleTxt = dialog.findViewById(R.id.text_msg);
-        TextView btn = dialog.findViewById(R.id.text_btn);
-        dialogTitleTxt.setText(dialogTitle);
-        dialogMessageTxt.setText(dialogMessage);
-        btn.setText(dialogBtnText);
-        btn.setOnClickListener(view -> {
-            if(isReturnToScanner){
-                dialog.dismiss();
-                loadFragment(new ScanFragment(), 1);
-            }else {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }*/
 
     public void alert(Context context, String dialogType, String dialogTitle, String dialogMessage, String dialogBtnText, Boolean isReturnToScanner) {
         Dialog dialog = new Dialog(context);
@@ -270,9 +206,9 @@ public class MainActivity extends AppCompatActivity {
         TextView success = dialog.findViewById(R.id.dialog_type_success);
         TextView warning = dialog.findViewById(R.id.dialog_type_warning);
 
-        error.setVisibility(dialogType.equalsIgnoreCase("ERROR") ? View.VISIBLE : View.GONE);
-        success.setVisibility(dialogType.equalsIgnoreCase("SUCCESS") ? View.VISIBLE : View.GONE);
-        warning.setVisibility(dialogType.equalsIgnoreCase("WARNING") ? View.VISIBLE : View.GONE);
+        error.setVisibility(dialogType.equalsIgnoreCase(DIALOG_ERROR) ? View.VISIBLE : View.GONE);
+        success.setVisibility(dialogType.equalsIgnoreCase(DIALOG_SUCCESS) ? View.VISIBLE : View.GONE);
+        warning.setVisibility(dialogType.equalsIgnoreCase(DIALOG_WARNING) ? View.VISIBLE : View.GONE);
 
         TextView dialogMessageTxt = dialog.findViewById(R.id.text_msg2);
         dialogMessageTxt.setVisibility(dialogMessage == null ? View.GONE : View.VISIBLE);
@@ -291,9 +227,6 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
         dialog.show();
     }
-
-
 }

@@ -5,17 +5,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="30dp"
+    android:layout_margin="20dp"
     android:background="@drawable/custom_edittext"
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp">
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="8dp">
 
 
         <TextView
@@ -31,7 +31,7 @@
             android:textColor="#E91E63"
             android:textSize="24sp"
             android:visibility="gone"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/dialog_type_success"
@@ -45,7 +45,7 @@
             android:textAlignment="center"
             android:textColor="#009688"
             android:textSize="24sp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/dialog_type_warning"
@@ -60,7 +60,7 @@
             android:textAlignment="center"
             android:textColor="#FF9800"
             android:textSize="24sp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
@@ -74,7 +74,7 @@
             android:fontFamily="@font/source_sans_pro_regular"
             android:text="Message"
             android:textColor="#000"
-            android:textSize="16sp"></TextView>
+            android:textSize="16sp" />
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"/>
@@ -87,7 +87,7 @@
             android:text="Message"
             android:fontFamily="@font/source_sans_pro_regular"
             android:textColor="#000"
-            android:textSize="16sp"></TextView>
+            android:textSize="16sp" />
         <View
             android:layout_width="match_parent"
             android:layout_height="5dp"/>
@@ -103,6 +103,6 @@
             android:fontFamily="@font/source_sans_pro_black"
             android:textColor="#000"
             android:textStyle="bold"
-            android:textSize="14sp"></TextView>
+            android:textSize="14sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -1,19 +1,24 @@
 <resources>
-    <string name="app_name">RFId Tag Scanner</string>
-    <string name="app_names"></string>
+    <string name="app_name">RMMS</string>
+    <string name="app_names" />
+    <string name="app_id">1</string>
+    <string name="login_app_version">2.1.1</string>
+    <string name="environment">UAT</string>
+    <string name="environment_90">90 Server</string>
+    <string name="environment_91">91 Server</string>
+
 
     <!--    title bar-->
     <string name="title_bothra">Bothra Warehouse </string>
     <string name="title_coromandel">Coromandel Warehouse</string>
     <string name="title_loading_advise">Loading Advise</string>
     <string name="title_bothra_loading_advise">Loading Advise</string>
-    <!--    <string name="title1">Bothra WH Supervisor</string>-->
-
 
     <string name="driverName">Driver Name</string>
     <string name="TruckNumber">Truck Number</string>
     <string name="berthNumber">Berth Number</string>
-    <string name="commodity">Commodity</string>
+    <string name="tare_weight">Tare Weight</string>
+    <string name="commodity">Material Description</string>
     <string name="grossWeight">Gross Weight (kg)</string>
     <string name="print">Print</string>
     <string name="submit">Submit</string>
@@ -26,18 +31,17 @@
 
     <!--    Loading Advise -->
     <string name="title3">Loading Advise</string>
-    <string name="sap_gr_no">SAP GR No</string>
+    <string name="batch_number">Batch Number</string>
     <string name="vessel_name">Vessel Name</string>
     <string name="rfid_lep_no">RFID/LEP No</string>
     <string name="truck_capacity">Truck Capacity</string>
     <string name="system_date">In Loading Time</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="OpenDrawer">Open Navigation Drawer</string>
     <string name="ClosedDrawer">Close Navigation Drawer</string>
-    <string name="launcher_name">" RFID Scanner"</string>
-    <string name="footer_text">© 2023 Develop By Suraj Informatics Pvt. Ltd.</string>
+    <string name="launcher_name">"RMMS"</string>
+    <string name="footer_text">© 2023 Developed By Suraj Informatics Pvt. Ltd.</string>
     <string name="table_date">Date</string>
     <string name="table_trips">Trips</string>
     <string name="title1">Bothra WH Supervisor</string>
@@ -59,6 +63,9 @@
     <string name="menu_profile">Profile Setting</string>
     <string name="menu_logout">Logout</string>
     <string name="lep_no">LEP Number</string>
+    <string name="other_reason">Other Remark</string>
+    <string name="batch_no">Batch Number</string>
+    <string name="berth_no">Berth Number</string>
     <string name="driver_mobile_no">Driver Mobile No</string>
     <string name="driver_license_no">Driver License No</string>
     <string name="loading_supervisor">Loading "\n"Supervisor</string>
@@ -70,12 +77,22 @@
     <string name="source_location">Source "\n"Location</string>
     <string name="destination_location">Destination Location</string>
     <string name="update_rmg_no">Update RMG No</string>
-    <string name="previous_wh_no">Previous W.H. No</string>
-    <string name="update_wh_no">Warehouse No</string>
+    <string name="previous_wh_no">LEP Location "\n"(Planned)</string>
+    <string name="update_wh_no">LEP Location "\n"(Actual)</string>
 
-
-    <string name="login_app_version">Version 1.0.3_UAT</string>
     <string name="unloading_in_time">Unloading in time</string>
     <string name="unloading_out_time">Unloading out time</string>
     <string name="rfid_tag">RFID Tag</string>
+    <string name="bottom_wave">Bottom wave</string>
+    <string name="verify">Verify</string>
+    <string name="scan_rfid_tag">Scan RFID Tag</string>
+    <string name="top_wave">Top wave</string>
+    <string name="warning">Warning</string>
+    <string name="ok">OK</string>
+    <string name="update">Update</string>
+    <string name="download">Download</string>
+    <string name="close_app">Close app</string>
+    <string name="retry">Retry</string>
+    <string name="message">Message</string>
+    <string name="downloading">Downloading …</string>
 </resources>

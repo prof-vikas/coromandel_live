@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cf_txt_serial_number"
+    android:id="@+id/sf_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -10,118 +11,141 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:gravity="top">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="85dp"
-            android:src="@drawable/header_wave" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/error_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="gone"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:weightSum="5">
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:gravity="top">
 
-            <TextView
-                android:id="@+id/sf_error"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_weight="4"
-                android:fontFamily="@font/source_sans_pro_black"
-                android:gravity="center"
-                android:padding="10dp"
-                android:textColor="@color/error_invalid_login_text"
-                android:textSize="14sp" />
+                android:layout_height="85dp"
+                android:contentDescription="@string/top_wave"
+                android:src="@drawable/header_wave" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:weightSum="5">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/sf_edt_rfid_tag"
-                android:layout_width="0dp"
-                android:layout_height="45dp"
-                android:layout_weight="4"
-                android:background="@drawable/rounded_border"
-                android:fontFamily="@font/source_sans_pro_black"
-                android:gravity="center"
-                android:hint="Scan RFID Tag"
-                android:inputType="text"
-                android:padding="7dp"
-                android:textColor="@color/wareHouseBgColor"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5dp"
-            android:weightSum="5">
-
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/sf_btn_verify"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/error_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:background="@drawable/rounded_verify_btn"
-                android:fontFamily="@font/source_sans_pro_black"
-                android:text="Verify"
-                android:textAllCaps="true"
-                android:textColor="@color/white" />
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:weightSum="5">
 
+                <TextView
+                    android:id="@+id/sf_error"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="4"
+                    android:fontFamily="@font/source_sans_pro_black"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="@color/error_invalid_login_text"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:weightSum="5">
+
+                <EditText
+                    android:id="@+id/sf_edt_rfid_tag"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/rounded_border"
+                    android:fontFamily="@font/source_sans_pro_black"
+                    android:gravity="center"
+                    android:hint="@string/scan_rfid_tag"
+                    android:inputType="text"
+                    android:padding="7dp"
+                    android:textColor="@color/wareHouseBgColor"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:weightSum="5">
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/sf_btn_verify"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/rounded_verify_btn"
+                    android:fontFamily="@font/source_sans_pro_black"
+                    android:text="@string/verify"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white" />
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <ProgressBar
-            android:id="@+id/login_progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateDrawable="@drawable/progress_icon"
-            android:visibility="gone" />
-    </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom"
-        android:layout_weight="0.5">
-
-        <ImageView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="85dp"
+            android:layout_height="0dp"
             android:layout_gravity="bottom"
-            android:src="@drawable/bottom_wave" />
+            android:layout_weight="0.5">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="85dp"
+                android:layout_gravity="bottom"
+                android:contentDescription="@string/bottom_wave"
+                android:src="@drawable/bottom_wave" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/sf_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:elevation="1dp"
+        android:indeterminateDrawable="@drawable/progress_icon"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/sf_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_dusk_overlay"
+        android:visibility="gone" />
+
+</FrameLayout>

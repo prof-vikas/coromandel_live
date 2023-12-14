@@ -1,6 +1,15 @@
 package com.sipl.rfidtagscanner.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.sipl.rfidtagscanner.utils.Config.BTN_OK;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_ERROR;
+import static com.sipl.rfidtagscanner.utils.Config.DIALOG_SUCCESS;
+import static com.sipl.rfidtagscanner.utils.Config.NULL_VALUE_RESPONSE;
+import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_CREATED;
+import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_FOUND;
+import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_NOT_FOUND;
+import static com.sipl.rfidtagscanner.utils.Config.RESPONSE_OK;
+import static com.sipl.rfidtagscanner.utils.Config.ROLES_B_LAO;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,13 +17,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
@@ -30,9 +42,9 @@ import com.sipl.rfidtagscanner.dto.response.LoadingAdvisePostApiResponse;
 import com.sipl.rfidtagscanner.dto.response.TransactionsApiResponse;
 import com.sipl.rfidtagscanner.entites.AuditEntity;
 import com.sipl.rfidtagscanner.utils.Concatenator;
+import com.sipl.rfidtagscanner.utils.CustomErrorMessage;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,30 +52,16 @@ import retrofit2.Response;
 
 public class LoadingAdviseFragment extends Fragment {
     private static final String TAG = "TracingError";
-    private final Concatenator concatenator = new Concatenator();
-    ArrayList<String> arrBothraStrLocation = new ArrayList<>();
-
-    private String strisgetInLoadingTime;
-    private TextClock tvClock, exitClock;
-    private LinearLayout lltvClockLayout;
+    private Button btnSubmit;
+    private TextClock clockInLoadingTime, clockOutLoadingTime;
+    private TextView txtPinnacleSupervisor, txtBothraSupervisor;
+    private EditText edtRfidTagNo, edtBerthNumber, edtLepNo, edtBatchNumber, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtSourceLocation, edtTareWeight, edtLoadingInTime, edtDestinationLocation, edtBothraSupervisor, edtPinnacleSupervisor;
+    private String loginUserName, loadingInTime, token, loginUserRoleId, selectedDestinationCode, grSourceLocation;
+    private LinearLayout llBothraSupervisor, llPinnacleSupervisor, llBerthNumber, llStaticLoadingInTime, llLoadingInClock, llLoadingOutClock, llTareWeight;
+    private Integer loginUserId, selectedLepNumberId;
     private ProgressBar progressBar;
-    private EditText edtDestinationLocation, edtBothraSupervisor, edtPinnacleSupervisor;
-    private TextView tvDestinationLocation, tvPinnacleSupervisor, tvBothraSupervisor;
-    private EditText edtRfidTagNo, edtBerthNumber, edtLepNo, edtSapGrNo, edtTruckNumber, edtDriverName, edtDriverMobileNo, edtDriverLicenseNo, edtVesselName, edtCommodity, edtTruckCapacity, edtLoadingSupervisor, edtSourceLocation;
-
-    //    userDetails
-    private String loginUserName;
-    private String token;
-    private String loginUserStorageLocation;
-    private String loginUserStorageLocationDesc;
-    //    private String loginUserPlantCode;
-    private int loginUserId;
-
-    private String selectedDestinationCode;
-    private Integer selectedLepNumberId;
-    private LinearLayout constaintEntryTimeLayout, textclockLayoutexit;
-    private EditText edtConstEntryTime;
-    private LinearLayout layoutBothraSupervisor, layoutPinnacleSupervisor, edtBerthNumberLayout;
+    private FrameLayout rootLayout;
+    private View colorOverlay;
 
     public LoadingAdviseFragment() {
     }
@@ -72,57 +70,52 @@ public class LoadingAdviseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_loading_adivse, container, false);
-
-        edtPinnacleSupervisor = view.findViewById(R.id.ll_edt_pinnacle_supervisor);
-        edtBothraSupervisor = view.findViewById(R.id.ll_edt_bothra_supervisor);
-        edtDestinationLocation = view.findViewById(R.id.ll_edt_destination_location);
-
-        textclockLayoutexit = view.findViewById(R.id.title_exit_date_time);
-        exitClock = view.findViewById(R.id.la_exit_tv_clock);
-
-        lltvClockLayout = view.findViewById(R.id.title_date_time);
-        constaintEntryTimeLayout = view.findViewById(R.id.title_ll_entry_time);
-        edtConstEntryTime = view.findViewById(R.id.ll_edt_entryTime);
-
-        Button btnSubmit = view.findViewById(R.id.btn_loading_advise_submit);
-        Button btnCancel = view.findViewById(R.id.btn_loading_advise_reset);
-
+        txtBothraSupervisor = view.findViewById(R.id.la_txt_bothra_supervisor);
+        txtPinnacleSupervisor = view.findViewById(R.id.la_txt_pinnacle_supervisor);
+        edtPinnacleSupervisor = view.findViewById(R.id.la_edt_pinnacle_supervisor);
+        edtBothraSupervisor = view.findViewById(R.id.la_edt_bothra_supervisor);
+        edtDestinationLocation = view.findViewById(R.id.la_edt_destination_location);
+        edtLoadingInTime = view.findViewById(R.id.la_edt_loading_in_time);
         edtSourceLocation = view.findViewById(R.id.la_edt_source_location);
-        edtRfidTagNo = view.findViewById(R.id.edt_la_rfid_tag_no);
+        edtRfidTagNo = view.findViewById(R.id.la_edt_rfid_tag_no);
         edtLepNo = view.findViewById(R.id.la_edt_lep_number);
-        edtSapGrNo = view.findViewById(R.id.edt_la_sap_rg_no);
-        edtTruckNumber = view.findViewById(R.id.edt_la_truck_no);
-        edtDriverName = view.findViewById(R.id.edt_la_driver_name);
-        edtDriverMobileNo = view.findViewById(R.id.edt_la_driver_mobile_no);
-        edtDriverLicenseNo = view.findViewById(R.id.edt_la_driver_license_no);
-        edtVesselName = view.findViewById(R.id.edt_la_vessel_name);
-        edtCommodity = view.findViewById(R.id.edt_la_commodity);
-        edtTruckCapacity = view.findViewById(R.id.edt_la_quantity);
-        edtBerthNumber = view.findViewById(R.id.edt_la_berth_number);
-        edtLoadingSupervisor = view.findViewById(R.id.edt_la_loading_supervisor);
-        edtBerthNumberLayout = view.findViewById(R.id.title_berth_number);
+        edtTruckNumber = view.findViewById(R.id.la_edt_truck_no);
+        edtDriverName = view.findViewById(R.id.la_edt_driver_name);
+        edtDriverMobileNo = view.findViewById(R.id.la_edt_driver_mobile_no);
+        edtDriverLicenseNo = view.findViewById(R.id.la_edt_driver_license_no);
+        edtVesselName = view.findViewById(R.id.la_edt_vessel_name);
+        edtCommodity = view.findViewById(R.id.la_edt_commodity);
+        edtBerthNumber = view.findViewById(R.id.la_edt_berth_number);
+        edtBatchNumber = view.findViewById(R.id.la_edt_batch_number);
+        edtTareWeight = view.findViewById(R.id.la_edt_tare_weight);
+        EditText edtLoadingSupervisor = view.findViewById(R.id.la_edt_loading_supervisor);
 
+        llLoadingOutClock = view.findViewById(R.id.la_ll_loading_out_clock);
+        llLoadingInClock = view.findViewById(R.id.la_ll_loading_in_clock);
+        llTareWeight = view.findViewById(R.id.la_ll_tare_weight);
+        llBothraSupervisor = view.findViewById(R.id.la_ll_bothra_supervisor);
+        llPinnacleSupervisor = view.findViewById(R.id.la_ll_pinnacle_supervisor);
+        llStaticLoadingInTime = view.findViewById(R.id.la_ll_static_loading_in_time);
+        llBerthNumber = view.findViewById(R.id.la_ll_berth_number);
         progressBar = view.findViewById(R.id.la_progressBar);
+        rootLayout = view.findViewById(R.id.la_root_layout);
+        colorOverlay = view.findViewById(R.id.la_view);
 
-        tvClock = view.findViewById(R.id.la_tv_clock);
-        tvDestinationLocation = view.findViewById(R.id.tv_la_destination_location);
-        tvBothraSupervisor = view.findViewById(R.id.tv_la_bothra_supervisor);
-        tvPinnacleSupervisor = view.findViewById(R.id.tv_la_pinnacle_supervisor);
+        clockInLoadingTime = view.findViewById(R.id.la_clock_in_loading_time);
+        clockOutLoadingTime = view.findViewById(R.id.la_clock_out_loading_time);
 
-        layoutBothraSupervisor = view.findViewById(R.id.title_bothra_supervisor);
-        layoutPinnacleSupervisor = view.findViewById(R.id.title_pinnacle_supervisor);
+        btnSubmit = view.findViewById(R.id.la_btn_submit);
+        Button btnCancel = view.findViewById(R.id.la_btn_cancel);
 
-        this.loginUserName = ((MainActivity) requireActivity()).getLoginUsername();
-        this.loginUserId = ((MainActivity) requireActivity()).getLoginUserId();
-        this.loginUserStorageLocation = ((MainActivity) requireActivity()).getLoginUserStorageCode();
-        this.loginUserStorageLocationDesc = ((MainActivity) requireActivity()).getLoginUserSourceLocationDesc();
-        this.token = ((MainActivity) requireActivity()).getLoginToken();
+        String userId = ((MainActivity) requireActivity()).getUserId();
+        if (userId != null) {
+            this.loginUserId = Integer.parseInt(userId);
+        }
 
+        this.loginUserRoleId = (((MainActivity) requireActivity()).getRoleId());
+        this.token = ((MainActivity) requireActivity()).getToken();
+        this.loginUserName = ((MainActivity) requireActivity()).getUserName();
         edtLoadingSupervisor.setText(loginUserName);
-
-        edtSourceLocation.setText(loginUserStorageLocation + " - " + loginUserStorageLocationDesc);
-
-        getBundleData();
 
         /*
          *  methods need to run on onCreate
@@ -130,292 +123,46 @@ public class LoadingAdviseFragment extends Fragment {
         updateUIBasedOnUser();
         makeTvTextCompulsory();
         displayClock();
-        getLoadingAdviseDetails();
+        getLaRfidTagDetails();
 
         btnSubmit.setOnClickListener(view12 -> {
-            if (validateLoadingAdviseForm()) {
+            if (validateInputDetail()) {
                 chooseMethodToCall();
             }
         });
-        btnCancel.setOnClickListener(view1 -> resetTextField());
+        btnCancel.setOnClickListener(view1 -> ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1));
 
         return view;
     }
 
-    private void getBundleData() {
-        SharedPreferences sp = requireActivity().getSharedPreferences("bothraStrLocation", MODE_PRIVATE);
-        String s = sp.getString("size", null);
-        Log.i(TAG, "getBundleData: S : " + s);
-        if (s != null) {
-            int m = Integer.parseInt(s);
-            for (int i = 0; i < m; i++) {
-                String n = sp.getString(String.valueOf(i), null);
-                arrBothraStrLocation.add(n);
-            }
+    private void updateUIBasedOnUser() {
+        if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
+            llBothraSupervisor.setVisibility(View.VISIBLE);
+            llPinnacleSupervisor.setVisibility(View.VISIBLE);
+            llBerthNumber.setVisibility(View.VISIBLE);
+        } else {
+            llBothraSupervisor.setVisibility(View.GONE);
+            llPinnacleSupervisor.setVisibility(View.GONE);
+            llTareWeight.setVisibility(View.VISIBLE);
+            llBerthNumber.setVisibility(View.VISIBLE);
         }
-    }
-
-    private boolean validateLoadingAdviseForm() {
-        if (edtRfidTagNo.length() == 0) {
-            edtRfidTagNo.setError("This field is required");
-            return false;
-        }
-        if (edtLepNo.length() == 0) {
-            edtLepNo.setError("This field is required");
-            return false;
-        }
-        if (edtSapGrNo.length() == 0) {
-            edtSapGrNo.setError("This field is required");
-            return false;
-        }
-        if (edtTruckNumber.length() == 0) {
-            edtTruckNumber.setError("This field is required");
-            return false;
-        }
-        if (edtDriverName.length() == 0) {
-            edtDriverName.setError("This field is required");
-            return false;
-        }
-        if (edtDriverMobileNo.length() == 0) {
-            edtDriverMobileNo.setError("This field is required");
-            return false;
-        }
-        if (edtDriverLicenseNo.length() == 0) {
-            edtDriverLicenseNo.setError("This field is required");
-            return false;
-        }
-        if (edtVesselName.length() == 0) {
-            edtVesselName.setError("This field is required");
-            return false;
-        }
-        if (edtCommodity.length() == 0) {
-            edtCommodity.setError("This field is required");
-            return false;
-        }
-        if (edtTruckCapacity.length() == 0) {
-            edtTruckCapacity.setError("This field is required");
-            return false;
-        }
-        if (edtLoadingSupervisor.length() == 0) {
-            edtLoadingSupervisor.setError("This field is required");
-            return false;
-        }
-
-        if (edtSourceLocation.length() == 0) {
-            edtSourceLocation.setError("This field is required");
-            return false;
-        }
-
-        if (edtDestinationLocation.length() == 0) {
-            edtDestinationLocation.setError("This field is required");
-            return false;
-        }
-
-        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
-
-            if (!strisgetInLoadingTime.equalsIgnoreCase("true")) {
-                if (edtPinnacleSupervisor.length() == 0) {
-                    edtPinnacleSupervisor.setError("This field is required");
-                    return false;
-                }
-
-                if (edtBothraSupervisor.length() == 0) {
-                    edtBothraSupervisor.setError("This field is required");
-                    return false;
-                }
-
-                if (edtBerthNumber.length() == 0) {
-                    edtBerthNumber.setError("This field is required");
-                    return false;
-                }
-            }
-
-        }
-        return true;
-    }
-
-    private void resetTextField() {
-        ((MainActivity) requireActivity()).loadFragment(new ScanFragment(), 1);
     }
 
     private void makeTvTextCompulsory() {
-        concatenator.multiStringConcatenate(tvBothraSupervisor, "Bothra \r\nSupervisor", " *");
-        concatenator.multiStringConcatenate(tvPinnacleSupervisor, "Pinnacle \r\nSupervisor", " *");
+        Concatenator.multiStringConcatenate(txtBothraSupervisor, "Bothra \r\nSupervisor", " *");
+        Concatenator.multiStringConcatenate(txtPinnacleSupervisor, "Pinnacle \r\nSupervisor", " *");
     }
 
     private void displayClock() {
         try {
-      /*      tvClock.setFormat24Hour("dd-MM-yy hh:mm a");
-            exitClock.setFormat24Hour("dd-MM-yy hh:mm a");*/
-            tvClock.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
-            exitClock.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
+            clockInLoadingTime.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
+            clockOutLoadingTime.setFormat24Hour("dd-MM-yyyy hh:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void sendLoadingAdviseDetails(LoadingAdviseRequestDto loadingAdviseRequestDto) {
-        progressBar.setVisibility(View.VISIBLE);
-        Log.i(TAG, new Gson().toJson(loadingAdviseRequestDto).toString());
-        Call<LoadingAdvisePostApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().addRfidLepIssue("Bearer " + token, loadingAdviseRequestDto);
-        call.enqueue(new Callback<LoadingAdvisePostApiResponse>() {
-            @Override
-            public void onResponse(Call<LoadingAdvisePostApiResponse> call, Response<LoadingAdvisePostApiResponse> response) {
-                Log.i(TAG, "onResponse code : " + response.code());
-                if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.errorBody().toString(), null, "OK", false);
-                }
-                Log.i(TAG, "onResponse: add loading advise : " + response.body().getStatus());
-                if (response.body().getStatus().equalsIgnoreCase("CREATED")) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "success", response.body().getMessage(), null, "OK", true);
-//                    resetTextField();
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) getActivity()).alert(getActivity(), "error", response.body().getMessage(), null, "OK", false);
-//                    resetTextField();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoadingAdvisePostApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                ((MainActivity) getActivity()).alert(getActivity(), "error", t.getMessage(), null, "OK", false);
-            }
-        });
-    }
-
-
-    private void UpdateCoromadelLoadingAdviseDetails(LoadingAdviseRequestDto
-                                                             loadingAdviseRequestDto) {
-        progressBar.setVisibility(View.VISIBLE);
-        Log.i(TAG, "UpdateCoromadelLoadingAdviseDetails : Request Dto : <<------- " + new Gson().toJson(loadingAdviseRequestDto));
-        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateCoromandelLoadingAdvise("Bearer " + token, loadingAdviseRequestDto);
-        call.enqueue(new Callback<TransactionsApiResponse>() {
-            @Override
-            public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-                if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK", false);
-                }
-                Log.i(TAG, "onResponse: UpdateCoromadelLoadingAdviseDetails : " + response.raw());
-
-                if (response.isSuccessful()){
-                   if (response.body().getStatus() != null){
-                       if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
-                           progressBar.setVisibility(View.GONE);
-                           Log.i(TAG, "onResponse: response : " + response.body().getStatus());
-                           ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
-                       } else if (response.body().getStatus().equalsIgnoreCase("NOT_FOUND")) {
-                           sendLoadingAdviseDetails(setData());
-                       } else {
-                           progressBar.setVisibility(View.GONE);
-                           ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
-                       }
-                   }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
-            }
-        });
-    }
-
-
-    private void UpdateBothraLoadingAdviseDetails(UpdateBothraLoadingAdviseDto
-                                                          updateBothraLoadingAdviseDto) {
-        progressBar.setVisibility(View.VISIBLE);
-        Log.i(TAG, "updateBothraLoadingAdviseDto : Request Dto : <<------- " + new Gson().toJson(updateBothraLoadingAdviseDto));
-        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
-        call.enqueue(new Callback<TransactionsApiResponse>() {
-            @Override
-            public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
-                if (!response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.errorBody().toString(), null, "OK", false);
-                }
-
-                if (response.body().getStatus().equalsIgnoreCase("FOUND")) {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "success", response.body().getMessage(), null, "OK", true);
-                    resetTextField();
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    ((MainActivity) requireActivity()).alert(requireActivity(), "error", response.body().getMessage(), null, "OK", false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                ((MainActivity) requireActivity()).alert(requireActivity(), "error", t.getMessage(), null, "OK", false);
-            }
-        });
-    }
-
-    private LoadingAdviseRequestDto setData() {
-        final Integer RSTAT = 1;
-        final Integer FLAG = 1;
-        AuditEntity auditEntity = new AuditEntity(loginUserName, null);
-        RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
-        StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
-        UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
-        StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
-        String bothraSupervisor = edtBothraSupervisor.getText().toString();
-        String pinnacleSupervisor = edtPinnacleSupervisor.getText().toString();
-        return new LoadingAdviseRequestDto(auditEntity, bothraSupervisor, pinnacleSupervisor, loadingAdviseDto, sourceMasterDto, functionalLocationMasterDto, rfidLepIssueModel, FLAG, true, RSTAT, String.valueOf(LocalDateTime.now()), String.valueOf(LocalDateTime.now()));
-    }
-
-    private UpdateBothraLoadingAdviseDto updateData() {
-        final Integer BOTHRA_FLAG = 12;
-        StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
-        UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
-        RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
-        StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
-        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
-        if (strisgetInLoadingTime.equalsIgnoreCase("true")) {
-            return new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, BOTHRA_FLAG, null, String.valueOf(LocalDateTime.now()));
-        } else {
-            return new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, BOTHRA_FLAG, String.valueOf(LocalDateTime.now()), null);
-        }
-    }
-
-    private UpdateBothraLoadingAdviseDto updateBothraLData() {
-        final Integer BOTHRA_FLAG = 12;
-        StorageLocationDto sourceMasterDto = new StorageLocationDto(loginUserStorageLocation);
-        UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
-        RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
-        StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
-        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
-        return new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, BOTHRA_FLAG, null, String.valueOf(LocalDateTime.now()));
-    }
-
-    private void updateUIBasedOnUser() {
-        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
-            layoutBothraSupervisor.setVisibility(View.VISIBLE);
-            layoutPinnacleSupervisor.setVisibility(View.VISIBLE);
-            edtBerthNumberLayout.setVisibility(View.VISIBLE);
-        } else {
-            layoutBothraSupervisor.setVisibility(View.GONE);
-            layoutPinnacleSupervisor.setVisibility(View.GONE);
-            edtBerthNumberLayout.setVisibility(View.GONE);
-        }
-    }
-
-    private void chooseMethodToCall() {
-        if (!arrBothraStrLocation.contains(loginUserStorageLocation)) {
-            UpdateCoromadelLoadingAdviseDetails(setData());
-        } else {
-            UpdateBothraLoadingAdviseDetails(updateData());
-        }
-    }
-
-    private void getLoadingAdviseDetails() {
-        Log.i(TAG, "getLoadingAdviseDetails: the method where get is get from saved pref");
+    private void getLaRfidTagDetails() {
         SharedPreferences sp = requireActivity().getSharedPreferences("loadingAdviceDetails", MODE_PRIVATE);
         String lepNoId = sp.getString("lepNoIdSPK", null);
         if (lepNoId != null) {
@@ -427,57 +174,225 @@ public class LoadingAdviseFragment extends Fragment {
         String driverMobileNo = sp.getString("driverMobileNoSPK", null);
         String driverLicenseNo = sp.getString("driverLicenseNoSPK", null);
         String truckNo = sp.getString("truckNoSPK", null);
-        String sapGrNo = sp.getString("sapGrNoSPK", null);
         String vesselName = sp.getString("vesselNameSPK", null);
-        String truckCapacity = sp.getString("truckCapacitySPK", null);
         String commodity = sp.getString("commoditySPK", null);
         String strDestinationCode = sp.getString("strDestinationCodeSPK", null);
         String strDestinationDesc = sp.getString("strDestinationDescSPK", null);
-        String strPinnaclesupervisor = sp.getString("pinnacleSupervisorSPK", null);
+        String strPinnacleSupervisor = sp.getString("pinnacleSupervisorSPK", null);
         String strBothraSupervisor = sp.getString("bothraSupervisorSPK", null);
         String strBerthNumber = sp.getString("BerthNumberSPK", null);
-        this.strisgetInLoadingTime = sp.getString("isgetInLoadingTimeSPK", "false");
-        Log.i(TAG, "getLoadingAdviseDetails: strisgetInLoadingTime : " + strisgetInLoadingTime);
-        String getInTime = null;
+        String strBatchNumber = sp.getString("batchNumberSPK", null);
+        String grSrcLoc = sp.getString("grSrcLocSPK", null);
+        this.grSourceLocation = grSrcLoc;
+        String grSrcLocDesc = sp.getString("grSrcLocDescSPK", null);
+        String bTareWeight = sp.getString("bTareWeightSPK", null);
+        String strLoadingInTime = sp.getString("getInloadingTimeSPK", null);
+        this.loadingInTime = strLoadingInTime;
 
-        if (strisgetInLoadingTime.equalsIgnoreCase("true")) {
-            getInTime = sp.getString("getInloadingTimeSPK", null);
-            Log.i(TAG, "getLoadingAdviseDetails: in if statment : getInTime : " + getInTime);
-            constaintEntryTimeLayout.setVisibility(View.VISIBLE);
-            lltvClockLayout.setVisibility(View.GONE);
-            edtConstEntryTime.setText(getInTime);
-            edtConstEntryTime.setEnabled(false);
-            edtConstEntryTime.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
-            edtPinnacleSupervisor.setText(strPinnaclesupervisor);
+        if (strLoadingInTime != null) {
+            llStaticLoadingInTime.setVisibility(View.VISIBLE);
+            llLoadingInClock.setVisibility(View.GONE);
+            edtLoadingInTime.setText(strLoadingInTime);
+            edtLoadingInTime.setEnabled(false);
+            edtLoadingInTime.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
+            edtPinnacleSupervisor.setText(strPinnacleSupervisor);
             edtPinnacleSupervisor.setEnabled(false);
             edtPinnacleSupervisor.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
             edtBothraSupervisor.setText(strBothraSupervisor);
             edtBothraSupervisor.setEnabled(false);
             edtBothraSupervisor.setBackgroundResource(R.drawable.rectangle_edt_read_only_field);
-            textclockLayoutexit.setVisibility(View.VISIBLE);
-
-
+            llLoadingOutClock.setVisibility(View.VISIBLE);
         }
-        Log.i(TAG, "getLoadingAdviseDetails: strisgetInLoadingTime : " + strisgetInLoadingTime);
         String destinationLocation = strDestinationCode + " - " + strDestinationDesc;
         this.selectedDestinationCode = strDestinationCode;
-        saveLoginAdviseData(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, sapGrNo, vesselName, truckCapacity, commodity, destinationLocation, strBerthNumber);
+        displayDataToUi(rfidTagId, lepNo, driverName, driverMobileNo, driverLicenseNo, truckNo, vesselName, commodity, destinationLocation, strBerthNumber, strBatchNumber, grSrcLoc, grSrcLocDesc, bTareWeight);
     }
 
-    private void saveLoginAdviseData(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String sapGrNo, String vesselName, String truckCapacity, String commodity, String destinationLocation, String berthNumber) {
-        edtRfidTagNo.setText(rfidTag);
-        edtLepNo.setText(lepNo);
-        edtSapGrNo.setText(sapGrNo);
-        edtTruckNumber.setText(truckNo);
-        edtDriverName.setText(driverName);
-        edtDriverMobileNo.setText(driverMobileNo);
-        edtDriverLicenseNo.setText(driverLicenseNo);
-        edtVesselName.setText(vesselName);
-        edtCommodity.setText(commodity);
-        edtTruckCapacity.setText(truckCapacity);
-        edtDestinationLocation.setText(destinationLocation);
+    private boolean validateInputDetail() {
+        if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
+            if (loadingInTime == null) {
+                if (edtPinnacleSupervisor.length() == 0) {
+                    edtPinnacleSupervisor.setError("This field is required");
+                    return false;
+                }
+
+                if (edtBothraSupervisor.length() == 0) {
+                    edtBothraSupervisor.setError("This field is required");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void chooseMethodToCall() {
+        if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
+            updateCilLoadingOut(initializeCilLARequestDto());
+        } else {
+            updateBothraLoadingAdvise(initializeBothraLARequestDto());
+        }
+    }
+
+    private LoadingAdviseRequestDto initializeCilLARequestDto() {
+        final Integer RSTAT = 1;
+        final Integer FLAG = 1;
+        AuditEntity auditEntity = new AuditEntity(loginUserName, null);
+        RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
+        StorageLocationDto sourceMasterDto = new StorageLocationDto(grSourceLocation);
+        UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
+        StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
+        String bothraSupervisor = edtBothraSupervisor.getText().toString();
+        String pinnacleSupervisor = edtPinnacleSupervisor.getText().toString();
+        return new LoadingAdviseRequestDto(auditEntity, bothraSupervisor, pinnacleSupervisor, loadingAdviseDto, sourceMasterDto, functionalLocationMasterDto, rfidLepIssueModel, FLAG, true, RSTAT, String.valueOf(LocalDateTime.now()), null);
+    }
+
+    private UpdateBothraLoadingAdviseDto initializeBothraLARequestDto() {
+        final Integer BOTHRA_FLAG = 12;
+        StorageLocationDto sourceMasterDto = new StorageLocationDto(grSourceLocation);
+        UserMasterDto loadingAdviseDto = new UserMasterDto(loginUserId);
+        RfidLepIssueDto rfidLepIssueModel = new RfidLepIssueDto(selectedLepNumberId);
+        StorageLocationDto functionalLocationMasterDto = new StorageLocationDto(selectedDestinationCode);
+        AuditEntity auditEntity = new AuditEntity(null, null, loginUserName, null);
+        if (loadingInTime != null) {
+            return new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, BOTHRA_FLAG, null, String.valueOf(LocalDateTime.now()));
+        } else {
+            return new UpdateBothraLoadingAdviseDto(auditEntity, loadingAdviseDto, functionalLocationMasterDto, sourceMasterDto, rfidLepIssueModel, true, BOTHRA_FLAG, String.valueOf(LocalDateTime.now()), null);
+        }
+    }
+
+    private void updateCilLoadingOut(LoadingAdviseRequestDto loadingAdviseRequestDto) {
+        showProgress();
+        Log.i(TAG, "updateCilLoadingOut json : " + new Gson().toJson(loadingAdviseRequestDto));
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateCilLoadingOut("Bearer " + token, loadingAdviseRequestDto);
+        call.enqueue(new Callback<TransactionsApiResponse>() {
+            @Override
+            public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+                hideProgress();
+                Log.d(TAG, "onResponse: updateCilLoadingOut : Raw : " + response.raw());
+                if (!response.isSuccessful()) {
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "Error occurs while updating loading out details", null, BTN_OK, false);
+                }
+
+                if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null) {
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_FOUND)) {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_SUCCESS, response.body().getMessage(), null, BTN_OK, true);
+                    } else if (response.body().getStatus().equalsIgnoreCase(RESPONSE_NOT_FOUND)) {
+                        addCilLoadingIn(initializeCilLARequestDto());
+                    } else {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
+                    }
+                } else {
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, NULL_VALUE_RESPONSE, null, BTN_OK, false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
+                hideProgress();
+                ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, BTN_OK, false);
+            }
+        });
+    }
+
+    private void addCilLoadingIn(LoadingAdviseRequestDto loadingAdviseRequestDto) {
+        showProgress();
+        Log.i(TAG, "addCilLoadingIn json : " + new Gson().toJson(loadingAdviseRequestDto));
+        Call<LoadingAdvisePostApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().addCilLoadingIn("Bearer " + token, loadingAdviseRequestDto);
+        call.enqueue(new Callback<LoadingAdvisePostApiResponse>() {
+            @Override
+            public void onResponse(Call<LoadingAdvisePostApiResponse> call, Response<LoadingAdvisePostApiResponse> response) {
+                hideProgress();
+                Log.d(TAG, "onResponse: addCilLoadingIn : Raw : " + response.raw());
+                if (!response.isSuccessful()) {
+                    ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "Error occurs while adding loading advise details", null, BTN_OK, false);
+                }
+                if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null) {
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_CREATED)) {
+                        ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_SUCCESS, response.body().getMessage(), null, BTN_OK, true);
+                    } else {
+                        ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
+                    }
+                } else {
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, NULL_VALUE_RESPONSE, null, BTN_OK, false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoadingAdvisePostApiResponse> call, Throwable t) {
+                hideProgress();
+                ((MainActivity) requireActivity()).alert(requireContext(), DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, BTN_OK, false);
+            }
+        });
+    }
+
+    private void updateBothraLoadingAdvise(UpdateBothraLoadingAdviseDto updateBothraLoadingAdviseDto) {
+        showProgress();
+        Log.i(TAG, "updateBothraLoadingAdvise json : " + new Gson().toJson(updateBothraLoadingAdviseDto));
+        Call<TransactionsApiResponse> call = RetrofitController.getInstances(requireActivity()).getLoadingAdviseApi().updateBothraLoadingAdvise("Bearer " + token, updateBothraLoadingAdviseDto);
+        call.enqueue(new Callback<TransactionsApiResponse>() {
+            @Override
+            public void onResponse(Call<TransactionsApiResponse> call, Response<TransactionsApiResponse> response) {
+                hideProgress();
+                if (!response.isSuccessful()) {
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.errorBody() != null ? response.errorBody().toString() : "Error occurs while updating transaction", null, BTN_OK, false);
+                }
+                if (response.body() != null && response.body().getStatus() != null && response.body().getMessage() != null) {
+                    if (response.body().getStatus().equalsIgnoreCase(RESPONSE_OK)) {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_SUCCESS, response.body().getMessage(), null, BTN_OK, true);
+                    } else {
+                        ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, response.body().getMessage(), null, BTN_OK, false);
+                    }
+                } else {
+                    ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, NULL_VALUE_RESPONSE, null, BTN_OK, false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TransactionsApiResponse> call, Throwable t) {
+                hideProgress();
+                ((MainActivity) requireActivity()).alert(requireActivity(), DIALOG_ERROR, CustomErrorMessage.setErrorMessage(t.getMessage()), null, BTN_OK, false);
+            }
+        });
+    }
+
+    private void displayDataToUi(String rfidTag, String lepNo, String driverName, String driverMobileNo, String driverLicenseNo, String truckNo, String vesselName, String commodity, String destinationLocation, String berthNumber, String batchNumber, String grSrcLoc, String grSrcLocDesc, String bTareWeight) {
+        edtRfidTagNo.setText(rfidTag.toUpperCase());
+        edtLepNo.setText(lepNo.toUpperCase());
+        edtBatchNumber.setText(batchNumber.toUpperCase());
+        edtTruckNumber.setText(truckNo.toUpperCase());
+        edtDriverName.setText(driverName.toUpperCase());
+        edtDriverMobileNo.setText(driverMobileNo.toUpperCase());
+        edtDriverLicenseNo.setText(driverLicenseNo.toUpperCase());
+        edtVesselName.setText(vesselName.toUpperCase());
         edtBerthNumber.setText(berthNumber);
+        edtCommodity.setText(commodity.toUpperCase());
+        edtDestinationLocation.setText(destinationLocation.toUpperCase());
+        if (grSrcLoc != null && grSrcLocDesc != null) {
+            String grSourceLocation = grSrcLoc + " - " + grSrcLocDesc.toUpperCase();
+            edtSourceLocation.setText(grSourceLocation);
+        } else {
+            edtSourceLocation.setText(null);
+        }
+        edtTareWeight.setText(bTareWeight);
+     /*   if (!loginUserRoleId.equalsIgnoreCase(ROLES_B_LAO)) {
+            edtBerthNumber.setText(berthNumber);
+        }*/
+    }
 
+    private void showProgress() {
+        btnSubmit.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+        colorOverlay.setVisibility(View.VISIBLE);
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        rootLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dusk_scanner));
+    }
 
+    private void hideProgress() {
+        btnSubmit.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
+        colorOverlay.setVisibility(View.GONE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        rootLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.normal_scanner));
     }
 }

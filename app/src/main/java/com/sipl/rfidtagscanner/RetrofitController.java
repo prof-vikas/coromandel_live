@@ -27,7 +27,6 @@ public class RetrofitController {
 
     public RetrofitController(Context context) {
         try {
-            // Create a TrustManager that accepts all certificates
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         @Override
@@ -53,8 +52,9 @@ public class RetrofitController {
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
                     .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0])
                     .protocols(Collections.singletonList(Protocol.HTTP_1_1))
-                    .addInterceptor(new RetryInterceptor(1, 1000))
                     .hostnameVerifier((hostname, session) -> true);
+            Log.i(TAG, "RetrofitController: " + builder.toString());
+//                    .addInterceptor(new RetryInterceptor(1, 1000))
 
             // Create a Retrofit instance with the customized OkHttpClient
             Retrofit retrofit = new Retrofit.Builder()
@@ -66,63 +66,10 @@ public class RetrofitController {
             this.apiController = retrofit.create(ApiController.class);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "RetrofitController: in exception");
-            // Handle error or throw an exception
+            Log.e(TAG, "RetrofitController: in exception" + e.getMessage());
         }
 
     }
-
-
-
-/*    private OkHttpClient getOkHttpClient(Context context) {
-        try {
-            Log.i(TAG, "getOkHttpClient: try");
-              InputStream inputStream = context.getResources().openRawResource(R.raw.coromandelbiznew_crt_);
-//              InputStream inputStream = context.getResources().openRawResource(R.raw.latest_coromandel_biz);
-
-            // Create a Certificate object from the input stream
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            Certificate certificate = certificateFactory.generateCertificate(inputStream);
-
-            // Create a KeyStore and add the certificate
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("alias", certificate);
-
-            // Create a TrustManagerFactory and initialize it with the KeyStore
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
-
-            // Create an SSLContext and configure it with the TrustManager
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
-
-            Log.i(TAG, "getOkHttpClient: before building client");
-            return new OkHttpClient.Builder()
-                    .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagerFactory.getTrustManagers()[0])
-                    .protocols(Collections.singletonList(Protocol.HTTP_1_1))
-                    .addInterceptor(new RetryInterceptor(1, 1000))
-                    .build();
-
-          
-        } catch (Exception e) {
-            Log.i(TAG, "getOkHttpClient: " + e);
-            e.printStackTrace();
-            return new OkHttpClient();
-        }
-    }
-
-    private RetrofitController(Context context) {
-        OkHttpClient client = getOkHttpClient(context);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        loadingAdviseApi = retrofit.create(LoadingAdviseApi.class);
-    }*/
 
     public static synchronized RetrofitController getInstances(Context context) {
         if (instance == null) {
@@ -130,14 +77,6 @@ public class RetrofitController {
         }
         return instance;
     }
-
-    public static synchronized RetrofitController getInstances() {
-        if (instance == null) {
-            instance = new RetrofitController(null);
-        }
-        return instance;
-    }
-
 
     public ApiController getLoadingAdviseApi() {
         return apiController;
