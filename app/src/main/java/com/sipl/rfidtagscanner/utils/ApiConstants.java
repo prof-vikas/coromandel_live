@@ -12,13 +12,13 @@ public class ApiConstants {
      * client UAT environment
      * */
 //    public static final String BASE_URL = "https://rmmsuat.coromandel.biz/coromandel-rest-repo/";
-    public static final String BASE_URL = "http://10.210.213.5:8080/coromandel-rest-repo/";
+//    public static final String BASE_URL = "http://10.210.213.5:8080/coromandel-rest-repo/";
 
 
     /*
      * client PROD environment
      * */
-//    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
+    public static final String BASE_URL = "https://rmms.coromandel.biz/coromandel-rest-repo/";
 
 
     /*
